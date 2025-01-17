@@ -1,0 +1,136 @@
+# ==============================================================================
+# Pipeline Configuration — ICPA Cotton Boll Semantic 3D Reconstruction
+# ==============================================================================
+
+# Stage 1: Semantic Feature Fields
+feature_extraction:
+  model: "dinov2_vitl14"           # Options: dinov2_vits14, dinov2_vitb14, dinov2_vitl14
+  patch_size: 14
+  embedding_dim: 1024              # ViT-L: 1024, ViT-B: 768, ViT-S: 384
+  batch_size: 8
+  device: "mps"                    # Options: cuda, mps, cpu
+  output_dir: "outputs/features"
+  
+  # Feature matching parameters
+  matching:
+    similarity_metric: "cosine"
+    threshold: 0.7
+    ransac_threshold: 8.0
+    max_matches_per_pair: 2000
+    mutual_check: true
+
+# Stage 2: Instance Segmentation
+segmentation:
+  model: "sam2_hiera_large"
+  checkpoint: null                 # Will auto-download if null
+  device: "mps"
+  
+  # Auto-segmentation parameters
+  points_per_side: 32
+  pred_iou_thresh: 0.86
+  stability_score_thresh: 0.92
+  min_mask_region_area: 100        # minimum pixels for valid boll mask
+  
+  # Temporal tracking
+  tracking:
+    iou_threshold: 0.3
+    feature_similarity_threshold: 0.6
+    max_frames_skip: 3
+
+# Stage 3: 3D Reconstruction
+reconstruction:
+  # COLMAP baseline
+  colmap:
+    binary_path: "colmap"
+    workspace: "outputs/colmap"
+    camera_model: "OPENCV"
+    use_gpu: true
+    max_image_size: 2048
+    
+  # Semantic reconstruction
+  semantic:
+    feature_weight: 0.3            # weight of semantic loss vs photometric
+    geometric_weight: 0.7
+    num_iterations: 1000
+    learning_rate: 0.001
+    
+  # Evaluation
+  evaluation:
+    voxel_size: 0.01               # meters
+    completeness_threshold: 0.05   # meters
+
+# Stage 4: Morphology Extraction
+morphology:
+  # Boll measurement parameters
+  min_points_per_boll: 50
+  dbscan_eps: 0.005                # meters
+  dbscan_min_samples: 10
+  
+  # Visibility computation
+  visibility:
+    num_rays: 1000
+    viewpoint_height: 30.0         # meters (UAV altitude estimate)
+
+# Stage 5: LLM Reasoning (NOT edge-constrained — cloud + local)
+llm:
+  # Primary model for production
+  primary_model: "gemini-2.5-pro"
+  max_tokens: 4096
+  temperature: 0.1                 # Low temp for deterministic reasoning
+  
+  # Candidate models for benchmarking
+  candidates:
+    frontier:                      # Cloud-hosted, best quality
+      - name: "gemini-2.5-pro"
+        provider: "google"
+        modality: ["text", "image"]
+        cost_per_1k_tokens: 0.00125
+      - name: "gpt-4.1"
+        provider: "openai"
+        modality: ["text"]
+        cost_per_1k_tokens: 0.002
+      - name: "claude-opus-4"
+        provider: "anthropic"
+        modality: ["text", "image"]
+        cost_per_1k_tokens: 0.015
+    open_weight:                   # Self-hosted, zero marginal cost
+      - name: "glm-4-9b-chat"
+        params: "9B"
+        quantization: "4bit"
+        modality: ["text"]
+      - name: "gemma-3-12b-it"
+        params: "12B"
+        quantization: "4bit"
+        modality: ["text"]
+      - name: "qwen2.5-vl-7b"
+        params: "7B"
+        quantization: "4bit"
+        modality: ["text", "image"]
+      - name: "phi-4"
+        params: "14B"
+        quantization: "4bit"
+        modality: ["text"]
+      - name: "llava-video-7b"
+        params: "7B"
+        quantization: "4bit"
+        modality: ["text", "image"]
+  
+  # Benchmarking
+  benchmark:
+    num_runs: 3                    # runs per test case for consistency
+    test_cases: 20
+    timeout_seconds: 60
+    modality_ablation: true        # Test T-only, F+T, C+T, F+C+T
+    
+  # Input modalities
+  modalities:
+    text: true                     # Structured morphology report
+    frames: true                   # UAV image frames (for VLMs)
+    context_graph: true            # 3D morphology entity graph
+    num_frames: 50                 # Frames to sample from UAV sequence
+
+# Experiment settings
+experiment:
+  seed: 42
+  num_workers: 4
+  log_dir: "logs"

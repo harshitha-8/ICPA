@@ -1,0 +1,39 @@
+# ==============================================================================
+# Dataset Configuration — ICPA Cotton Boll Semantic 3D Reconstruction
+# ==============================================================================
+
+dataset:
+  root: "/Volumes/T9/ICML"
+  
+  pre_defoliation:
+    folders:
+      - "Part_one_pre_def_rgb"
+      - "part 2_pre_def_rgb"
+    description: "Dense canopy, occlusion-heavy, captured 09:57-10:07 local"
+    total_images: 680
+    
+  post_defoliation:
+    folders:
+      - "Post_def_rgb_part1"
+      - "205_Post_Def_rgb"
+      - "part3_post_def_rgb"
+      - "part4_post_def_rgb"
+    description: "Exposed boll structures, captured 12:41-12:51 local"
+    total_images: 869
+
+  capture_date: "2025-09-29"
+  sensor: "DJI UAV (RGB)"
+  approx_resolution_mp: 12
+  approx_file_size_mb: 11
+
+output:
+  root: "/Volumes/T9/tech cotton 3d/repos/ICPA/outputs"
+  pointclouds: "pointclouds"
+  meshes: "meshes"
+  masks: "masks"
+  metrics: "metrics"
+
+preprocessing:
+  target_resolution: 1024  # downsample long edge for feature extraction
+  exclude_pattern: "._*"   # exclude macOS resource forks
+  image_extensions: [".JPG", ".jpg", ".jpeg", ".png"]
