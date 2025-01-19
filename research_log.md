@@ -12,3 +12,7 @@
 ### Commit 3 — 2025-01-18T15:36:37
 - docs: review DINOv2 architecture and dense feature properties
 - Progress: 3 / 498 (0%)
+
+### Commit 4 — 2025-01-19T13:35:03
+- docs: review SAM 2 zero-shot segmentation capabilities
+- Progress: 4 / 498 (0%)
