@@ -20,3 +20,7 @@
 ### Commit 5 — 2025-01-20T11:33:29
 - docs: compile related work on UAV-based crop 3D reconstruction
 - Progress: 5 / 498 (1%)
+
+### Commit 6 — 2025-01-21T09:31:55
+- docs: draft initial hypothesis on semantic correspondence fields
+- Progress: 6 / 498 (1%)
