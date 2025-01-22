@@ -24,3 +24,7 @@
 ### Commit 6 — 2025-01-21T09:31:55
 - docs: draft initial hypothesis on semantic correspondence fields
 - Progress: 6 / 498 (1%)
+
+### Commit 7 — 2025-01-22T07:30:21
+- docs: document DJI UAV sensor specifications for dataset
+- Progress: 7 / 498 (1%)
