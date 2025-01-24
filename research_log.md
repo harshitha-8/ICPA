@@ -32,3 +32,7 @@
 ### Commit 8 — 2025-01-23T05:28:47
 - docs: outline defoliation intervention experimental design
 - Progress: 8 / 498 (1%)
+
+### Commit 9 — 2025-01-24T03:27:13
+- docs: review COLMAP SfM pipeline architecture
+- Progress: 9 / 498 (1%)
