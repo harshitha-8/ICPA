@@ -36,3 +36,7 @@
 ### Commit 9 — 2025-01-24T03:27:13
 - docs: review COLMAP SfM pipeline architecture
 - Progress: 9 / 498 (1%)
+
+### Commit 10 — 2025-01-25T01:25:39
+- docs: survey neural feature field methods (Feature3DGS, SemanticSplat)
+- Progress: 10 / 498 (2%)
