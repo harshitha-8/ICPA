@@ -40,3 +40,7 @@
 ### Commit 10 — 2025-01-25T01:25:39
 - docs: survey neural feature field methods (Feature3DGS, SemanticSplat)
 - Progress: 10 / 498 (2%)
+
+### Commit 11 — 2025-01-25T23:24:05
+- docs: review NeCo patch neighbor consistency method
+- Progress: 11 / 498 (2%)
