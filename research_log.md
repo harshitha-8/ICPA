@@ -44,3 +44,7 @@
 ### Commit 11 — 2025-01-25T23:24:05
 - docs: review NeCo patch neighbor consistency method
 - Progress: 11 / 498 (2%)
+
+### Commit 12 — 2025-01-26T21:22:31
+- docs: compile LLM survey for agricultural decision support
+- Progress: 12 / 498 (2%)
