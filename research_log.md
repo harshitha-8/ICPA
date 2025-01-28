@@ -52,3 +52,7 @@
 ### Commit 13 — 2025-01-27T19:20:57
 - docs: document cotton growth stage reference chart
 - Progress: 13 / 498 (2%)
+
+### Commit 14 — 2025-01-28T17:19:23
+- docs: outline PGR and harvest aid decision criteria
+- Progress: 14 / 498 (2%)
