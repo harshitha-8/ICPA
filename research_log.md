@@ -56,3 +56,7 @@
 ### Commit 14 — 2025-01-28T17:19:23
 - docs: outline PGR and harvest aid decision criteria
 - Progress: 14 / 498 (2%)
+
+### Commit 15 — 2025-01-29T15:17:49
+- docs: draft ICPA 2026 submission timeline
+- Progress: 15 / 498 (3%)
