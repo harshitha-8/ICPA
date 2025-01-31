@@ -64,3 +64,7 @@
 ### Commit 16 — 2025-01-30T13:16:15
 - docs: review DUSt3R end-to-end 3D reconstruction
 - Progress: 16 / 498 (3%)
+
+### Commit 17 — 2025-01-31T11:14:41
+- docs: analyze SuperPoint+SuperGlue matching architecture
+- Progress: 17 / 498 (3%)
