@@ -68,3 +68,7 @@
 ### Commit 17 — 2025-01-31T11:14:41
 - docs: analyze SuperPoint+SuperGlue matching architecture
 - Progress: 17 / 498 (3%)
+
+### Commit 18 — 2025-02-01T09:13:07
+- docs: survey edge LLM deployment strategies
+- Progress: 18 / 498 (3%)
