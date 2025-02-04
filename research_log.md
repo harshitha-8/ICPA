@@ -80,3 +80,7 @@
 ### Commit 20 — 2025-02-03T05:09:59
 - docs: compile precision agriculture sensor comparison
 - Progress: 20 / 498 (4%)
+
+### Commit 21 — 2025-02-04T03:08:25
+- docs: document chemical defoliation agronomic protocol
+- Progress: 21 / 498 (4%)
