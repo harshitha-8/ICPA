@@ -100,3 +100,7 @@
 ### Commit 25 — 2025-02-07T19:02:09
 - docs: draft initial paper outline for ICPA submission
 - Progress: 25 / 498 (5%)
+
+### Commit 26 — 2025-02-08T17:00:35
+- docs: review vision foundation model feature extraction benchmarks
+- Progress: 26 / 498 (5%)
