@@ -112,3 +112,7 @@
 ### Commit 28 — 2025-02-10T12:57:27
 - docs: analyze occlusion impact on photogrammetric accuracy
 - Progress: 28 / 498 (5%)
+
+### Commit 29 — 2025-02-11T10:55:53
+- docs: document UAV flight parameter optimization
+- Progress: 29 / 498 (5%)
