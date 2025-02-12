@@ -116,3 +116,7 @@
 ### Commit 29 — 2025-02-11T10:55:53
 - docs: document UAV flight parameter optimization
 - Progress: 29 / 498 (5%)
+
+### Commit 30 — 2025-02-12T08:54:19
+- docs: review RANSAC geometric verification strategies
+- Progress: 30 / 498 (6%)
