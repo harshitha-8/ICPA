@@ -140,3 +140,7 @@
 ### Commit 35 — 2025-02-16T22:46:29
 - feat: add DJI filename timestamp parser
 - Progress: 35 / 498 (7%)
+
+### Commit 36 — 2025-02-17T20:44:55
+- feat: implement image validation and manifest generation
+- Progress: 36 / 498 (7%)
