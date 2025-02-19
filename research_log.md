@@ -148,3 +148,7 @@
 ### Commit 37 — 2025-02-18T18:43:21
 - feat: add EXIF metadata extraction utilities
 - Progress: 37 / 498 (7%)
+
+### Commit 38 — 2025-02-19T16:41:47
+- refactor: modularize dataset preparation pipeline
+- Progress: 38 / 498 (7%)
