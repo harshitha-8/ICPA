@@ -144,3 +144,7 @@
 ### Commit 36 — 2025-02-17T20:44:55
 - feat: implement image validation and manifest generation
 - Progress: 36 / 498 (7%)
+
+### Commit 37 — 2025-02-18T18:43:21
+- feat: add EXIF metadata extraction utilities
+- Progress: 37 / 498 (7%)
