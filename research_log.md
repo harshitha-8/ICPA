@@ -156,3 +156,7 @@
 ### Commit 39 — 2025-02-20T14:40:13
 - feat: implement DINOv2 feature extractor class
 - Progress: 39 / 498 (7%)
+
+### Commit 40 — 2025-02-21T12:38:39
+- feat: add ViT-S/B/L backbone support for DINOv2
+- Progress: 40 / 498 (8%)
