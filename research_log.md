@@ -160,3 +160,7 @@
 ### Commit 40 — 2025-02-21T12:38:39
 - feat: add ViT-S/B/L backbone support for DINOv2
 - Progress: 40 / 498 (8%)
+
+### Commit 41 — 2025-02-22T10:37:05
+- feat: implement batch feature extraction with progress tracking
+- Progress: 41 / 498 (8%)
