@@ -188,3 +188,7 @@
 ### Commit 47 — 2025-02-27T22:27:42
 - feat: implement SAM2 automatic mask generator wrapper
 - Progress: 47 / 498 (9%)
+
+### Commit 48 — 2025-02-28T20:26:08
+- feat: add DINOv2-guided semantic prompting for SAM2
+- Progress: 48 / 498 (9%)
