@@ -192,3 +192,7 @@
 ### Commit 48 — 2025-02-28T20:26:08
 - feat: add DINOv2-guided semantic prompting for SAM2
 - Progress: 48 / 498 (9%)
+
+### Commit 49 — 2025-03-01T18:24:34
+- feat: implement boll prototype embedding classifier
+- Progress: 49 / 498 (9%)
