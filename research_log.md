@@ -204,3 +204,7 @@
 ### Commit 51 — 2025-03-03T14:21:26
 - feat: implement Hungarian algorithm instance tracking
 - Progress: 51 / 498 (10%)
+
+### Commit 52 — 2025-03-04T12:19:52
+- feat: add temporal instance association across frames
+- Progress: 52 / 498 (10%)
