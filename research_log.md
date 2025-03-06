@@ -212,3 +212,7 @@
 ### Commit 53 — 2025-03-05T10:18:18
 - refactor: separate SAM2 segmentation from classification
 - Progress: 53 / 498 (10%)
+
+### Commit 54 — 2025-03-06T08:16:44
+- feat: implement COLMAP SfM wrapper with 5-step pipeline
+- Progress: 54 / 498 (10%)
