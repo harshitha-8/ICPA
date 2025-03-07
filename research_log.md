@@ -216,3 +216,7 @@
 ### Commit 54 — 2025-03-06T08:16:44
 - feat: implement COLMAP SfM wrapper with 5-step pipeline
 - Progress: 54 / 498 (10%)
+
+### Commit 55 — 2025-03-07T06:15:10
+- feat: add COLMAP exhaustive matching configuration
+- Progress: 55 / 498 (11%)
