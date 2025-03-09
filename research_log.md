@@ -224,3 +224,7 @@
 ### Commit 56 — 2025-03-08T04:13:36
 - feat: implement COLMAP MVS dense reconstruction wrapper
 - Progress: 56 / 498 (11%)
+
+### Commit 57 — 2025-03-09T03:12:02
+- feat: add graceful fallback when COLMAP not installed
+- Progress: 57 / 498 (11%)
