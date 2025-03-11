@@ -232,3 +232,7 @@
 ### Commit 58 — 2025-03-10T01:10:28
 - feat: implement sparse model statistics reader
 - Progress: 58 / 498 (11%)
+
+### Commit 59 — 2025-03-10T23:08:54
+- feat: add symlink directory creation for image subsets
+- Progress: 59 / 498 (11%)
