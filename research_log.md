@@ -236,3 +236,7 @@
 ### Commit 59 — 2025-03-10T23:08:54
 - feat: add symlink directory creation for image subsets
 - Progress: 59 / 498 (11%)
+
+### Commit 60 — 2025-03-11T21:07:20
+- test: validate COLMAP wrapper command generation
+- Progress: 60 / 498 (12%)
