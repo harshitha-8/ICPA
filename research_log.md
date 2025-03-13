@@ -244,3 +244,7 @@
 ### Commit 61 — 2025-03-12T19:05:46
 - feat: implement semantic bundle adjustment module
 - Progress: 61 / 498 (12%)
+
+### Commit 62 — 2025-03-13T17:04:12
+- feat: add essential matrix estimation from DINOv2 correspondences
+- Progress: 62 / 498 (12%)
