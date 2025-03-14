@@ -248,3 +248,7 @@
 ### Commit 62 — 2025-03-13T17:04:12
 - feat: add essential matrix estimation from DINOv2 correspondences
 - Progress: 62 / 498 (12%)
+
+### Commit 63 — 2025-03-14T15:02:38
+- feat: implement sequential camera pose registration
+- Progress: 63 / 498 (12%)
