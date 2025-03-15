@@ -252,3 +252,7 @@
 ### Commit 63 — 2025-03-14T15:02:38
 - feat: implement sequential camera pose registration
 - Progress: 63 / 498 (12%)
+
+### Commit 64 — 2025-03-15T13:01:04
+- feat: add point triangulation from semantic correspondences
+- Progress: 64 / 498 (12%)
