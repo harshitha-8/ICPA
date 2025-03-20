@@ -272,3 +272,7 @@
 ### Commit 68 — 2025-03-19T04:54:48
 - feat: implement reconstruction completeness metric (voxelization)
 - Progress: 68 / 498 (13%)
+
+### Commit 69 — 2025-03-20T02:53:14
+- feat: add noise level estimation via KNN distance
+- Progress: 69 / 498 (13%)
