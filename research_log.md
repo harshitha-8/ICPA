@@ -276,3 +276,7 @@
 ### Commit 69 — 2025-03-20T02:53:14
 - feat: add noise level estimation via KNN distance
 - Progress: 69 / 498 (13%)
+
+### Commit 70 — 2025-03-21T00:51:40
+- feat: implement Chamfer distance between point clouds
+- Progress: 70 / 498 (14%)
