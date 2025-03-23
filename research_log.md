@@ -288,3 +288,7 @@
 ### Commit 72 — 2025-03-22T20:48:32
 - feat: implement reconstruction comparison pipeline
 - Progress: 72 / 498 (14%)
+
+### Commit 73 — 2025-03-23T18:46:58
+- feat: implement DBSCAN boll clustering from 3D points
+- Progress: 73 / 498 (14%)
