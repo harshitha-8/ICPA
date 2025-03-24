@@ -292,3 +292,7 @@
 ### Commit 73 — 2025-03-23T18:46:58
 - feat: implement DBSCAN boll clustering from 3D points
 - Progress: 73 / 498 (14%)
+
+### Commit 74 — 2025-03-24T16:45:24
+- feat: add PCA-based oriented bounding box fitting
+- Progress: 74 / 498 (14%)
