@@ -304,3 +304,7 @@
 ### Commit 76 — 2025-03-26T12:42:16
 - feat: add equatorial girth via convex hull perimeter
 - Progress: 76 / 498 (15%)
+
+### Commit 77 — 2025-03-27T10:40:42
+- feat: implement volume approximation (3D convex hull)
+- Progress: 77 / 498 (15%)
