@@ -308,3 +308,7 @@
 ### Commit 77 — 2025-03-27T10:40:42
 - feat: implement volume approximation (3D convex hull)
 - Progress: 77 / 498 (15%)
+
+### Commit 78 — 2025-03-28T08:39:08
+- feat: add local surface curvature estimation
+- Progress: 78 / 498 (15%)
