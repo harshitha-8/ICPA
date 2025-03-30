@@ -316,3 +316,7 @@
 ### Commit 79 — 2025-03-29T06:37:34
 - feat: implement visibility score via ray casting
 - Progress: 79 / 498 (15%)
+
+### Commit 80 — 2025-03-30T04:36:00
+- feat: add occlusion index computation
+- Progress: 80 / 498 (16%)
