@@ -320,3 +320,7 @@
 ### Commit 80 — 2025-03-30T04:36:00
 - feat: add occlusion index computation
 - Progress: 80 / 498 (16%)
+
+### Commit 81 — 2025-03-31T02:34:26
+- feat: implement pre/post morphology statistical comparison
+- Progress: 81 / 498 (16%)
