@@ -324,3 +324,7 @@
 ### Commit 81 — 2025-03-31T02:34:26
 - feat: implement pre/post morphology statistical comparison
 - Progress: 81 / 498 (16%)
+
+### Commit 82 — 2025-04-01T00:32:52
+- feat: add Welch's t-test with Bonferroni correction
+- Progress: 82 / 498 (16%)
