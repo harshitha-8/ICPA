@@ -328,3 +328,7 @@
 ### Commit 82 — 2025-04-01T00:32:52
 - feat: add Welch's t-test with Bonferroni correction
 - Progress: 82 / 498 (16%)
+
+### Commit 83 — 2025-04-01T22:31:19
+- feat: compute Cohen's d effect size for morphological differences
+- Progress: 83 / 498 (16%)
