@@ -336,3 +336,7 @@
 ### Commit 84 — 2025-04-02T20:29:45
 - refactor: extract curvature computation into helper
 - Progress: 84 / 498 (16%)
+
+### Commit 85 — 2025-04-03T18:28:11
+- feat: add compactness and aspect ratio metrics
+- Progress: 85 / 498 (17%)
