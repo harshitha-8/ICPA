@@ -364,3 +364,7 @@
 ### Commit 91 — 2025-04-09T06:18:47
 - feat: add morphology context graph input modality
 - Progress: 91 / 498 (18%)
+
+### Commit 92 — 2025-04-10T04:17:13
+- feat: implement structured JSON output extraction
+- Progress: 92 / 498 (18%)
