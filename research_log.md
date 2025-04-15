@@ -388,3 +388,7 @@
 ### Commit 97 — 2025-04-14T18:09:23
 - feat: add harvest aid decision prompt template
 - Progress: 97 / 498 (19%)
+
+### Commit 98 — 2025-04-15T16:07:49
+- feat: create PGR application decision prompt
+- Progress: 98 / 498 (19%)
