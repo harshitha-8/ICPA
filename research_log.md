@@ -440,3 +440,7 @@
 ### Commit 110 — 2025-04-26T15:49:01
 - refactor: unify API and local model interfaces
 - Progress: 110 / 498 (22%)
+
+### Commit 111 — 2025-04-27T13:47:27
+- feat: add open-weight model quantization support (4-bit)
+- Progress: 111 / 498 (22%)
