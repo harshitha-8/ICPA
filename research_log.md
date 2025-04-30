@@ -452,3 +452,7 @@
 ### Commit 113 — 2025-04-29T09:44:19
 - feat: add LLaVA-Video-7B model support
 - Progress: 113 / 498 (22%)
+
+### Commit 114 — 2025-04-30T07:42:45
+- feat: implement Phi-4 14B benchmark configuration
+- Progress: 114 / 498 (22%)
