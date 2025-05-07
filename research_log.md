@@ -484,3 +484,7 @@
 ### Commit 121 — 2025-05-06T17:31:47
 - feat: add priority assignment accuracy metric
 - Progress: 121 / 498 (24%)
+
+### Commit 122 — 2025-05-07T15:30:13
+- feat: implement risk detection F1 score
+- Progress: 122 / 498 (24%)
