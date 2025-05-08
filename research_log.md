@@ -488,3 +488,7 @@
 ### Commit 122 — 2025-05-07T15:30:13
 - feat: implement risk detection F1 score
 - Progress: 122 / 498 (24%)
+
+### Commit 123 — 2025-05-08T13:28:39
+- feat: add overall expert agreement weighted metric
+- Progress: 123 / 498 (24%)
