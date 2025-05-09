@@ -492,3 +492,7 @@
 ### Commit 123 — 2025-05-08T13:28:39
 - feat: add overall expert agreement weighted metric
 - Progress: 123 / 498 (24%)
+
+### Commit 124 — 2025-05-09T11:27:05
+- docs: document LLM benchmarking protocol
+- Progress: 124 / 498 (24%)
