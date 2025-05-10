@@ -496,3 +496,7 @@
 ### Commit 124 — 2025-05-09T11:27:05
 - docs: document LLM benchmarking protocol
 - Progress: 124 / 498 (24%)
+
+### Commit 125 — 2025-05-10T09:25:32
+- feat: add benchmark results export to JSON
+- Progress: 125 / 498 (25%)
