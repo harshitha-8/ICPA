@@ -500,3 +500,7 @@
 ### Commit 125 — 2025-05-10T09:25:32
 - feat: add benchmark results export to JSON
 - Progress: 125 / 498 (25%)
+
+### Commit 126 — 2025-05-11T07:23:58
+- feat: implement feature correspondence comparison pipeline
+- Progress: 126 / 498 (25%)
