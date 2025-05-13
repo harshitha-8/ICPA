@@ -508,3 +508,7 @@
 ### Commit 127 — 2025-05-12T05:22:24
 - feat: add SIFT baseline matching with Lowe's ratio test
 - Progress: 127 / 498 (25%)
+
+### Commit 128 — 2025-05-13T03:20:50
+- feat: implement correspondence stability index (CSI)
+- Progress: 128 / 498 (25%)
