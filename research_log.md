@@ -512,3 +512,7 @@
 ### Commit 128 — 2025-05-13T03:20:50
 - feat: implement correspondence stability index (CSI)
 - Progress: 128 / 498 (25%)
+
+### Commit 129 — 2025-05-14T01:19:16
+- feat: add feature consistency ratio (FCR) computation
+- Progress: 129 / 498 (25%)
