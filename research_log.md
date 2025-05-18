@@ -532,3 +532,7 @@
 ### Commit 133 — 2025-05-17T17:13:00
 - feat: implement mask stability temporal metrics
 - Progress: 133 / 498 (26%)
+
+### Commit 134 — 2025-05-18T15:11:26
+- feat: add instance retention rate across frame sequences
+- Progress: 134 / 498 (26%)
