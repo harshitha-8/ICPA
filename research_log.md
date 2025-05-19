@@ -536,3 +536,7 @@
 ### Commit 134 — 2025-05-18T15:11:26
 - feat: add instance retention rate across frame sequences
 - Progress: 134 / 498 (26%)
+
+### Commit 135 — 2025-05-19T13:09:52
+- feat: implement boll detection precision/recall
+- Progress: 135 / 498 (27%)
