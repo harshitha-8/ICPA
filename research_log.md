@@ -544,3 +544,7 @@
 ### Commit 136 — 2025-05-20T11:08:18
 - feat: add boundary accuracy (IoU) against manual annotations
 - Progress: 136 / 498 (27%)
+
+### Commit 137 — 2025-05-21T09:06:44
+- feat: implement end-to-end pipeline evaluation
+- Progress: 137 / 498 (27%)
