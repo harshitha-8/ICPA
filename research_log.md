@@ -556,3 +556,7 @@
 ### Commit 139 — 2025-05-23T05:03:36
 - feat: implement ablation study runner
 - Progress: 139 / 498 (27%)
+
+### Commit 140 — 2025-05-24T03:02:02
+- feat: add DINOv2 backbone ablation (ViT-S, B, L)
+- Progress: 140 / 498 (28%)
