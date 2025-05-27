@@ -568,3 +568,7 @@
 ### Commit 142 — 2025-05-25T22:58:54
 - feat: add SAM2 grid density ablation (16, 32, 64)
 - Progress: 142 / 498 (28%)
+
+### Commit 143 — 2025-05-26T20:57:20
+- feat: implement semantic loss weight ablation
+- Progress: 143 / 498 (28%)
