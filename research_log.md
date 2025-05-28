@@ -576,3 +576,7 @@
 ### Commit 144 — 2025-05-27T18:55:46
 - feat: add input view count scaling experiment
 - Progress: 144 / 498 (28%)
+
+### Commit 145 — 2025-05-28T16:54:12
+- feat: implement modality contribution ablation for LLM
+- Progress: 145 / 498 (29%)
