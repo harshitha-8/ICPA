@@ -592,3 +592,7 @@
 ### Commit 148 — 2025-05-31T10:49:30
 - test: verify ablation parameter ranges
 - Progress: 148 / 498 (29%)
+
+### Commit 149 — 2025-06-01T08:47:56
+- feat: implement comparative results table generator
+- Progress: 149 / 498 (29%)
