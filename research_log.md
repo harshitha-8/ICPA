@@ -596,3 +596,7 @@
 ### Commit 149 — 2025-06-01T08:47:56
 - feat: implement comparative results table generator
 - Progress: 149 / 498 (29%)
+
+### Commit 150 — 2025-06-02T06:46:22
+- feat: add bold/underline formatting for best results
+- Progress: 150 / 498 (30%)
