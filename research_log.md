@@ -608,3 +608,7 @@
 ### Commit 152 — 2025-06-04T02:43:14
 - docs: draft introduction section 1.1 - SfM limitations
 - Progress: 152 / 498 (30%)
+
+### Commit 153 — 2025-06-05T00:41:40
+- docs: write section 1.2 - semantic feature fields motivation
+- Progress: 153 / 498 (30%)
