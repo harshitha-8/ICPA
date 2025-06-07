@@ -616,3 +616,7 @@
 ### Commit 154 — 2025-06-05T22:40:06
 - docs: draft section 1.3 - defoliation as visibility intervention
 - Progress: 154 / 498 (30%)
+
+### Commit 155 — 2025-06-06T20:38:32
+- docs: write section 1.4 - agronomist-in-the-loop reasoning
+- Progress: 155 / 498 (31%)
