@@ -624,3 +624,7 @@
 ### Commit 156 — 2025-06-07T18:36:58
 - docs: list five paper contributions
 - Progress: 156 / 498 (31%)
+
+### Commit 157 — 2025-06-08T16:35:24
+- docs: write related work 2.1 - 3D plant phenotyping
+- Progress: 157 / 498 (31%)
