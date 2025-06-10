@@ -632,3 +632,7 @@
 ### Commit 158 — 2025-06-09T14:33:50
 - docs: draft related work 2.2 - vision foundation models
 - Progress: 158 / 498 (31%)
+
+### Commit 159 — 2025-06-10T12:32:16
+- docs: write related work 2.3 - zero-shot segmentation
+- Progress: 159 / 498 (31%)
