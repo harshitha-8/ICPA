@@ -640,3 +640,7 @@
 ### Commit 160 — 2025-06-11T10:30:42
 - docs: draft related work 2.4 - neural feature fields
 - Progress: 160 / 498 (32%)
+
+### Commit 161 — 2025-06-12T08:29:08
+- docs: write related work 2.5 - LLMs for agriculture
+- Progress: 161 / 498 (32%)
