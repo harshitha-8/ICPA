@@ -644,3 +644,7 @@
 ### Commit 161 — 2025-06-12T08:29:08
 - docs: write related work 2.5 - LLMs for agriculture
 - Progress: 161 / 498 (32%)
+
+### Commit 162 — 2025-06-13T06:27:34
+- docs: compile research gap summary table
+- Progress: 162 / 498 (32%)
