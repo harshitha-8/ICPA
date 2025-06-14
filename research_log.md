@@ -648,3 +648,7 @@
 ### Commit 162 — 2025-06-13T06:27:34
 - docs: compile research gap summary table
 - Progress: 162 / 498 (32%)
+
+### Commit 163 — 2025-06-14T04:26:00
+- docs: write methods 3.1 - problem formulation
+- Progress: 163 / 498 (32%)
