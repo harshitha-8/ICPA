@@ -660,3 +660,7 @@
 ### Commit 165 — 2025-06-16T00:22:52
 - docs: write methods 3.3 - zero-shot instance segmentation
 - Progress: 165 / 498 (33%)
+
+### Commit 166 — 2025-06-16T22:21:19
+- docs: draft methods 3.4 - semantic 3D reconstruction
+- Progress: 166 / 498 (33%)
