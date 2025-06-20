@@ -676,3 +676,7 @@
 ### Commit 169 — 2025-06-19T16:16:37
 - docs: define CSI and FCR metric equations
 - Progress: 169 / 498 (33%)
+
+### Commit 170 — 2025-06-20T14:15:03
+- docs: formalize BRR and RC metrics with equations
+- Progress: 170 / 498 (34%)
