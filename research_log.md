@@ -692,3 +692,7 @@
 ### Commit 173 — 2025-06-23T08:10:21
 - docs: outline experiment 1 - SfM baseline
 - Progress: 173 / 498 (34%)
+
+### Commit 174 — 2025-06-24T06:08:47
+- docs: outline experiment 2 - feature consistency
+- Progress: 174 / 498 (34%)
