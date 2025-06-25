@@ -696,3 +696,7 @@
 ### Commit 174 — 2025-06-24T06:08:47
 - docs: outline experiment 2 - feature consistency
 - Progress: 174 / 498 (34%)
+
+### Commit 175 — 2025-06-25T04:07:13
+- docs: outline experiment 3 - segmentation stability
+- Progress: 175 / 498 (35%)
