@@ -700,3 +700,7 @@
 ### Commit 175 — 2025-06-25T04:07:13
 - docs: outline experiment 3 - segmentation stability
 - Progress: 175 / 498 (35%)
+
+### Commit 176 — 2025-06-26T02:05:39
+- docs: outline experiment 4 - feature matching comparison
+- Progress: 176 / 498 (35%)
