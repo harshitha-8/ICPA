@@ -704,3 +704,7 @@
 ### Commit 176 — 2025-06-26T02:05:39
 - docs: outline experiment 4 - feature matching comparison
 - Progress: 176 / 498 (35%)
+
+### Commit 177 — 2025-06-27T00:04:05
+- docs: outline experiment 5 - boll count retention
+- Progress: 177 / 498 (35%)
