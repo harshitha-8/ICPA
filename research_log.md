@@ -716,3 +716,7 @@
 ### Commit 179 — 2025-06-28T20:00:57
 - docs: outline experiment 7 - LLM reasoning quality
 - Progress: 179 / 498 (35%)
+
+### Commit 180 — 2025-06-29T17:59:23
+- docs: design 9 publication-grade comparison tables
+- Progress: 180 / 498 (36%)
