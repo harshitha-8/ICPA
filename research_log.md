@@ -724,3 +724,7 @@
 ### Commit 181 — 2025-06-30T15:57:49
 - docs: draft ablation study table structure
 - Progress: 181 / 498 (36%)
+
+### Commit 182 — 2025-07-01T13:56:15
+- docs: write discussion 5.1 - semantic vs photometric features
+- Progress: 182 / 498 (36%)
