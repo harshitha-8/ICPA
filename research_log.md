@@ -736,3 +736,7 @@
 ### Commit 184 — 2025-07-03T09:53:07
 - docs: write discussion 5.3 - SfM failure mode documentation
 - Progress: 184 / 498 (36%)
+
+### Commit 185 — 2025-07-04T07:51:33
+- docs: draft discussion 5.4 - practical management implications
+- Progress: 185 / 498 (37%)
