@@ -740,3 +740,7 @@
 ### Commit 185 — 2025-07-04T07:51:33
 - docs: draft discussion 5.4 - practical management implications
 - Progress: 185 / 498 (37%)
+
+### Commit 186 — 2025-07-05T05:49:59
+- docs: write discussion 5.5 - LLM deployment considerations
+- Progress: 186 / 498 (37%)
