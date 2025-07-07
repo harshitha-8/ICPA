@@ -748,3 +748,7 @@
 ### Commit 187 — 2025-07-06T03:48:25
 - docs: draft discussion 5.6 - limitations
 - Progress: 187 / 498 (37%)
+
+### Commit 188 — 2025-07-07T01:46:51
+- docs: write discussion 5.7 - future work
+- Progress: 188 / 498 (37%)
