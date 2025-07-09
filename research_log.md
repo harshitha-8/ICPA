@@ -756,3 +756,7 @@
 ### Commit 189 — 2025-07-07T23:45:17
 - docs: draft conclusion with five key findings
 - Progress: 189 / 498 (37%)
+
+### Commit 190 — 2025-07-08T21:43:43
+- docs: compile verified BibTeX references
+- Progress: 190 / 498 (38%)
