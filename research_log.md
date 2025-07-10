@@ -760,3 +760,7 @@
 ### Commit 190 — 2025-07-08T21:43:43
 - docs: compile verified BibTeX references
 - Progress: 190 / 498 (38%)
+
+### Commit 191 — 2025-07-09T19:42:09
+- docs: add DINOv2 citation (Oquab et al. 2024)
+- Progress: 191 / 498 (38%)
