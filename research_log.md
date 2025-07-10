@@ -764,3 +764,7 @@
 ### Commit 191 — 2025-07-09T19:42:09
 - docs: add DINOv2 citation (Oquab et al. 2024)
 - Progress: 191 / 498 (38%)
+
+### Commit 192 — 2025-07-10T17:40:35
+- docs: add SAM 2 citation (Ravi et al. 2024)
+- Progress: 192 / 498 (38%)
