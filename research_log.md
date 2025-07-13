@@ -776,3 +776,7 @@
 ### Commit 194 — 2025-07-12T13:37:27
 - docs: add DUSt3R citation (Wang et al. 2024)
 - Progress: 194 / 498 (38%)
+
+### Commit 195 — 2025-07-13T11:35:53
+- docs: add Feature 3DGS citation (Zhou et al. 2024)
+- Progress: 195 / 498 (39%)
