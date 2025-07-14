@@ -780,3 +780,7 @@
 ### Commit 195 — 2025-07-13T11:35:53
 - docs: add Feature 3DGS citation (Zhou et al. 2024)
 - Progress: 195 / 498 (39%)
+
+### Commit 196 — 2025-07-14T09:34:19
+- docs: add NeCo citation (Aygun et al. 2025)
+- Progress: 196 / 498 (39%)
