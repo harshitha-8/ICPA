@@ -784,3 +784,7 @@
 ### Commit 196 — 2025-07-14T09:34:19
 - docs: add NeCo citation (Aygun et al. 2025)
 - Progress: 196 / 498 (39%)
+
+### Commit 197 — 2025-07-15T07:32:45
+- docs: add SuperPoint/SuperGlue citations
+- Progress: 197 / 498 (39%)
