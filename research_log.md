@@ -788,3 +788,7 @@
 ### Commit 197 — 2025-07-15T07:32:45
 - docs: add SuperPoint/SuperGlue citations
 - Progress: 197 / 498 (39%)
+
+### Commit 198 — 2025-07-16T05:31:11
+- docs: flag unverified cotton 3DGS citation for review
+- Progress: 198 / 498 (39%)
