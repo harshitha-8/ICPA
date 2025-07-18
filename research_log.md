@@ -796,3 +796,7 @@
 ### Commit 199 — 2025-07-17T03:29:37
 - docs: update abstract with expanded LLM scope
 - Progress: 199 / 498 (39%)
+
+### Commit 200 — 2025-07-18T01:28:03
+- docs: revise contribution 4 - frontier + open-weight LLM
+- Progress: 200 / 498 (40%)
