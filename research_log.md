@@ -800,3 +800,7 @@
 ### Commit 200 — 2025-07-18T01:28:03
 - docs: revise contribution 4 - frontier + open-weight LLM
 - Progress: 200 / 498 (40%)
+
+### Commit 201 — 2025-07-18T23:26:29
+- chore: add README.md with project overview
+- Progress: 201 / 498 (40%)
