@@ -804,3 +804,7 @@
 ### Commit 201 — 2025-07-18T23:26:29
 - chore: add README.md with project overview
 - Progress: 201 / 498 (40%)
+
+### Commit 202 — 2025-07-19T21:24:55
+- chore: add quick start guide to README
+- Progress: 202 / 498 (40%)
