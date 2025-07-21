@@ -812,3 +812,7 @@
 ### Commit 203 — 2025-07-20T19:23:21
 - chore: document requirements and dependencies
 - Progress: 203 / 498 (40%)
+
+### Commit 204 — 2025-07-21T17:21:47
+- chore: add __init__.py to all pipeline packages
+- Progress: 204 / 498 (40%)
