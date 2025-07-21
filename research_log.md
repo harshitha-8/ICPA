@@ -808,3 +808,7 @@
 ### Commit 202 — 2025-07-19T21:24:55
 - chore: add quick start guide to README
 - Progress: 202 / 498 (40%)
+
+### Commit 203 — 2025-07-20T19:23:21
+- chore: document requirements and dependencies
+- Progress: 203 / 498 (40%)
