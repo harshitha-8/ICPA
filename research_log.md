@@ -824,3 +824,7 @@
 ### Commit 206 — 2025-07-23T13:18:39
 - refactor: update pipeline config for expanded LLM roster
 - Progress: 206 / 498 (41%)
+
+### Commit 207 — 2025-07-24T11:17:05
+- refactor: remove edge-deployment constraint from LLM config
+- Progress: 207 / 498 (41%)
