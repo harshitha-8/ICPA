@@ -828,3 +828,7 @@
 ### Commit 207 — 2025-07-24T11:17:05
 - refactor: remove edge-deployment constraint from LLM config
 - Progress: 207 / 498 (41%)
+
+### Commit 208 — 2025-07-25T09:15:32
+- feat: add frontier model candidates to config
+- Progress: 208 / 498 (41%)
