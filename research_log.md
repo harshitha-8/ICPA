@@ -832,3 +832,7 @@
 ### Commit 208 — 2025-07-25T09:15:32
 - feat: add frontier model candidates to config
 - Progress: 208 / 498 (41%)
+
+### Commit 209 — 2025-07-26T07:13:58
+- feat: add open-weight model candidates to config
+- Progress: 209 / 498 (41%)
