@@ -836,3 +836,7 @@
 ### Commit 209 — 2025-07-26T07:13:58
 - feat: add open-weight model candidates to config
 - Progress: 209 / 498 (41%)
+
+### Commit 210 — 2025-07-27T05:12:24
+- feat: add modality ablation flag to benchmark config
+- Progress: 210 / 498 (42%)
