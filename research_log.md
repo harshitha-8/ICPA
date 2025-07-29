@@ -844,3 +844,7 @@
 ### Commit 211 — 2025-07-28T03:10:50
 - refactor: update reasoning engine for multi-provider support
 - Progress: 211 / 498 (42%)
+
+### Commit 212 — 2025-07-29T01:09:16
+- feat: add API provider auto-detection by model name
+- Progress: 212 / 498 (42%)
