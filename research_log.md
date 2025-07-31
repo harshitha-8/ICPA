@@ -852,3 +852,7 @@
 ### Commit 213 — 2025-07-29T23:07:42
 - refactor: update benchmark runner for 8-model comparison
 - Progress: 213 / 498 (42%)
+
+### Commit 214 — 2025-07-30T21:06:08
+- feat: add category and cost tracking per benchmark model
+- Progress: 214 / 498 (42%)
