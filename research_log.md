@@ -860,3 +860,7 @@
 ### Commit 215 — 2025-07-31T19:04:34
 - docs: update experiments with 9 comparison tables
 - Progress: 215 / 498 (43%)
+
+### Commit 216 — 2025-08-01T17:03:00
+- docs: add Table 5 - LLM reasoning evaluation structure
+- Progress: 216 / 498 (43%)
