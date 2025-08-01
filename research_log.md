@@ -856,3 +856,7 @@
 ### Commit 214 — 2025-07-30T21:06:08
 - feat: add category and cost tracking per benchmark model
 - Progress: 214 / 498 (42%)
+
+### Commit 215 — 2025-07-31T19:04:34
+- docs: update experiments with 9 comparison tables
+- Progress: 215 / 498 (43%)
