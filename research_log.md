@@ -864,3 +864,7 @@
 ### Commit 216 — 2025-08-01T17:03:00
 - docs: add Table 5 - LLM reasoning evaluation structure
 - Progress: 216 / 498 (43%)
+
+### Commit 217 — 2025-08-02T15:01:26
+- docs: add Table 6 - modality ablation table
+- Progress: 217 / 498 (43%)
