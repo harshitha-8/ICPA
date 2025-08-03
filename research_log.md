@@ -868,3 +868,7 @@
 ### Commit 217 — 2025-08-02T15:01:26
 - docs: add Table 6 - modality ablation table
 - Progress: 217 / 498 (43%)
+
+### Commit 218 — 2025-08-03T12:59:52
+- docs: add Table 7 - end-to-end pipeline evaluation
+- Progress: 218 / 498 (43%)
