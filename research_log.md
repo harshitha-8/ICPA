@@ -872,3 +872,7 @@
 ### Commit 218 — 2025-08-03T12:59:52
 - docs: add Table 7 - end-to-end pipeline evaluation
 - Progress: 218 / 498 (43%)
+
+### Commit 219 — 2025-08-04T10:58:18
+- docs: add Tables 8-9 - component ablation tables
+- Progress: 219 / 498 (43%)
