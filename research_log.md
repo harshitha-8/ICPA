@@ -876,3 +876,7 @@
 ### Commit 219 — 2025-08-04T10:58:18
 - docs: add Tables 8-9 - component ablation tables
 - Progress: 219 / 498 (43%)
+
+### Commit 220 — 2025-08-05T08:56:44
+- chore: clean up macOS resource fork exclusions
+- Progress: 220 / 498 (44%)
