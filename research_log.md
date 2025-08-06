@@ -880,3 +880,7 @@
 ### Commit 220 — 2025-08-05T08:56:44
 - chore: clean up macOS resource fork exclusions
 - Progress: 220 / 498 (44%)
+
+### Commit 221 — 2025-08-06T06:55:10
+- docs: update introduction for cloud LLM support
+- Progress: 221 / 498 (44%)
