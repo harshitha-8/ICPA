@@ -884,3 +884,7 @@
 ### Commit 221 — 2025-08-06T06:55:10
 - docs: update introduction for cloud LLM support
 - Progress: 221 / 498 (44%)
+
+### Commit 222 — 2025-08-07T04:53:36
+- docs: expand related work 2.5 with frontier model context
+- Progress: 222 / 498 (44%)
