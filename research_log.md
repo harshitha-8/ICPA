@@ -900,3 +900,7 @@
 ### Commit 225 — 2025-08-09T22:48:54
 - feat: add nutrient deficiency test case
 - Progress: 225 / 498 (45%)
+
+### Commit 226 — 2025-08-10T20:47:20
+- feat: add excessive vegetative growth test case
+- Progress: 226 / 498 (45%)
