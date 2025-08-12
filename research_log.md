@@ -908,3 +908,7 @@
 ### Commit 227 — 2025-08-11T18:45:46
 - feat: add early season assessment test case
 - Progress: 227 / 498 (45%)
+
+### Commit 228 — 2025-08-12T16:44:12
+- feat: add late harvest window test case
+- Progress: 228 / 498 (45%)
