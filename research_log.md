@@ -924,3 +924,7 @@
 ### Commit 231 — 2025-08-15T10:39:30
 - feat: add insect damage indicators test case
 - Progress: 231 / 498 (46%)
+
+### Commit 232 — 2025-08-16T08:37:56
+- feat: add replant decision test case
+- Progress: 232 / 498 (46%)
