@@ -928,3 +928,7 @@
 ### Commit 232 — 2025-08-16T08:37:56
 - feat: add replant decision test case
 - Progress: 232 / 498 (46%)
+
+### Commit 233 — 2025-08-17T06:36:22
+- feat: add irrigation scheduling test case
+- Progress: 233 / 498 (46%)
