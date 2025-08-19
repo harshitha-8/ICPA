@@ -936,3 +936,7 @@
 ### Commit 234 — 2025-08-18T04:34:48
 - feat: add cover crop transition test case
 - Progress: 234 / 498 (46%)
+
+### Commit 235 — 2025-08-19T02:33:14
+- feat: add dual-field comparison test case
+- Progress: 235 / 498 (47%)
