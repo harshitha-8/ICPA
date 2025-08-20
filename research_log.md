@@ -940,3 +940,7 @@
 ### Commit 235 — 2025-08-19T02:33:14
 - feat: add dual-field comparison test case
 - Progress: 235 / 498 (47%)
+
+### Commit 236 — 2025-08-20T00:31:40
+- docs: document test case design rationale
+- Progress: 236 / 498 (47%)
