@@ -944,3 +944,7 @@
 ### Commit 236 — 2025-08-20T00:31:40
 - docs: document test case design rationale
 - Progress: 236 / 498 (47%)
+
+### Commit 237 — 2025-08-20T22:30:06
+- docs: add evaluation rubric for expert scoring
+- Progress: 237 / 498 (47%)
