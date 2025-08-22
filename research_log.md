@@ -952,3 +952,7 @@
 ### Commit 238 — 2025-08-21T20:28:32
 - feat: implement confusion matrix for growth stage classification
 - Progress: 238 / 498 (47%)
+
+### Commit 239 — 2025-08-22T18:26:58
+- feat: add per-class precision/recall for action recommendations
+- Progress: 239 / 498 (47%)
