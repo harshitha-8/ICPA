@@ -956,3 +956,7 @@
 ### Commit 239 — 2025-08-22T18:26:58
 - feat: add per-class precision/recall for action recommendations
 - Progress: 239 / 498 (47%)
+
+### Commit 240 — 2025-08-23T16:25:24
+- feat: implement BLEU/ROUGE scores for rationale quality
+- Progress: 240 / 498 (48%)
