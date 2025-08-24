@@ -960,3 +960,7 @@
 ### Commit 240 — 2025-08-23T16:25:24
 - feat: implement BLEU/ROUGE scores for rationale quality
 - Progress: 240 / 498 (48%)
+
+### Commit 241 — 2025-08-24T14:23:50
+- feat: add semantic similarity scoring for recommendations
+- Progress: 241 / 498 (48%)
