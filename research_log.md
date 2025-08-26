@@ -968,3 +968,7 @@
 ### Commit 242 — 2025-08-25T12:22:16
 - refactor: optimize batch inference for API models
 - Progress: 242 / 498 (48%)
+
+### Commit 243 — 2025-08-26T10:20:42
+- feat: add retry logic for API rate limits
+- Progress: 243 / 498 (48%)
