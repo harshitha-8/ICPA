@@ -972,3 +972,7 @@
 ### Commit 243 — 2025-08-26T10:20:42
 - feat: add retry logic for API rate limits
 - Progress: 243 / 498 (48%)
+
+### Commit 244 — 2025-08-27T08:19:08
+- feat: implement token count estimation per inference
+- Progress: 244 / 498 (48%)
