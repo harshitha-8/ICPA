@@ -976,3 +976,7 @@
 ### Commit 244 — 2025-08-27T08:19:08
 - feat: implement token count estimation per inference
 - Progress: 244 / 498 (48%)
+
+### Commit 245 — 2025-08-28T06:17:34
+- feat: add cost accumulation tracking across benchmark
+- Progress: 245 / 498 (49%)
