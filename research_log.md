@@ -984,3 +984,7 @@
 ### Commit 246 — 2025-08-29T04:16:00
 - docs: write benchmark interpretation guidelines
 - Progress: 246 / 498 (49%)
+
+### Commit 247 — 2025-08-30T02:14:26
+- chore: add experiment output directory structure
+- Progress: 247 / 498 (49%)
