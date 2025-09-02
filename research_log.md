@@ -1000,3 +1000,7 @@
 ### Commit 250 — 2025-09-01T20:09:45
 - docs: add ICPA 2026 submission checklist
 - Progress: 250 / 498 (50%)
+
+### Commit 251 — 2025-09-02T18:08:11
+- fix: handle edge case in empty mask classification
+- Progress: 251 / 498 (50%)
