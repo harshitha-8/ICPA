@@ -996,3 +996,7 @@
 ### Commit 249 — 2025-08-31T22:11:19
 - docs: draft project timeline gantt chart
 - Progress: 249 / 498 (50%)
+
+### Commit 250 — 2025-09-01T20:09:45
+- docs: add ICPA 2026 submission checklist
+- Progress: 250 / 498 (50%)
