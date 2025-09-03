@@ -1004,3 +1004,7 @@
 ### Commit 251 — 2025-09-02T18:08:11
 - fix: handle edge case in empty mask classification
 - Progress: 251 / 498 (50%)
+
+### Commit 252 — 2025-09-03T16:06:37
+- fix: correct convex hull girth computation (2D perimeter)
+- Progress: 252 / 498 (50%)
