@@ -1008,3 +1008,7 @@
 ### Commit 252 — 2025-09-03T16:06:37
 - fix: correct convex hull girth computation (2D perimeter)
 - Progress: 252 / 498 (50%)
+
+### Commit 253 — 2025-09-04T14:05:03
+- fix: handle degenerate essential matrix in pose estimation
+- Progress: 253 / 498 (50%)
