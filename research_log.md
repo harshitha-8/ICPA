@@ -1012,3 +1012,7 @@
 ### Commit 253 — 2025-09-04T14:05:03
 - fix: handle degenerate essential matrix in pose estimation
 - Progress: 253 / 498 (50%)
+
+### Commit 254 — 2025-09-05T12:03:29
+- fix: prevent division by zero in visibility score
+- Progress: 254 / 498 (51%)
