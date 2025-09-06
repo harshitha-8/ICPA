@@ -1016,3 +1016,7 @@
 ### Commit 254 — 2025-09-05T12:03:29
 - fix: prevent division by zero in visibility score
 - Progress: 254 / 498 (51%)
+
+### Commit 255 — 2025-09-06T10:01:55
+- fix: correct eigenvalue sorting in PCA boll measurement
+- Progress: 255 / 498 (51%)
