@@ -1020,3 +1020,7 @@
 ### Commit 255 — 2025-09-06T10:01:55
 - fix: correct eigenvalue sorting in PCA boll measurement
 - Progress: 255 / 498 (51%)
+
+### Commit 256 — 2025-09-07T08:00:21
+- fix: handle missing EXIF data in DJI filename parser
+- Progress: 256 / 498 (51%)
