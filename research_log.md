@@ -1024,3 +1024,7 @@
 ### Commit 256 — 2025-09-07T08:00:21
 - fix: handle missing EXIF data in DJI filename parser
 - Progress: 256 / 498 (51%)
+
+### Commit 257 — 2025-09-08T05:58:47
+- fix: prevent memory overflow in large similarity matrix
+- Progress: 257 / 498 (51%)
