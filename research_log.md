@@ -1028,3 +1028,7 @@
 ### Commit 257 — 2025-09-08T05:58:47
 - fix: prevent memory overflow in large similarity matrix
 - Progress: 257 / 498 (51%)
+
+### Commit 258 — 2025-09-09T03:57:13
+- fix: correct cosine similarity normalization
+- Progress: 258 / 498 (51%)
