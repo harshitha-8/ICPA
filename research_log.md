@@ -1036,3 +1036,7 @@
 ### Commit 259 — 2025-09-10T01:55:39
 - fix: handle empty point clouds in reconstruction evaluation
 - Progress: 259 / 498 (52%)
+
+### Commit 260 — 2025-09-10T23:54:05
+- fix: correct Bonferroni correction denominator
+- Progress: 260 / 498 (52%)
