@@ -1040,3 +1040,7 @@
 ### Commit 260 — 2025-09-10T23:54:05
 - fix: correct Bonferroni correction denominator
 - Progress: 260 / 498 (52%)
+
+### Commit 261 — 2025-09-11T21:52:31
+- fix: handle API timeout in frontier model inference
+- Progress: 261 / 498 (52%)
