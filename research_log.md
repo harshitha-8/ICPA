@@ -1048,3 +1048,7 @@
 ### Commit 262 — 2025-09-12T19:50:57
 - fix: correct JSON extraction for nested markdown blocks
 - Progress: 262 / 498 (52%)
+
+### Commit 263 — 2025-09-13T17:49:23
+- fix: handle missing keys in morphology report formatting
+- Progress: 263 / 498 (52%)
