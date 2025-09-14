@@ -1052,3 +1052,7 @@
 ### Commit 263 — 2025-09-13T17:49:23
 - fix: handle missing keys in morphology report formatting
 - Progress: 263 / 498 (52%)
+
+### Commit 264 — 2025-09-14T15:47:49
+- fix: prevent NaN in curvature estimation on small neighborhoods
+- Progress: 264 / 498 (53%)
