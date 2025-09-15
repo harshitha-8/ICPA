@@ -1056,3 +1056,7 @@
 ### Commit 264 — 2025-09-14T15:47:49
 - fix: prevent NaN in curvature estimation on small neighborhoods
 - Progress: 264 / 498 (53%)
+
+### Commit 265 — 2025-09-15T13:46:15
+- fix: correct voxel grid boundary alignment
+- Progress: 265 / 498 (53%)
