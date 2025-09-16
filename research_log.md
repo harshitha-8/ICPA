@@ -1060,3 +1060,7 @@
 ### Commit 265 — 2025-09-15T13:46:15
 - fix: correct voxel grid boundary alignment
 - Progress: 265 / 498 (53%)
+
+### Commit 266 — 2025-09-16T11:44:41
+- perf: optimize KDTree construction for large point clouds
+- Progress: 266 / 498 (53%)
