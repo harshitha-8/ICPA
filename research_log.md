@@ -1064,3 +1064,7 @@
 ### Commit 266 — 2025-09-16T11:44:41
 - perf: optimize KDTree construction for large point clouds
 - Progress: 266 / 498 (53%)
+
+### Commit 267 — 2025-09-17T09:43:07
+- perf: add subsampling for noise level estimation
+- Progress: 267 / 498 (53%)
