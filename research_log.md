@@ -1068,3 +1068,7 @@
 ### Commit 267 — 2025-09-17T09:43:07
 - perf: add subsampling for noise level estimation
 - Progress: 267 / 498 (53%)
+
+### Commit 268 — 2025-09-18T07:41:33
+- perf: reduce memory usage in dense similarity computation
+- Progress: 268 / 498 (53%)
