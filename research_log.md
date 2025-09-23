@@ -1088,3 +1088,7 @@
 ### Commit 272 — 2025-09-21T23:35:17
 - style: add type hints to all public methods
 - Progress: 272 / 498 (54%)
+
+### Commit 273 — 2025-09-22T21:33:43
+- style: normalize docstring format (NumPy style)
+- Progress: 273 / 498 (54%)
