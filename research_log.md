@@ -1104,3 +1104,7 @@
 ### Commit 276 — 2025-09-25T15:29:01
 - test: add edge case test for single-image reconstruction
 - Progress: 276 / 498 (55%)
+
+### Commit 277 — 2025-09-26T13:27:27
+- test: validate morphology metrics on synthetic sphere
+- Progress: 277 / 498 (55%)
