@@ -1108,3 +1108,7 @@
 ### Commit 277 — 2025-09-26T13:27:27
 - test: validate morphology metrics on synthetic sphere
 - Progress: 277 / 498 (55%)
+
+### Commit 278 — 2025-09-27T11:25:53
+- test: verify CSI computation on known correspondence set
+- Progress: 278 / 498 (55%)
