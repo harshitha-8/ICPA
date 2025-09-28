@@ -1112,3 +1112,7 @@
 ### Commit 278 — 2025-09-27T11:25:53
 - test: verify CSI computation on known correspondence set
 - Progress: 278 / 498 (55%)
+
+### Commit 279 — 2025-09-28T09:24:19
+- test: add schema validation regression test
+- Progress: 279 / 498 (56%)
