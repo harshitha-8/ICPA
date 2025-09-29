@@ -1116,3 +1116,7 @@
 ### Commit 279 — 2025-09-28T09:24:19
 - test: add schema validation regression test
 - Progress: 279 / 498 (56%)
+
+### Commit 280 — 2025-09-29T07:22:45
+- test: verify hallucination detector on crafted examples
+- Progress: 280 / 498 (56%)
