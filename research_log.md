@@ -1120,3 +1120,7 @@
 ### Commit 280 — 2025-09-29T07:22:45
 - test: verify hallucination detector on crafted examples
 - Progress: 280 / 498 (56%)
+
+### Commit 281 — 2025-09-30T05:21:11
+- ci: add Python syntax validation script
+- Progress: 281 / 498 (56%)
