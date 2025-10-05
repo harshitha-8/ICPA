@@ -1144,3 +1144,7 @@
 ### Commit 286 — 2025-10-04T19:13:21
 - docs: add inline comments for complex algorithms
 - Progress: 286 / 498 (57%)
+
+### Commit 287 — 2025-10-05T17:11:47
+- docs: document ray-casting visibility algorithm
+- Progress: 287 / 498 (57%)
