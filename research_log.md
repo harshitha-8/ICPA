@@ -1148,3 +1148,7 @@
 ### Commit 287 — 2025-10-05T17:11:47
 - docs: document ray-casting visibility algorithm
 - Progress: 287 / 498 (57%)
+
+### Commit 288 — 2025-10-06T15:10:13
+- docs: add semantic BA convergence notes
+- Progress: 288 / 498 (57%)
