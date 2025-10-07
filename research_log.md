@@ -1152,3 +1152,7 @@
 ### Commit 288 — 2025-10-06T15:10:13
 - docs: add semantic BA convergence notes
 - Progress: 288 / 498 (57%)
+
+### Commit 289 — 2025-10-07T13:08:39
+- docs: document DINOv2 patch token layout
+- Progress: 289 / 498 (58%)
