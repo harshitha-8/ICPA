@@ -1156,3 +1156,7 @@
 ### Commit 289 — 2025-10-07T13:08:39
 - docs: document DINOv2 patch token layout
 - Progress: 289 / 498 (58%)
+
+### Commit 290 — 2025-10-08T11:07:05
+- docs: add troubleshooting guide for common issues
+- Progress: 290 / 498 (58%)
