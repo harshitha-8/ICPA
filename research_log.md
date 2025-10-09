@@ -1160,3 +1160,7 @@
 ### Commit 290 — 2025-10-08T11:07:05
 - docs: add troubleshooting guide for common issues
 - Progress: 290 / 498 (58%)
+
+### Commit 291 — 2025-10-09T09:05:32
+- docs: outline initial research questions for cotton 3D phenotyping
+- Progress: 291 / 498 (58%)
