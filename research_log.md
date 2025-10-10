@@ -1164,3 +1164,7 @@
 ### Commit 291 — 2025-10-09T09:05:32
 - docs: outline initial research questions for cotton 3D phenotyping
 - Progress: 291 / 498 (58%)
+
+### Commit 292 — 2025-10-10T07:03:58
+- docs: survey SfM limitations on textureless agricultural surfaces
+- Progress: 292 / 498 (58%)
