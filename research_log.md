@@ -1168,3 +1168,7 @@
 ### Commit 292 — 2025-10-10T07:03:58
 - docs: survey SfM limitations on textureless agricultural surfaces
 - Progress: 292 / 498 (58%)
+
+### Commit 293 — 2025-10-11T05:02:24
+- docs: review DINOv2 architecture and dense feature properties
+- Progress: 293 / 498 (58%)
