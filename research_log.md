@@ -1176,3 +1176,7 @@
 ### Commit 294 — 2025-10-12T03:00:50
 - docs: review SAM 2 zero-shot segmentation capabilities
 - Progress: 294 / 498 (59%)
+
+### Commit 295 — 2025-10-13T00:59:16
+- docs: compile related work on UAV-based crop 3D reconstruction
+- Progress: 295 / 498 (59%)
