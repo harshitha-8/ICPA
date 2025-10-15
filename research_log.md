@@ -1188,3 +1188,7 @@
 ### Commit 297 — 2025-10-14T20:56:08
 - docs: document DJI UAV sensor specifications for dataset
 - Progress: 297 / 498 (59%)
+
+### Commit 298 — 2025-10-15T18:54:34
+- docs: outline defoliation intervention experimental design
+- Progress: 298 / 498 (59%)
