@@ -1204,3 +1204,7 @@
 ### Commit 301 — 2025-10-18T12:49:52
 - docs: review NeCo patch neighbor consistency method
 - Progress: 301 / 498 (60%)
+
+### Commit 302 — 2025-10-19T10:48:18
+- docs: compile LLM survey for agricultural decision support
+- Progress: 302 / 498 (60%)
