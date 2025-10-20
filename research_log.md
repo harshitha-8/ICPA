@@ -1208,3 +1208,7 @@
 ### Commit 302 — 2025-10-19T10:48:18
 - docs: compile LLM survey for agricultural decision support
 - Progress: 302 / 498 (60%)
+
+### Commit 303 — 2025-10-20T08:46:44
+- docs: document cotton growth stage reference chart
+- Progress: 303 / 498 (60%)
