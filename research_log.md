@@ -1220,3 +1220,7 @@
 ### Commit 305 — 2025-10-22T04:43:36
 - docs: draft ICPA 2026 submission timeline
 - Progress: 305 / 498 (61%)
+
+### Commit 306 — 2025-10-23T02:42:02
+- docs: review DUSt3R end-to-end 3D reconstruction
+- Progress: 306 / 498 (61%)
