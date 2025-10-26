@@ -1232,3 +1232,7 @@
 ### Commit 308 — 2025-10-24T22:38:54
 - docs: survey edge LLM deployment strategies
 - Progress: 308 / 498 (61%)
+
+### Commit 309 — 2025-10-25T20:37:20
+- docs: review boll morphological measurement standards
+- Progress: 309 / 498 (62%)
