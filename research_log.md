@@ -1244,3 +1244,7 @@
 ### Commit 311 — 2025-10-27T16:34:12
 - docs: document chemical defoliation agronomic protocol
 - Progress: 311 / 498 (62%)
+
+### Commit 312 — 2025-10-28T14:32:38
+- docs: review 3D Gaussian Splatting for plant phenotyping
+- Progress: 312 / 498 (62%)
