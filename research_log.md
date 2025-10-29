@@ -1248,3 +1248,7 @@
 ### Commit 312 — 2025-10-28T14:32:38
 - docs: review 3D Gaussian Splatting for plant phenotyping
 - Progress: 312 / 498 (62%)
+
+### Commit 313 — 2025-10-29T12:31:04
+- docs: survey NeRF-based crop modeling literature
+- Progress: 313 / 498 (62%)
