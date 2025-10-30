@@ -1252,3 +1252,7 @@
 ### Commit 313 — 2025-10-29T12:31:04
 - docs: survey NeRF-based crop modeling literature
 - Progress: 313 / 498 (62%)
+
+### Commit 314 — 2025-10-30T10:29:30
+- docs: outline multi-view correspondence evaluation metrics
+- Progress: 314 / 498 (63%)
