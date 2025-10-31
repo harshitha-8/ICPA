@@ -1256,3 +1256,7 @@
 ### Commit 314 — 2025-10-30T10:29:30
 - docs: outline multi-view correspondence evaluation metrics
 - Progress: 314 / 498 (63%)
+
+### Commit 315 — 2025-10-31T08:27:56
+- docs: draft initial paper outline for ICPA submission
+- Progress: 315 / 498 (63%)
