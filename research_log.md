@@ -1264,3 +1264,7 @@
 ### Commit 316 — 2025-11-01T06:26:22
 - docs: review vision foundation model feature extraction benchmarks
 - Progress: 316 / 498 (63%)
+
+### Commit 317 — 2025-11-02T03:24:48
+- docs: compile cotton phenotyping measurement protocols
+- Progress: 317 / 498 (63%)
