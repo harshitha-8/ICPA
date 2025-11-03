@@ -1268,3 +1268,7 @@
 ### Commit 317 — 2025-11-02T03:24:48
 - docs: compile cotton phenotyping measurement protocols
 - Progress: 317 / 498 (63%)
+
+### Commit 318 — 2025-11-03T01:23:14
+- docs: analyze occlusion impact on photogrammetric accuracy
+- Progress: 318 / 498 (63%)
