@@ -1284,3 +1284,7 @@
 ### Commit 321 — 2025-11-05T19:18:32
 - feat: create repository directory structure
 - Progress: 321 / 498 (64%)
+
+### Commit 322 — 2025-11-06T17:16:58
+- feat: add dataset configuration YAML
+- Progress: 322 / 498 (64%)
