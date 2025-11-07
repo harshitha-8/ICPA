@@ -1288,3 +1288,7 @@
 ### Commit 322 — 2025-11-06T17:16:58
 - feat: add dataset configuration YAML
 - Progress: 322 / 498 (64%)
+
+### Commit 323 — 2025-11-07T15:15:24
+- feat: add pipeline configuration YAML
+- Progress: 323 / 498 (64%)
