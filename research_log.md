@@ -1292,3 +1292,7 @@
 ### Commit 323 — 2025-11-07T15:15:24
 - feat: add pipeline configuration YAML
 - Progress: 323 / 498 (64%)
+
+### Commit 324 — 2025-11-08T13:13:50
+- feat: implement prepare_dataset.py image collection module
+- Progress: 324 / 498 (65%)
