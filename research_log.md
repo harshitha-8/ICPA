@@ -1296,3 +1296,7 @@
 ### Commit 324 — 2025-11-08T13:13:50
 - feat: implement prepare_dataset.py image collection module
 - Progress: 324 / 498 (65%)
+
+### Commit 325 — 2025-11-09T11:12:16
+- feat: add DJI filename timestamp parser
+- Progress: 325 / 498 (65%)
