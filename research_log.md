@@ -1312,3 +1312,7 @@
 ### Commit 328 — 2025-11-12T05:07:34
 - refactor: modularize dataset preparation pipeline
 - Progress: 328 / 498 (65%)
+
+### Commit 329 — 2025-11-13T03:06:00
+- feat: implement DINOv2 feature extractor class
+- Progress: 329 / 498 (66%)
