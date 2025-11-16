@@ -1324,3 +1324,7 @@
 ### Commit 331 — 2025-11-14T23:02:52
 - feat: implement batch feature extraction with progress tracking
 - Progress: 331 / 498 (66%)
+
+### Commit 332 — 2025-11-15T21:01:19
+- feat: add feature caching with npz compression
+- Progress: 332 / 498 (66%)
