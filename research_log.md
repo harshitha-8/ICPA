@@ -1336,3 +1336,7 @@
 ### Commit 334 — 2025-11-17T16:58:11
 - feat: add mutual nearest neighbor matching
 - Progress: 334 / 498 (67%)
+
+### Commit 335 — 2025-11-18T14:56:37
+- feat: implement RANSAC geometric verification for correspondences
+- Progress: 335 / 498 (67%)
