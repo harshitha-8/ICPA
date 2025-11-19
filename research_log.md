@@ -1340,3 +1340,7 @@
 ### Commit 335 — 2025-11-18T14:56:37
 - feat: implement RANSAC geometric verification for correspondences
 - Progress: 335 / 498 (67%)
+
+### Commit 336 — 2025-11-19T12:55:03
+- test: add unit test for feature extraction dimensions
+- Progress: 336 / 498 (67%)
