@@ -1344,3 +1344,7 @@
 ### Commit 336 — 2025-11-19T12:55:03
 - test: add unit test for feature extraction dimensions
 - Progress: 336 / 498 (67%)
+
+### Commit 337 — 2025-11-20T10:53:29
+- feat: implement SAM2 automatic mask generator wrapper
+- Progress: 337 / 498 (67%)
