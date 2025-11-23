@@ -1356,3 +1356,7 @@
 ### Commit 339 — 2025-11-22T06:50:21
 - feat: implement boll prototype embedding classifier
 - Progress: 339 / 498 (68%)
+
+### Commit 340 — 2025-11-23T04:48:47
+- feat: add mask stability score computation
+- Progress: 340 / 498 (68%)
