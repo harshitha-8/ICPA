@@ -1360,3 +1360,7 @@
 ### Commit 340 — 2025-11-23T04:48:47
 - feat: add mask stability score computation
 - Progress: 340 / 498 (68%)
+
+### Commit 341 — 2025-11-24T02:47:13
+- feat: implement Hungarian algorithm instance tracking
+- Progress: 341 / 498 (68%)
