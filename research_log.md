@@ -1368,3 +1368,7 @@
 ### Commit 342 — 2025-11-25T00:45:39
 - feat: add temporal instance association across frames
 - Progress: 342 / 498 (68%)
+
+### Commit 343 — 2025-11-25T22:44:05
+- refactor: separate SAM2 segmentation from classification
+- Progress: 343 / 498 (68%)
