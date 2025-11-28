@@ -1380,3 +1380,7 @@
 ### Commit 345 — 2025-11-27T18:40:57
 - feat: add COLMAP exhaustive matching configuration
 - Progress: 345 / 498 (69%)
+
+### Commit 346 — 2025-11-28T16:39:23
+- feat: implement COLMAP MVS dense reconstruction wrapper
+- Progress: 346 / 498 (69%)
