@@ -1388,3 +1388,7 @@
 ### Commit 347 — 2025-11-29T14:37:49
 - feat: add graceful fallback when COLMAP not installed
 - Progress: 347 / 498 (69%)
+
+### Commit 348 — 2025-11-30T12:36:15
+- feat: implement sparse model statistics reader
+- Progress: 348 / 498 (69%)
