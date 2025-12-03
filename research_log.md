@@ -1400,3 +1400,7 @@
 ### Commit 350 — 2025-12-02T08:33:07
 - test: validate COLMAP wrapper command generation
 - Progress: 350 / 498 (70%)
+
+### Commit 351 — 2025-12-03T06:31:33
+- feat: implement semantic bundle adjustment module
+- Progress: 351 / 498 (70%)
