@@ -1420,3 +1420,7 @@
 ### Commit 355 — 2025-12-06T22:25:17
 - feat: implement semantic consistency loss function
 - Progress: 355 / 498 (71%)
+
+### Commit 356 — 2025-12-07T20:23:43
+- feat: add PLY point cloud writer
+- Progress: 356 / 498 (71%)
