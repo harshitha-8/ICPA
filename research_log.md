@@ -1424,3 +1424,7 @@
 ### Commit 356 — 2025-12-07T20:23:43
 - feat: add PLY point cloud writer
 - Progress: 356 / 498 (71%)
+
+### Commit 357 — 2025-12-08T18:22:09
+- refactor: extract pose estimation into separate method
+- Progress: 357 / 498 (71%)
