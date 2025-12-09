@@ -1428,3 +1428,7 @@
 ### Commit 357 — 2025-12-08T18:22:09
 - refactor: extract pose estimation into separate method
 - Progress: 357 / 498 (71%)
+
+### Commit 358 — 2025-12-09T16:20:35
+- feat: implement reconstruction completeness metric (voxelization)
+- Progress: 358 / 498 (71%)
