@@ -1440,3 +1440,7 @@
 ### Commit 360 — 2025-12-11T12:17:27
 - feat: implement Chamfer distance between point clouds
 - Progress: 360 / 498 (72%)
+
+### Commit 361 — 2025-12-12T10:15:53
+- feat: add boll retention rate metric
+- Progress: 361 / 498 (72%)
