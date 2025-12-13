@@ -1444,3 +1444,7 @@
 ### Commit 361 — 2025-12-12T10:15:53
 - feat: add boll retention rate metric
 - Progress: 361 / 498 (72%)
+
+### Commit 362 — 2025-12-13T08:14:19
+- feat: implement reconstruction comparison pipeline
+- Progress: 362 / 498 (72%)
