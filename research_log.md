@@ -1456,3 +1456,7 @@
 ### Commit 364 — 2025-12-15T04:11:11
 - feat: add PCA-based oriented bounding box fitting
 - Progress: 364 / 498 (73%)
+
+### Commit 365 — 2025-12-16T02:09:37
+- feat: implement boll diameter extraction (principal axis)
+- Progress: 365 / 498 (73%)
