@@ -1460,3 +1460,7 @@
 ### Commit 365 — 2025-12-16T02:09:37
 - feat: implement boll diameter extraction (principal axis)
 - Progress: 365 / 498 (73%)
+
+### Commit 366 — 2025-12-17T00:08:03
+- feat: add equatorial girth via convex hull perimeter
+- Progress: 366 / 498 (73%)
