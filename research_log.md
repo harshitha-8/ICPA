@@ -1472,3 +1472,7 @@
 ### Commit 368 — 2025-12-18T20:04:55
 - feat: add local surface curvature estimation
 - Progress: 368 / 498 (73%)
+
+### Commit 369 — 2025-12-19T18:03:21
+- feat: implement visibility score via ray casting
+- Progress: 369 / 498 (74%)
