@@ -1492,3 +1492,7 @@
 ### Commit 373 — 2025-12-23T09:57:05
 - feat: compute Cohen's d effect size for morphological differences
 - Progress: 373 / 498 (74%)
+
+### Commit 374 — 2025-12-24T07:55:32
+- refactor: extract curvature computation into helper
+- Progress: 374 / 498 (75%)
