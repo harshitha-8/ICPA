@@ -1516,3 +1516,7 @@
 ### Commit 379 — 2025-12-28T21:47:42
 - feat: add Claude API client integration
 - Progress: 379 / 498 (76%)
+
+### Commit 380 — 2025-12-29T19:46:08
+- feat: implement multimodal input support (frames + text)
+- Progress: 380 / 498 (76%)
