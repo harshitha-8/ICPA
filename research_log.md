@@ -1520,3 +1520,7 @@
 ### Commit 380 — 2025-12-29T19:46:08
 - feat: implement multimodal input support (frames + text)
 - Progress: 380 / 498 (76%)
+
+### Commit 381 — 2025-12-30T17:44:34
+- feat: add morphology context graph input modality
+- Progress: 381 / 498 (76%)
