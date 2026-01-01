@@ -1528,3 +1528,7 @@
 ### Commit 382 — 2025-12-31T15:43:00
 - feat: implement structured JSON output extraction
 - Progress: 382 / 498 (76%)
+
+### Commit 383 — 2026-01-01T13:41:26
+- feat: add fallback JSON parsing with regex
+- Progress: 383 / 498 (76%)
