@@ -1536,3 +1536,7 @@
 ### Commit 384 — 2026-01-02T11:39:52
 - feat: implement deterministic stub response for testing
 - Progress: 384 / 498 (77%)
+
+### Commit 385 — 2026-01-03T09:38:18
+- feat: add format_morphology_report structured prompt builder
+- Progress: 385 / 498 (77%)
