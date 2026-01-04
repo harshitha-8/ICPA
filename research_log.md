@@ -1540,3 +1540,7 @@
 ### Commit 385 — 2026-01-03T09:38:18
 - feat: add format_morphology_report structured prompt builder
 - Progress: 385 / 498 (77%)
+
+### Commit 386 — 2026-01-04T07:36:44
+- feat: create cotton growth assessment system prompt
+- Progress: 386 / 498 (77%)
