@@ -1544,3 +1544,7 @@
 ### Commit 386 — 2026-01-04T07:36:44
 - feat: create cotton growth assessment system prompt
 - Progress: 386 / 498 (77%)
+
+### Commit 387 — 2026-01-05T05:35:10
+- feat: add harvest aid decision prompt template
+- Progress: 387 / 498 (77%)
