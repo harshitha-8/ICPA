@@ -1552,3 +1552,7 @@
 ### Commit 388 — 2026-01-06T03:33:36
 - feat: create PGR application decision prompt
 - Progress: 388 / 498 (77%)
+
+### Commit 389 — 2026-01-07T01:32:02
+- feat: add water stress detection prompt template
+- Progress: 389 / 498 (78%)
