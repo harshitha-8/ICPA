@@ -1556,3 +1556,7 @@
 ### Commit 389 — 2026-01-07T01:32:02
 - feat: add water stress detection prompt template
 - Progress: 389 / 498 (78%)
+
+### Commit 390 — 2026-01-07T23:30:28
+- feat: implement agronomic reasoning template with JSON schema
+- Progress: 390 / 498 (78%)
