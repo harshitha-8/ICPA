@@ -1572,3 +1572,7 @@
 ### Commit 393 — 2026-01-10T17:25:46
 - feat: add inter-run agreement computation
 - Progress: 393 / 498 (78%)
+
+### Commit 394 — 2026-01-11T15:24:12
+- feat: implement hallucination detection heuristics
+- Progress: 394 / 498 (79%)
