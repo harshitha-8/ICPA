@@ -1580,3 +1580,7 @@
 ### Commit 395 — 2026-01-12T13:22:38
 - feat: add LLM benchmark runner with multi-model support
 - Progress: 395 / 498 (79%)
+
+### Commit 396 — 2026-01-13T11:21:04
+- feat: implement publication-style benchmark comparison table
+- Progress: 396 / 498 (79%)
