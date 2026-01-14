@@ -1584,3 +1584,7 @@
 ### Commit 396 — 2026-01-13T11:21:04
 - feat: implement publication-style benchmark comparison table
 - Progress: 396 / 498 (79%)
+
+### Commit 397 — 2026-01-14T09:19:30
+- feat: add modality ablation test framework
+- Progress: 397 / 498 (79%)
