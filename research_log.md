@@ -1596,3 +1596,7 @@
 ### Commit 399 — 2026-01-16T05:16:22
 - feat: add cost-per-inference tracking
 - Progress: 399 / 498 (80%)
+
+### Commit 400 — 2026-01-17T03:14:48
+- refactor: unify API and local model interfaces
+- Progress: 400 / 498 (80%)
