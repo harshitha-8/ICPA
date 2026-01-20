@@ -1608,3 +1608,7 @@
 ### Commit 402 — 2026-01-18T23:11:40
 - feat: implement Qwen2.5-VL-7B integration
 - Progress: 402 / 498 (80%)
+
+### Commit 403 — 2026-01-19T21:10:06
+- feat: add LLaVA-Video-7B model support
+- Progress: 403 / 498 (80%)
