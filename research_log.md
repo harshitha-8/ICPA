@@ -1628,3 +1628,7 @@
 ### Commit 407 — 2026-01-23T13:03:50
 - test: validate JSON schema compliance across all test cases
 - Progress: 407 / 498 (81%)
+
+### Commit 408 — 2026-01-24T11:02:16
+- test: verify hallucination detection on synthetic examples
+- Progress: 408 / 498 (81%)
