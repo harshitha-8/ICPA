@@ -1664,3 +1664,7 @@
 ### Commit 416 — 2026-01-31T18:49:45
 - feat: implement feature correspondence comparison pipeline
 - Progress: 416 / 498 (83%)
+
+### Commit 417 — 2026-02-01T16:48:11
+- feat: add SIFT baseline matching with Lowe's ratio test
+- Progress: 417 / 498 (83%)
