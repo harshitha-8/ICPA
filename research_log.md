@@ -1680,3 +1680,7 @@
 ### Commit 420 — 2026-02-04T10:43:29
 - feat: implement multi-view triplet stability analysis
 - Progress: 420 / 498 (84%)
+
+### Commit 421 — 2026-02-05T08:41:55
+- feat: add per-condition (pre/post-def) comparison
+- Progress: 421 / 498 (84%)
