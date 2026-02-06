@@ -1684,3 +1684,7 @@
 ### Commit 421 — 2026-02-05T08:41:55
 - feat: add per-condition (pre/post-def) comparison
 - Progress: 421 / 498 (84%)
+
+### Commit 422 — 2026-02-06T06:40:21
+- refactor: optimize similarity matrix computation memory
+- Progress: 422 / 498 (84%)
