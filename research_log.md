@@ -1700,3 +1700,7 @@
 ### Commit 425 — 2026-02-09T00:35:39
 - feat: implement boll detection precision/recall
 - Progress: 425 / 498 (85%)
+
+### Commit 426 — 2026-02-09T22:34:05
+- feat: add boundary accuracy (IoU) against manual annotations
+- Progress: 426 / 498 (85%)
