@@ -1708,3 +1708,7 @@
 ### Commit 427 — 2026-02-10T20:32:31
 - feat: implement end-to-end pipeline evaluation
 - Progress: 427 / 498 (85%)
+
+### Commit 428 — 2026-02-11T18:30:57
+- feat: add reconstruction × segmentation × LLM grid evaluation
+- Progress: 428 / 498 (85%)
