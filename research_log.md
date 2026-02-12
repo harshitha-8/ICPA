@@ -1712,3 +1712,7 @@
 ### Commit 428 — 2026-02-11T18:30:57
 - feat: add reconstruction × segmentation × LLM grid evaluation
 - Progress: 428 / 498 (85%)
+
+### Commit 429 — 2026-02-12T16:29:23
+- feat: implement ablation study runner
+- Progress: 429 / 498 (86%)
