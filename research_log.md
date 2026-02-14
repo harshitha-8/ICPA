@@ -1720,3 +1720,7 @@
 ### Commit 430 — 2026-02-13T14:27:49
 - feat: add DINOv2 backbone ablation (ViT-S, B, L)
 - Progress: 430 / 498 (86%)
+
+### Commit 431 — 2026-02-14T12:26:15
+- feat: implement matching threshold sweep (0.5-0.9)
+- Progress: 431 / 498 (86%)
