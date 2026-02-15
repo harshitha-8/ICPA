@@ -1724,3 +1724,7 @@
 ### Commit 431 — 2026-02-14T12:26:15
 - feat: implement matching threshold sweep (0.5-0.9)
 - Progress: 431 / 498 (86%)
+
+### Commit 432 — 2026-02-15T10:24:41
+- feat: add SAM2 grid density ablation (16, 32, 64)
+- Progress: 432 / 498 (86%)
