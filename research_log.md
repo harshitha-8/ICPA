@@ -1732,3 +1732,7 @@
 ### Commit 433 — 2026-02-16T08:23:07
 - feat: implement semantic loss weight ablation
 - Progress: 433 / 498 (86%)
+
+### Commit 434 — 2026-02-17T06:21:33
+- feat: add input view count scaling experiment
+- Progress: 434 / 498 (87%)
