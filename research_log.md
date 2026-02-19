@@ -1740,3 +1740,7 @@
 ### Commit 435 — 2026-02-18T04:19:59
 - feat: implement modality contribution ablation for LLM
 - Progress: 435 / 498 (87%)
+
+### Commit 436 — 2026-02-19T02:18:25
+- refactor: centralize experiment result aggregation
+- Progress: 436 / 498 (87%)
