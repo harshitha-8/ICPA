@@ -1744,3 +1744,7 @@
 ### Commit 436 — 2026-02-19T02:18:25
 - refactor: centralize experiment result aggregation
 - Progress: 436 / 498 (87%)
+
+### Commit 437 — 2026-02-20T00:16:51
+- feat: add experiment configuration validation
+- Progress: 437 / 498 (87%)
