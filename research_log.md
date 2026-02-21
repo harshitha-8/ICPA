@@ -1748,3 +1748,7 @@
 ### Commit 437 — 2026-02-20T00:16:51
 - feat: add experiment configuration validation
 - Progress: 437 / 498 (87%)
+
+### Commit 438 — 2026-02-20T22:15:17
+- test: verify ablation parameter ranges
+- Progress: 438 / 498 (87%)
