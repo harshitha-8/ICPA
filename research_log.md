@@ -1764,3 +1764,7 @@
 ### Commit 441 — 2026-02-23T16:10:35
 - docs: write paper abstract with contribution summary
 - Progress: 441 / 498 (88%)
+
+### Commit 442 — 2026-02-24T14:09:01
+- docs: draft introduction section 1.1 - SfM limitations
+- Progress: 442 / 498 (88%)
