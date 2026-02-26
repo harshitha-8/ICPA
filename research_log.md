@@ -1772,3 +1772,7 @@
 ### Commit 443 — 2026-02-25T12:07:27
 - docs: write section 1.2 - semantic feature fields motivation
 - Progress: 443 / 498 (88%)
+
+### Commit 444 — 2026-02-26T10:05:53
+- docs: draft section 1.3 - defoliation as visibility intervention
+- Progress: 444 / 498 (89%)
