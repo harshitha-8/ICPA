@@ -1788,3 +1788,7 @@
 ### Commit 447 — 2026-03-01T04:01:11
 - docs: write related work 2.1 - 3D plant phenotyping
 - Progress: 447 / 498 (89%)
+
+### Commit 448 — 2026-03-02T01:59:37
+- docs: draft related work 2.2 - vision foundation models
+- Progress: 448 / 498 (89%)
