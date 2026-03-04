@@ -1796,3 +1796,7 @@
 ### Commit 449 — 2026-03-02T23:58:03
 - docs: write related work 2.3 - zero-shot segmentation
 - Progress: 449 / 498 (90%)
+
+### Commit 450 — 2026-03-03T21:56:29
+- docs: draft related work 2.4 - neural feature fields
+- Progress: 450 / 498 (90%)
