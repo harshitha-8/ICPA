@@ -1800,3 +1800,7 @@
 ### Commit 450 — 2026-03-03T21:56:29
 - docs: draft related work 2.4 - neural feature fields
 - Progress: 450 / 498 (90%)
+
+### Commit 451 — 2026-03-04T19:54:55
+- docs: write related work 2.5 - LLMs for agriculture
+- Progress: 451 / 498 (90%)
