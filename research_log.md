@@ -1816,3 +1816,7 @@
 ### Commit 454 — 2026-03-07T13:50:13
 - docs: draft methods 3.2 - semantic feature field construction
 - Progress: 454 / 498 (91%)
+
+### Commit 455 — 2026-03-08T12:48:39
+- docs: write methods 3.3 - zero-shot instance segmentation
+- Progress: 455 / 498 (91%)
