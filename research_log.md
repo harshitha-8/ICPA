@@ -1824,3 +1824,7 @@
 ### Commit 456 — 2026-03-09T10:47:05
 - docs: draft methods 3.4 - semantic 3D reconstruction
 - Progress: 456 / 498 (91%)
+
+### Commit 457 — 2026-03-10T08:45:32
+- docs: write methods 3.5 - morphological measurement extraction
+- Progress: 457 / 498 (91%)
