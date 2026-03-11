@@ -1828,3 +1828,7 @@
 ### Commit 457 — 2026-03-10T08:45:32
 - docs: write methods 3.5 - morphological measurement extraction
 - Progress: 457 / 498 (91%)
+
+### Commit 458 — 2026-03-11T06:43:58
+- docs: draft methods 3.6 - agronomist-in-the-loop reasoning
+- Progress: 458 / 498 (91%)
