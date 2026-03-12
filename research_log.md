@@ -1832,3 +1832,7 @@
 ### Commit 458 — 2026-03-11T06:43:58
 - docs: draft methods 3.6 - agronomist-in-the-loop reasoning
 - Progress: 458 / 498 (91%)
+
+### Commit 459 — 2026-03-12T04:42:24
+- docs: define CSI and FCR metric equations
+- Progress: 459 / 498 (92%)
