@@ -1840,3 +1840,7 @@
 ### Commit 460 — 2026-03-13T02:40:50
 - docs: formalize BRR and RC metrics with equations
 - Progress: 460 / 498 (92%)
+
+### Commit 461 — 2026-03-14T00:39:16
+- docs: write semantic bundle adjustment loss formulation
+- Progress: 461 / 498 (92%)
