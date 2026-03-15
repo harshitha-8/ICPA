@@ -1844,3 +1844,7 @@
 ### Commit 461 — 2026-03-14T00:39:16
 - docs: write semantic bundle adjustment loss formulation
 - Progress: 461 / 498 (92%)
+
+### Commit 462 — 2026-03-14T22:37:42
+- docs: document SAM2 tracking cost function
+- Progress: 462 / 498 (92%)
