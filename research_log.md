@@ -1848,3 +1848,7 @@
 ### Commit 462 — 2026-03-14T22:37:42
 - docs: document SAM2 tracking cost function
 - Progress: 462 / 498 (92%)
+
+### Commit 463 — 2026-03-15T20:36:08
+- docs: outline experiment 1 - SfM baseline
+- Progress: 463 / 498 (92%)
