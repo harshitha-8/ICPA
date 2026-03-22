@@ -1876,3 +1876,7 @@
 ### Commit 469 — 2026-03-21T08:26:44
 - docs: outline experiment 7 - LLM reasoning quality
 - Progress: 469 / 498 (94%)
+
+### Commit 470 — 2026-03-22T06:25:10
+- docs: design 9 publication-grade comparison tables
+- Progress: 470 / 498 (94%)
