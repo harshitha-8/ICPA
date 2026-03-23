@@ -1880,3 +1880,7 @@
 ### Commit 470 — 2026-03-22T06:25:10
 - docs: design 9 publication-grade comparison tables
 - Progress: 470 / 498 (94%)
+
+### Commit 471 — 2026-03-23T04:23:36
+- docs: draft ablation study table structure
+- Progress: 471 / 498 (94%)
