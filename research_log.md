@@ -1888,3 +1888,7 @@
 ### Commit 472 — 2026-03-24T02:22:02
 - docs: write discussion 5.1 - semantic vs photometric features
 - Progress: 472 / 498 (94%)
+
+### Commit 473 — 2026-03-25T00:20:28
+- docs: draft discussion 5.2 - defoliation visibility analysis
+- Progress: 473 / 498 (94%)
