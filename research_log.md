@@ -1892,3 +1892,7 @@
 ### Commit 473 — 2026-03-25T00:20:28
 - docs: draft discussion 5.2 - defoliation visibility analysis
 - Progress: 473 / 498 (94%)
+
+### Commit 474 — 2026-03-25T22:18:54
+- docs: write discussion 5.3 - SfM failure mode documentation
+- Progress: 474 / 498 (95%)
