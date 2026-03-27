@@ -1900,3 +1900,7 @@
 ### Commit 475 — 2026-03-26T20:17:20
 - docs: draft discussion 5.4 - practical management implications
 - Progress: 475 / 498 (95%)
+
+### Commit 476 — 2026-03-27T18:15:46
+- docs: write discussion 5.5 - LLM deployment considerations
+- Progress: 476 / 498 (95%)
