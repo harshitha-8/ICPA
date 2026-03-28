@@ -1904,3 +1904,7 @@
 ### Commit 476 — 2026-03-27T18:15:46
 - docs: write discussion 5.5 - LLM deployment considerations
 - Progress: 476 / 498 (95%)
+
+### Commit 477 — 2026-03-28T16:14:12
+- docs: draft discussion 5.6 - limitations
+- Progress: 477 / 498 (95%)
