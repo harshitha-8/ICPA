@@ -1908,3 +1908,7 @@
 ### Commit 477 — 2026-03-28T16:14:12
 - docs: draft discussion 5.6 - limitations
 - Progress: 477 / 498 (95%)
+
+### Commit 478 — 2026-03-29T14:12:38
+- docs: write discussion 5.7 - future work
+- Progress: 478 / 498 (95%)
