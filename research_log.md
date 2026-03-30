@@ -1912,3 +1912,7 @@
 ### Commit 478 — 2026-03-29T14:12:38
 - docs: write discussion 5.7 - future work
 - Progress: 478 / 498 (95%)
+
+### Commit 479 — 2026-03-30T12:11:04
+- docs: draft conclusion with five key findings
+- Progress: 479 / 498 (96%)
