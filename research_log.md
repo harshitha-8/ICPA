@@ -1916,3 +1916,7 @@
 ### Commit 479 — 2026-03-30T12:11:04
 - docs: draft conclusion with five key findings
 - Progress: 479 / 498 (96%)
+
+### Commit 480 — 2026-03-31T10:09:30
+- docs: compile verified BibTeX references
+- Progress: 480 / 498 (96%)
