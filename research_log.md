@@ -1920,3 +1920,7 @@
 ### Commit 480 — 2026-03-31T10:09:30
 - docs: compile verified BibTeX references
 - Progress: 480 / 498 (96%)
+
+### Commit 481 — 2026-04-01T08:07:56
+- docs: add DINOv2 citation (Oquab et al. 2024)
+- Progress: 481 / 498 (96%)
