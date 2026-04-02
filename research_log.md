@@ -1924,3 +1924,7 @@
 ### Commit 481 — 2026-04-01T08:07:56
 - docs: add DINOv2 citation (Oquab et al. 2024)
 - Progress: 481 / 498 (96%)
+
+### Commit 482 — 2026-04-02T06:06:22
+- docs: add SAM 2 citation (Ravi et al. 2024)
+- Progress: 482 / 498 (96%)
