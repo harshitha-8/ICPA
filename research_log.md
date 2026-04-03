@@ -1928,3 +1928,7 @@
 ### Commit 482 — 2026-04-02T06:06:22
 - docs: add SAM 2 citation (Ravi et al. 2024)
 - Progress: 482 / 498 (96%)
+
+### Commit 483 — 2026-04-03T04:04:48
+- docs: add COLMAP citations (Schonberger 2016)
+- Progress: 483 / 498 (96%)
