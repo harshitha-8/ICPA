@@ -1932,3 +1932,7 @@
 ### Commit 483 — 2026-04-03T04:04:48
 - docs: add COLMAP citations (Schonberger 2016)
 - Progress: 483 / 498 (96%)
+
+### Commit 484 — 2026-04-04T02:03:14
+- docs: add DUSt3R citation (Wang et al. 2024)
+- Progress: 484 / 498 (97%)
