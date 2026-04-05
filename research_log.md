@@ -1936,3 +1936,7 @@
 ### Commit 484 — 2026-04-04T02:03:14
 - docs: add DUSt3R citation (Wang et al. 2024)
 - Progress: 484 / 498 (97%)
+
+### Commit 485 — 2026-04-05T00:01:40
+- docs: add Feature 3DGS citation (Zhou et al. 2024)
+- Progress: 485 / 498 (97%)
