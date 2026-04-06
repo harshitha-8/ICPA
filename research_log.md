@@ -1940,3 +1940,7 @@
 ### Commit 485 — 2026-04-05T00:01:40
 - docs: add Feature 3DGS citation (Zhou et al. 2024)
 - Progress: 485 / 498 (97%)
+
+### Commit 486 — 2026-04-05T22:00:06
+- docs: add NeCo citation (Aygun et al. 2025)
+- Progress: 486 / 498 (97%)
