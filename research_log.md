@@ -1948,3 +1948,7 @@
 ### Commit 487 — 2026-04-06T19:58:32
 - docs: add SuperPoint/SuperGlue citations
 - Progress: 487 / 498 (97%)
+
+### Commit 488 — 2026-04-07T17:56:58
+- docs: flag unverified cotton 3DGS citation for review
+- Progress: 488 / 498 (97%)
