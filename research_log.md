@@ -1944,3 +1944,7 @@
 ### Commit 486 — 2026-04-05T22:00:06
 - docs: add NeCo citation (Aygun et al. 2025)
 - Progress: 486 / 498 (97%)
+
+### Commit 487 — 2026-04-06T19:58:32
+- docs: add SuperPoint/SuperGlue citations
+- Progress: 487 / 498 (97%)
