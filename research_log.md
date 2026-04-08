@@ -1952,3 +1952,7 @@
 ### Commit 488 — 2026-04-07T17:56:58
 - docs: flag unverified cotton 3DGS citation for review
 - Progress: 488 / 498 (97%)
+
+### Commit 489 — 2026-04-08T15:55:24
+- docs: update abstract with expanded LLM scope
+- Progress: 489 / 498 (98%)
