@@ -1956,3 +1956,7 @@
 ### Commit 489 — 2026-04-08T15:55:24
 - docs: update abstract with expanded LLM scope
 - Progress: 489 / 498 (98%)
+
+### Commit 490 — 2026-04-09T13:53:50
+- docs: revise contribution 4 - frontier + open-weight LLM
+- Progress: 490 / 498 (98%)
