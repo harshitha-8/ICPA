@@ -1960,3 +1960,7 @@
 ### Commit 490 — 2026-04-09T13:53:50
 - docs: revise contribution 4 - frontier + open-weight LLM
 - Progress: 490 / 498 (98%)
+
+### Commit 491 — 2026-04-10T11:52:16
+- chore: add README.md with project overview
+- Progress: 491 / 498 (98%)
