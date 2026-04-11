@@ -1964,3 +1964,7 @@
 ### Commit 491 — 2026-04-10T11:52:16
 - chore: add README.md with project overview
 - Progress: 491 / 498 (98%)
+
+### Commit 492 — 2026-04-11T09:50:42
+- chore: add quick start guide to README
+- Progress: 492 / 498 (98%)
