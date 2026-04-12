@@ -1968,3 +1968,7 @@
 ### Commit 492 — 2026-04-11T09:50:42
 - chore: add quick start guide to README
 - Progress: 492 / 498 (98%)
+
+### Commit 493 — 2026-04-12T07:49:08
+- chore: document requirements and dependencies
+- Progress: 493 / 498 (98%)
