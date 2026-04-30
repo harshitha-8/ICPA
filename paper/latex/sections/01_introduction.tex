@@ -1,0 +1,19 @@
+\section{Introduction}
+
+Cotton yield and harvest readiness are strongly tied to boll development, boll opening, and canopy visibility. UAV-based sensing has made field-scale cotton monitoring practical, but most operational pipelines still reduce the crop to two-dimensional counts, canopy indices, or coarse plant-height summaries. These measurements are useful, yet they do not directly answer organ-level questions: where are the bolls in three-dimensional space, how large are they, how completely are they visible, and how much does defoliation improve their recoverability?
+
+This work treats defoliation as a controlled visibility intervention rather than a nuisance condition. Pre-defoliation imagery captures cotton bolls under dense foliage and severe occlusion, while post-defoliation imagery exposes a larger fraction of boll structure. The paired flights make it possible to quantify how visibility affects detection, reconstruction, and morphology estimation.
+
+The central challenge is that open cotton bolls are difficult for classical photogrammetry. Cotton lint is bright, weakly textured, repetitive, and often partially occluded. As a result, photometric feature matching can be unstable exactly where boll-level reconstruction is needed most. The proposed system therefore uses detections from prior cotton boll counting work as object-level priors, and combines them with mask refinement, camera geometry, and semantic feature correspondences.
+
+\paragraph{Contributions.}
+This paper will make four focused contributions:
+\begin{enumerate}
+    \item A detection-guided 3D phenotyping architecture for cotton bolls from UAV imagery, designed to avoid dense manual annotation.
+    \item A pre/post-defoliation evaluation protocol that measures boll visibility, recoverability, and morphology stability.
+    \item A multi-view association and localization pipeline that links two-dimensional boll candidates across overlapping views.
+    \item A robustness-oriented evaluation covering correspondence quality, reconstruction quality, boll recovery, diameter, volume, and visibility.
+\end{enumerate}
+
+\paragraph{Scope.}
+The core contribution is computer vision and geometry. A language-model report generator may be used after morphology extraction to summarize quantitative outputs, but it is not part of the reconstruction method and is not required for the paper's main claim.

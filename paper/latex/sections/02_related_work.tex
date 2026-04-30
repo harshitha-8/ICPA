@@ -1,0 +1,17 @@
+\section{Related Work}
+
+\subsection{Cotton Boll Detection and Yield Estimation}
+
+Prior cotton monitoring studies have used UAV imagery and image-processing or deep-learning models to detect open bolls and estimate yield. The accepted prior work from this project established a low-annotation counting pipeline for pre- and post-defoliation imagery. In the present paper, that detector is reused as weak supervision: detections provide candidate boll centers and boxes, while the new contribution concerns multi-view association, 3D localization, and morphology estimation.
+
+\subsection{3D Plant Phenotyping}
+
+Three-dimensional plant phenotyping has been studied through structure-from-motion, multi-view stereo, LiDAR, neural radiance fields, and Gaussian splatting. Cotton-specific work has already shown that UAV images can support in-situ boll reconstruction and that 3D Gaussian splatting can map cotton boll and plant architecture. These papers make it important to position the present work carefully: the novelty is not simply that cotton can be reconstructed in 3D, but that detection-guided semantic correspondences are evaluated for boll-level morphology under a paired defoliation intervention.
+
+\subsection{Foundation Features for Correspondence}
+
+Classical reconstruction systems rely on local texture and photometric consistency. Cotton lint creates a difficult case because the target organ is bright and repetitive. Dense self-supervised features such as DINOv2 provide patch-level semantic representations that may remain stable when local texture is weak. This paper evaluates such features as support for multi-view boll association and reconstruction, alongside classical baselines.
+
+\subsection{Promptable Segmentation}
+
+Promptable segmentation models such as SAM and SAM2 can refine object masks from sparse prompts, points, or boxes. Here, promptable segmentation is treated as a mask-refinement stage seeded by the existing boll detector. This keeps the system scalable: only a small validation subset needs manual inspection, rather than dense annotation of thousands of bolls per image.

@@ -1,0 +1,54 @@
+\section{Method}
+
+\subsection{Problem Definition}
+
+Let $\mathcal{I}^{pre}$ and $\mathcal{I}^{post}$ denote UAV image sets captured before and after defoliation. The goal is to estimate a set of boll instances
+\begin{equation}
+\mathcal{B} = \{(\mathbf{x}_j, d_j, V_j, \nu_j, o_j)\}_{j=1}^{N},
+\end{equation}
+where $\mathbf{x}_j \in \mathbb{R}^3$ is the 3D boll center, $d_j$ is diameter, $V_j$ is volume, $\nu_j$ is visibility, and $o_j$ is occlusion.
+
+\subsection{System Overview}
+
+The architecture has eight stages: dataset audit, 2D boll detection, mask refinement, camera-pose estimation, semantic feature extraction, multi-view association, 3D localization, and morphology extraction. The detector supplies weak object priors; geometry supplies scale and pose; semantic features improve association in texture-poor regions.
+
+\subsection{Detection-Guided Candidate Generation}
+
+The existing cotton boll detector is applied to every image. For each image $I_i$, it returns candidate regions
+\begin{equation}
+\mathcal{D}_i = \{(c_{ik}, b_{ik}, a_{ik}, p_i)\}_{k=1}^{K_i},
+\end{equation}
+where $c_{ik}$ is the candidate center, $b_{ik}$ is the bounding box, $a_{ik}$ is the detected area, and $p_i$ is the inferred phase. These detections are not assumed to be perfect; they are treated as candidate proposals for later geometric filtering.
+
+\subsection{Mask Refinement}
+
+Each candidate box or center is refined into an approximate boll mask. Two modes will be evaluated: the classical morphology mask from the counting pipeline and a promptable SAM/SAM2 mask initialized from detector boxes. The output mask $M_{ik}$ provides a silhouette used for size estimation and multi-view consistency checks.
+
+\subsection{Camera Geometry and Semantic Correspondence}
+
+Camera poses are estimated with a COLMAP/SfM baseline. In parallel, dense DINOv2 features are extracted from each image. For overlapping image pairs, patch correspondences are obtained by mutual nearest-neighbor search in normalized embedding space:
+\begin{equation}
+s(u,v) =
+\frac{f_i(u)^\top f_l(v)}
+{\lVert f_i(u) \rVert_2 \lVert f_l(v) \rVert_2}.
+\end{equation}
+Matches are filtered by similarity thresholding and geometric verification.
+
+\subsection{Multi-View Boll Association}
+
+Candidate bolls are linked across views using a score that combines geometric consistency, semantic similarity, and mask agreement:
+\begin{equation}
+A(k,l) =
+\lambda_g A_g(k,l) +
+\lambda_s A_s(k,l) +
+\lambda_m A_m(k,l),
+\end{equation}
+where $A_g$ measures epipolar or reprojection consistency, $A_s$ measures DINOv2 feature similarity inside the mask, and $A_m$ measures projected mask agreement. Associations below threshold are rejected.
+
+\subsection{3D Localization and Morphology}
+
+High-confidence associated detections are triangulated to estimate boll centers. Diameter is estimated from the multi-view mask extent after converting image scale to metric scale through camera geometry. Volume is reported using two levels of rigor: an ellipsoid approximation for all high-confidence instances, and a visual-hull or point-cluster estimate where sufficient multi-view evidence exists:
+\begin{equation}
+V_j = \frac{4}{3}\pi a_j b_j c_j.
+\end{equation}
+Visibility is computed as the fraction of expected overlapping views in which the boll is detected with sufficient mask support.
