@@ -27,7 +27,7 @@ dataset:
   approx_file_size_mb: 11
 
 output:
-  root: "/Volumes/T9/tech cotton 3d/repos/ICPA/outputs"
+  root: "outputs"
   pointclouds: "pointclouds"
   meshes: "meshes"
   masks: "masks"
