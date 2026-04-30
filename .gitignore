@@ -12,6 +12,7 @@ outputs/colmap/
 outputs/pointclouds/*.ply
 outputs/meshes/
 outputs/masks/
+outputs/literature_smoke/
 logs/*.log
 *.ckpt
 *.pt
