@@ -13,6 +13,7 @@ outputs/pointclouds/*.ply
 outputs/meshes/
 outputs/masks/
 outputs/literature_smoke/
+paper/word/_qa/
 logs/*.log
 *.ckpt
 *.pt
