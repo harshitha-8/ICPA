@@ -4,13 +4,15 @@
 
 The paper should not be framed as simply "3D reconstruction of cotton bolls." That space is already active. The defensible contribution is:
 
-**Agronomist-in-the-loop semantic 3D reconstruction that uses foundation-model correspondence fields to measure cotton boll morphology under a controlled defoliation visibility intervention.**
+**Detection-guided semantic 3D cotton boll phenotyping that uses foundation-model correspondence fields to estimate boll-level count, 3D location, diameter, volume, and visibility under a controlled defoliation intervention.**
 
 This gives the work three strong axes:
 
 1. **Technical:** DINOv2/SAM2 semantic features compensate for textureless cotton lint where SIFT/SuperPoint/COLMAP degrade.
 2. **Agronomic:** pre- vs post-defoliation is not just a dataset split; it is a controlled visibility intervention that quantifies what defoliation unlocks for organ-scale phenotyping.
-3. **Decision loop:** morphology is converted into structured recommendations, with LLM outputs evaluated for expert alignment, hallucination, latency, and schema validity.
+3. **Morphological:** the system moves beyond 2D counting to estimate boll diameter, volume, visibility, occlusion, and pre/post morphology change.
+
+The LLM component is deliberately secondary. It should appear only as an optional interpretation/reporting layer after geometry and morphology have already produced quantitative measurements. It is not part of the core reconstruction algorithm.
 
 ## Closest Prior Work To Beat Or Differentiate
 
@@ -23,11 +25,11 @@ This gives the work three strong axes:
 | Semantic feature fields | **Feature 3DGS**, CVPR 2024 | Distills 2D foundation-model features into 3D Gaussian primitives for semantic tasks. | Use as conceptual support for storing/rendering semantic features in 3D; your twist is measurement-grade crop morphology rather than open-vocabulary scene editing. |
 | Dense visual features | **DINOv2**, TMLR 2024; **NeCo**, ICLR 2025 | DINOv2 provides dense self-supervised patch features; NeCo improves spatial consistency. | Use DINOv2 as the first implementation, and mention NeCo as a future/ablation backbone for correspondence stability. |
 | Segmentation | **SAM 2**, 2024 | Strong promptable image/video segmentation with memory. | Evaluate SAM2 auto vs DINO-prompted SAM2; avoid claiming SAM2 alone is novel. |
-| Agriculture LLMs | AgriVLM 2024, AgriLLM 2024, AgroGPT 2024 | LLM/VLM agriculture work exists but focuses on question answering, crop disease, or visual recognition. | Your novelty is conditioning the model on quantitative 3D morphology and evaluating recommendation reliability. |
+| Agriculture LLMs | AgriVLM 2024, AgriLLM 2024, AgroGPT 2024 | LLM/VLM agriculture work exists but focuses on question answering, crop disease, or visual recognition. | Keep this as optional decision support, not as the main novelty. |
 
 ## Research Gap Statement
 
-Existing cotton phenotyping studies have shown that UAV imagery can support boll counting, defoliation monitoring, and even 3D organ-level reconstruction. However, they remain vulnerable to three coupled failure modes: textureless open cotton lint produces weak photometric correspondences, foliage and branch occlusion cause inconsistent multi-view visibility, and downstream agronomic interpretation is usually detached from measurement uncertainty. Recent foundation models provide dense semantic features and promptable segmentation, but their use as correspondence fields for field-scale crop 3D reconstruction remains underexplored. This paper fills that gap by evaluating whether semantic correspondence improves reconstruction and morphology extraction for cotton bolls, while using defoliation as a paired visibility intervention and closing the loop through structured, evaluated agronomic reasoning.
+Existing cotton phenotyping studies have shown that UAV imagery can support boll counting, defoliation monitoring, and even 3D organ-level reconstruction. However, they remain vulnerable to three coupled failure modes: textureless open cotton lint produces weak photometric correspondences, foliage and branch occlusion cause inconsistent multi-view visibility, and 2D counts do not directly provide organ-scale morphology. Recent foundation models provide dense semantic features and promptable segmentation, but their use as correspondence fields for field-scale crop 3D reconstruction remains underexplored. This paper fills that gap by evaluating whether semantic correspondence and detection-guided multi-view association improve 3D localization and morphology extraction for cotton bolls, while using defoliation as a paired visibility intervention.
 
 ## Minimum Strong Experiment Set For The Next Few Days
 
@@ -55,20 +57,19 @@ Existing cotton phenotyping studies have shown that UAV imagery can support boll
    - Extract boll clusters with SAM masks projected into the point cloud.
    - Report diameter/volume/girth distributions plus coefficient of variation and bootstrap confidence intervals.
 
-6. **LLM loop**
-   - Do not overclaim fine-tuned LLM results unless training is actually completed.
-   - Start with zero-shot/few-shot structured prompting across 20 morphology cases.
-   - Compare open-weight models only if they can be run reproducibly; otherwise keep frontier/open-weight comparison as supplementary.
-   - Metrics: schema validity, hallucination-free rate, expert agreement, self-consistency, latency.
+6. **Optional reporting layer**
+   - Convert morphology outputs into a structured JSON/table report.
+   - Use an LLM only to summarize already-computed traits and flag uncertainty for human review.
+   - Do not make paper acceptance depend on fine-tuning or LLM novelty.
 
 ## Visuals That Will Make The Paper Feel Top-Tier
 
-1. Pipeline figure: UAV images -> DINOv2 feature field -> SAM2 boll masks -> semantic correspondences -> 3D morphology -> LLM recommendation.
+1. Pipeline figure: UAV images -> detector -> mask refinement -> DINOv2 correspondences/COLMAP poses -> multi-view association -> 3D morphology.
 2. Failure figure: SIFT/SuperPoint sparse or unstable matches on white lint versus DINOv2 semantic patch matches.
 3. Pre/post visibility panel: same field region before and after defoliation with boll mask overlays and 3D point density.
 4. Reconstruction comparison: COLMAP point cloud, DUSt3R/3DGS if available, semantic/hybrid output.
 5. Morphology figure: boll clusters with diameter axis, convex hull volume, visibility rays, and uncertainty bars.
-6. LLM evaluation figure: radar or bar chart for schema validity, expert agreement, hallucination-free rate, latency.
+6. Optional reporting figure: morphology table/JSON converted into a concise agronomist-facing summary.
 
 ## Patent-Facing Notes To Discuss With Counsel
 
@@ -77,7 +78,7 @@ Potentially protectable claims may sit around the **system and workflow**, not t
 - Using semantic feature embeddings as correspondence primitives for textureless crop-organ reconstruction.
 - A defoliation-aware visibility intervention protocol for paired 3D morphology measurement.
 - Projection of promptable 2D organ masks into semantically consistent 3D crop-organ instances.
-- A structured morphology-to-recommendation loop with expert verification and uncertainty reporting.
+- A structured morphology-to-reporting loop with expert verification and uncertainty reporting.
 
 Avoid public disclosure of any truly novel claim language before speaking with a patent attorney, because paper submission, GitHub commits, talks, or posters can affect patent timelines depending on jurisdiction.
 
@@ -87,4 +88,4 @@ Avoid public disclosure of any truly novel claim language before speaking with a
 - Add Cotton3DGaussians as a strong 3DGS comparator.
 - Add the 2026 Agronomy before/after defoliation boll extraction paper as evidence that defoliation matters, while distinguishing 2D counting from 3D morphology.
 - Reduce claims around "first benchmark" unless the benchmark definition is narrow: e.g., "first semantic-correspondence benchmark for pre/post-defoliation cotton boll 3D reconstruction from UAV imagery."
-- Keep LLM claims tied to evaluation, not novelty alone. The LLM contribution is strongest if it is constrained, structured, and audited.
+- Keep LLM claims out of the main contribution unless the geometry/morphology results are already complete. The paper should stand on 3D phenotyping first.
