@@ -1,0 +1,1505 @@
+{
+  "config_path": "/Volumes/T9/ICPA/configs/dataset_config.yaml",
+  "dataset_root": "/Volumes/T9/ICML",
+  "capture_date": "2025-09-29",
+  "conditions": {
+    "pre_defoliation": {
+      "description": "Dense canopy, occlusion-heavy, captured 09:57-10:07 local",
+      "expected_total_images": 680,
+      "observed_total_images": 680,
+      "count_delta": 0,
+      "folders": [
+        {
+          "folder": "/Volumes/T9/ICML/Part_one_pre_def_rgb",
+          "exists": true,
+          "image_count": 340,
+          "first_file": "DJI_20250929095743_0311_D.JPG",
+          "last_file": "DJI_20250929100907_0650_D.JPG",
+          "timestamp_earliest": "2025-09-29T09:57:43",
+          "timestamp_latest": "2025-09-29T10:09:07"
+        },
+        {
+          "folder": "/Volumes/T9/ICML/part 2_pre_def_rgb",
+          "exists": true,
+          "image_count": 340,
+          "first_file": "DJI_20250929093936_0722_D.JPG",
+          "last_file": "DJI_20250929095741_0310_D.JPG",
+          "timestamp_earliest": "2025-09-29T09:39:36",
+          "timestamp_latest": "2025-09-29T09:57:41"
+        }
+      ]
+    },
+    "post_defoliation": {
+      "description": "Exposed boll structures, captured 12:41-12:51 local",
+      "expected_total_images": 869,
+      "observed_total_images": 869,
+      "count_delta": 0,
+      "folders": [
+        {
+          "folder": "/Volumes/T9/ICML/Post_def_rgb_part1",
+          "exists": true,
+          "image_count": 300,
+          "first_file": "DJI_20250929124149_0029_D.JPG",
+          "last_file": "DJI_20250929125154_0329_D.JPG",
+          "timestamp_earliest": "2025-09-29T12:41:49",
+          "timestamp_latest": "2025-09-29T12:51:54"
+        },
+        {
+          "folder": "/Volumes/T9/ICML/205_Post_Def_rgb",
+          "exists": true,
+          "image_count": 203,
+          "first_file": "DJI_20250929124505_0127_D.JPG",
+          "last_file": "DJI_20250929125154_0329_D.JPG",
+          "timestamp_earliest": "2025-09-29T12:45:05",
+          "timestamp_latest": "2025-09-29T12:51:54"
+        },
+        {
+          "folder": "/Volumes/T9/ICML/part3_post_def_rgb",
+          "exists": true,
+          "image_count": 340,
+          "first_file": "DJI_20250929121455_0030_D.JPG",
+          "last_file": "DJI_20250929122615_0370_D.JPG",
+          "timestamp_earliest": "2025-09-29T12:14:55",
+          "timestamp_latest": "2025-09-29T12:26:15"
+        },
+        {
+          "folder": "/Volumes/T9/ICML/part4_post_def_rgb",
+          "exists": true,
+          "image_count": 26,
+          "first_file": "DJI_20250929121357_0001_D.JPG",
+          "last_file": "DJI_20250929121447_0026_D.JPG",
+          "timestamp_earliest": "2025-09-29T12:13:57",
+          "timestamp_latest": "2025-09-29T12:14:47"
+        }
+      ]
+    }
+  },
+  "global_duplicate_basenames": [
+    {
+      "filename": "DJI_20250929124505_0127_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124507_0128_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124509_0129_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124511_0130_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124513_0131_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124515_0132_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124517_0133_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124519_0134_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124521_0135_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124523_0136_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124525_0137_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124527_0138_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124529_0139_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124531_0140_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124533_0141_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124535_0142_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124537_0143_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124539_0144_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124541_0145_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124543_0146_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124545_0147_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124547_0148_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124549_0149_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124551_0150_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124553_0151_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124555_0152_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124557_0153_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124559_0154_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124601_0155_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124603_0156_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124605_0157_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124607_0158_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124609_0159_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124611_0160_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124613_0161_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124615_0162_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124617_0163_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124619_0164_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124621_0165_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124623_0166_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124625_0167_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124627_0168_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124629_0169_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124631_0170_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124633_0171_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124635_0172_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124637_0173_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124639_0174_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124641_0175_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124643_0176_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124645_0177_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124647_0178_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124649_0179_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124651_0180_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124653_0181_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124655_0182_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124657_0183_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124659_0184_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124701_0185_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124703_0186_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124705_0187_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124707_0188_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124709_0189_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124711_0190_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124713_0191_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124715_0192_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124717_0193_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124719_0194_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124721_0195_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124723_0196_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124725_0197_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124727_0198_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124729_0199_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124731_0200_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124733_0201_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124735_0202_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124737_0203_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124739_0204_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124741_0205_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124743_0206_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124745_0207_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124747_0208_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124749_0209_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124751_0210_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124753_0211_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124755_0212_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124757_0213_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124759_0214_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124801_0215_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124803_0216_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124805_0217_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124807_0218_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124809_0219_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124811_0220_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124813_0221_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124815_0222_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124817_0223_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124819_0224_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124821_0225_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124823_0226_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124825_0227_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124827_0228_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124829_0229_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124831_0230_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124833_0231_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124835_0232_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124837_0233_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124839_0234_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124841_0235_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124843_0236_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124845_0237_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124847_0238_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124849_0239_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124851_0240_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124853_0241_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124855_0242_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124857_0243_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124859_0244_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124901_0245_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124903_0246_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124906_0247_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124907_0248_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124909_0249_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124911_0250_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124913_0251_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124915_0252_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124917_0253_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124919_0254_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124922_0255_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124923_0256_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124925_0257_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124927_0258_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124929_0259_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124931_0260_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124933_0261_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124935_0262_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124937_0263_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124939_0264_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124942_0265_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124943_0266_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124945_0267_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124947_0268_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124949_0269_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124951_0270_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124953_0271_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124955_0272_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124957_0273_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929124959_0274_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125001_0275_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125003_0276_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125005_0277_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125008_0278_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125009_0279_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125011_0280_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125013_0281_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125015_0282_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125017_0283_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125020_0284_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125021_0285_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125024_0286_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125025_0287_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125027_0288_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125029_0289_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125031_0290_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125033_0291_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125035_0292_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125037_0293_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125039_0294_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125042_0295_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125043_0296_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125045_0297_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125047_0298_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125049_0299_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125051_0300_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125054_0301_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125056_0302_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125058_0303_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125059_0304_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125102_0305_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125103_0306_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125106_0307_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125108_0308_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125114_0309_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125116_0310_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125118_0311_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125120_0312_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125122_0313_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125124_0314_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125126_0315_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125128_0316_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125130_0317_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125132_0318_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125134_0319_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125136_0320_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125138_0321_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125140_0322_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125142_0323_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125144_0324_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125146_0325_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125148_0326_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125150_0327_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125152_0328_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    },
+    {
+      "filename": "DJI_20250929125154_0329_D.JPG",
+      "locations": [
+        "/Volumes/T9/ICML/Post_def_rgb_part1",
+        "/Volumes/T9/ICML/205_Post_Def_rgb"
+      ]
+    }
+  ],
+  "warnings": [
+    "Found 203 duplicate image basenames across configured folders."
+  ],
+  "grand_total_observed": 1549,
+  "unique_basenames": 1346
+}
