@@ -267,6 +267,11 @@ def add_section_plan(doc: Document) -> None:
     doc.add_paragraph(
         "Use author-year references following the ICPA/Precision Agriculture guidance. Include only cited and verified published or accepted works."
     )
+    add_note(
+        doc,
+        "ICPA format checkpoint",
+        "The 2026 full-paper instruction PDF requires Microsoft Word, camera-ready inline figures and tables, a maximum of 15 pages including references, and a conservative manuscript deadline of 22 May 2026."
+    )
 
 
 def main() -> None:

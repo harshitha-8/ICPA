@@ -1,32 +1,33 @@
 # ICPA 2026 Author Guidelines Summary
 
-This note records the submission constraints verified from the official International Society of Precision Agriculture author-instruction page and full-paper instruction PDF.
+This note records the submission constraints verified from the official International Society of Precision Agriculture full-paper instruction PDF supplied for the 17th ICPA and 11th ConBAP manuscript.
 
 ## Official Sources
 
-- Author instructions page: https://www.ispag.org/icpa/abstracts/instruction
 - Full paper instructions PDF: https://www.ispag.org/files/Instructions_for_Authors_Preparing_Full_Length_Papers_2026.pdf
+- Author instructions page: https://www.ispag.org/icpa/abstracts/instruction
 - Abstract management portal: https://www.ispag.org/icpa/AbstractManagement
 
 ## Paper Length And Format
 
-- Full paper length: **4-15 pages**.
+- Full paper length: **maximum 15 pages**.
 - Page count includes figures, tables, graphs, and references.
 - Format: **camera-ready**, single-spaced.
 - Final accepted upload format: **Microsoft Word only** (`.docx` or `.doc`).
 - Official template: **MS Word template**, not LaTeX.
-- Practical implication: LaTeX can be used as a drafting source, but the final proceedings file must be converted into the official Word template before submission.
+- Practical implication: the active manuscript must be Word-first. LaTeX can remain as a secondary planning source only.
 
 ## Deadlines And Registration
 
-- Full papers due: **15 June 2026** according to the ICPA author-instruction page.
-- Presenter registration is required for inclusion in the conference and proceedings.
-- Note: the linked PDF mentions 22 May 2026, while the live ICPA page states 15 June 2026. The live page should be treated as the current authority, but the author should verify the date in the abstract-management portal/email.
+- PDF manuscript deadline: **22 May 2026**.
+- The PDF says manuscripts must be submitted online by **22 May 2026** using the login instructions/password provided by email to corresponding authors.
+- Presenter/author registration should still be verified in the abstract-management portal and acceptance email.
+- Note: the live author-instruction page also mentions **15 June 2026**. For project planning, use the PDF's earlier **22 May 2026** date as the conservative internal deadline unless the conference confirms otherwise in writing.
 
 ## Submission Rules
 
 - File should be named with the abstract number and corresponding author name, e.g., `Abstract 101 John Smith.doc`.
-- Submit through the ICPA abstract-management system.
+- Submit online through the ICPA/ISPA system using the instructions provided to corresponding authors.
 - All figures, graphs, and tables must be embedded inline in the manuscript.
 - Do not embed linked spreadsheet objects.
 - No faxed submissions.
@@ -36,17 +37,34 @@ This note records the submission constraints verified from the official Internat
 - Use no more than three displayed heading levels.
 - Define abbreviations at first mention.
 - Avoid personal pronouns and royal "we"; use objective or passive technical prose.
+- Give the model/number, manufacturer, and manufacturer location for commercial equipment.
 - Use SI units; preferred length units include `mm` and `m`, not `cm`.
 - Describe completed methods in past tense.
 - Number equations sequentially.
+- Use standard mathematical notation: italic single-letter variables, upright functions/operators, and bold vectors/matrices.
 - Cite references by author and year.
 - Include only cited, published, or accepted references in the final reference list.
+- Do not use footnotes or endnotes as substitutes for references.
+- Alphabetize reference entries by the last name of the first author.
+- Journal names and book titles should be italicized.
+- Conference and journal names should be written in full.
+- For books and proceedings, include publisher and location; do not include conference location/dates.
+- Web references should include last accessed date.
+- List a maximum of the first six authors/co-authors.
 - Number tables and figures consecutively.
+- Tables must be cited in text in consecutive numerical order.
+- Table captions must explain the table components.
+- Table footnotes should use superscript lower-case letters or asterisks for statistical significance.
+- Figure lettering should use Helvetica or Arial, with final-sized lettering around 8-12 pt.
+- Avoid figure lettering effects such as shading and outline letters.
+- Do not include titles or captions inside figure artwork.
+- Figures must be cited in text in consecutive numerical order.
+- Figure parts should use lowercase letters `(a)`, `(b)`, etc.
 - Figure captions should begin with **Fig.** and describe all major elements.
 
 ## Appendix/Supplementary Guidance
 
-The official ICPA instructions do not advertise a separate appendix or supplementary-page allowance. Therefore, any appendix-like material should be assumed to count within the **15-page maximum** unless the conference organizers confirm otherwise. For this project, detailed ablations and large robustness tables should be compacted into the main paper when possible, with extra logs/code kept in the GitHub repository rather than treated as an official appendix.
+The PDF does not advertise a separate appendix or supplementary-page allowance. Therefore, any appendix-like material should be assumed to count within the **15-page maximum** unless the conference organizers confirm otherwise. For this project, detailed ablations and large robustness tables should be compacted into the main paper when possible, with extra logs/code kept in the GitHub repository rather than treated as an official appendix.
 
 ## Recommended Target For This Manuscript
 
