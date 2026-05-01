@@ -18,8 +18,6 @@ Outputs:
 
 - `reconstruction_images.csv`: selected source images, phase, folder, and local viewer-image path.
 - `camera_path_scaffold.csv`: placeholder path coordinates for the viewer contract.
-- `geometry_placeholder.ply`: empty PLY placeholder until reconstruction is solved.
 - `empty_boll_anchors.csv`: empty anchor table with the expected viewer schema.
-- `scene_manifest_scaffold.json`: first complete scene-viewer contract, ready to receive real geometry and 3D boll anchors.
 
-`colmap` was not available on this machine at run time, so the camera path is a scaffold. The next reconstruction step is to replace the scaffold with real poses from COLMAP, VGGT, MASt3R, or another pose/depth estimator.
+Generated PLY, MP4, preview images, copied input images, and scene manifests are not kept in Git because they can be recreated from the scripts. `colmap` was not available on this machine at run time, so the camera path is a scaffold. The next reconstruction step is to replace the scaffold with real poses from COLMAP, VGGT, MASt3R, or another pose/depth estimator.

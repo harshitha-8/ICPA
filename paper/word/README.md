@@ -1,6 +1,6 @@
 # Word Manuscript Workflow
 
-ICPA requires Microsoft Word for the final manuscript upload. The LaTeX files in `paper/latex/` are retained only as a drafting/reference source; the working submission manuscript should be developed in this folder.
+ICPA requires Microsoft Word for the final manuscript upload. The working submission manuscript should be developed in this folder.
 
 ## Official Constraint
 

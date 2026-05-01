@@ -12,9 +12,15 @@ outputs/colmap/
 outputs/pointclouds/*.ply
 outputs/meshes/
 outputs/masks/
+outputs/counts/**/counts_by_image.csv
 outputs/counts/**/annotated_samples/
 outputs/reconstruction_inputs/**/images/
+outputs/reconstruction_inputs/**/*.ply
+outputs/reconstruction_inputs/**/scene_manifest*.json
 outputs/videos/*_frames/
+outputs/videos/*.mp4
+outputs/videos/*.jpg
+outputs/llm_eval/sample*
 outputs/literature_smoke/
 paper/word/_qa/
 logs/*.log

@@ -15,9 +15,10 @@ Command:
 
 Outputs:
 
-- `counts_by_image.csv`: per-image count records.
 - `phase_summary.csv`: pre/post totals.
 - `folder_summary.csv`: folder-level phase summaries.
+
+The detailed `counts_by_image.csv` file is not kept in Git because it is a regenerable experiment artifact. Use the command above to recreate it locally when needed.
 
 Important note: the current inherited detector applies a `1.6x` multiplier to pre-defoliation counts. Therefore, `total_count` for pre-defoliation is adjusted count, while `total_raw_candidates` is the raw detector candidate count. This is useful for continuity with prior counting work, but the 3D paper should report both raw and adjusted values until the detector is recalibrated.
 

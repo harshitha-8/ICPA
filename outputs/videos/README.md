@@ -1,11 +1,8 @@
-# MVP Video Outputs
+# MVP Video Regeneration Notes
 
-Generated MVP scene video:
+Generated MP4/JPG artifacts are intentionally not kept in Git. They are useful for local demos but are redundant because they can be regenerated from the dataset and scripts.
 
-- `icml_dataset_mvp_scene.mp4`
-- `icml_dataset_mvp_preview.jpg`
-- `cotton_pointcloud_flythrough.mp4`
-- `cotton_pointcloud_flythrough_preview.jpg`
+## Basic Scene MVP
 
 Command:
 
@@ -26,7 +23,7 @@ ffmpeg -y \
   outputs/videos/icml_dataset_mvp_scene.mp4
 ```
 
-The video is an MVP scaffold. It shows selected reconstruction frames and a camera-path sketch. It does not claim solved metric 3D reconstruction yet.
+This video is a scaffold. It shows selected reconstruction frames and a camera-path sketch. It does not claim solved metric 3D reconstruction.
 
 ## Cotton Point-Cloud Flythrough
 
@@ -54,4 +51,4 @@ ffmpeg -y \
   outputs/videos/cotton_pointcloud_flythrough.mp4
 ```
 
-This video uses 147,000 colored point samples and 158 candidate boll anchors. It is a 2.5D visual reconstruction scaffold, not a final metric SfM/Gaussian-splat result.
+This video uses colored point samples and candidate boll anchors. It is a 2.5D visual reconstruction scaffold, not a final metric SfM/Gaussian-splat result. Keep the script and command; do not commit the generated MP4, preview JPG, frames, or PLY unless a final supplementary artifact is explicitly selected.

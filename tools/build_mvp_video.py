@@ -64,7 +64,8 @@ def draw_path_panel(canvas: np.ndarray, idx: int, total: int, phase: str) -> Non
 
 
 def make_slide(row: dict[str, str], idx: int, total: int, width: int, height: int) -> np.ndarray:
-    image_path = Path(row["viewer_image"] or row["source_image"])
+    candidate = Path(row["viewer_image"]) if row.get("viewer_image") else None
+    image_path = candidate if candidate is not None and candidate.exists() else Path(row["source_image"])
     bgr = cv2.imread(str(image_path))
     if bgr is None:
         raise RuntimeError(f"Could not read {image_path}")

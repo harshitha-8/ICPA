@@ -46,7 +46,10 @@ def read_manifest(path: Path, limit: int) -> list[dict[str, str]]:
 
 
 def image_path(row: dict[str, str]) -> Path:
-    return Path(row["viewer_image"] or row["source_image"])
+    viewer = Path(row["viewer_image"]) if row.get("viewer_image") else None
+    if viewer is not None and viewer.exists():
+        return viewer
+    return Path(row["source_image"])
 
 
 def resize_for_scene(img: np.ndarray, width: int) -> np.ndarray:
