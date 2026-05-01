@@ -17,6 +17,8 @@ evaluation_protocol.py
   -> table-ready metrics for robustness experiments
 scene_viewer_manifest.py
   -> export reconstructed scenes, camera paths, and boll anchors for 3D inspection
+llm_reporting_eval.py
+  -> score post-measurement LLM reports for schema validity and unsupported claims
 ```
 
 The code in this folder should remain small, readable, and paper-facing. Heavy production pipelines can stay under `pipeline/`.

@@ -1,0 +1,7 @@
+phase,folder,images,total_count,total_raw_candidates,mean_count,mean_raw_candidates
+post,205_Post_Def_rgb,203,650239,650239,3203.148,3203.148
+post,Post_def_rgb_part1,300,947845,947845,3159.483,3159.483
+post,part3_post_def_rgb,340,1026108,1026108,3017.965,3017.965
+post,part4_post_def_rgb,26,74727,74727,2874.115,2874.115
+pre,Part_one_pre_def_rgb,340,1401825,876146,4123.015,2576.900
+pre,part 2_pre_def_rgb,340,1512795,945493,4449.397,2780.862
