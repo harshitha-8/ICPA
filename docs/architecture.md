@@ -12,6 +12,7 @@ Pre/Post UAV RGB images
   -> 2D cotton boll detection from prior accepted work
   -> detection-guided mask refinement
   -> COLMAP/SfM camera poses and scene reconstruction
+  -> optional 3D Gaussian Splatting reconstruction
   -> DINOv2 semantic feature correspondences
   -> multi-view boll association
   -> 3D boll localization
@@ -29,6 +30,7 @@ Pre/Post UAV RGB images
 | 2D boll detection | RGB images | Candidate boll boxes, centers, counts | Reuse prior accepted detector and avoid dense manual annotation. |
 | Mask refinement | Candidate boxes/centers | Approximate boll masks | Convert detections into silhouettes for geometry and size estimation. |
 | Camera geometry | UAV image sequence | Camera intrinsics/extrinsics, sparse/dense reconstruction | Establish the metric 3D frame. |
+| 3DGS reconstruction | Camera poses and images | Field/plant Gaussian scene | Provide high-fidelity rendering and a comparator to point-cloud reconstruction. |
 | Semantic matching | Image pairs, DINOv2 features | Robust correspondences in texture-poor regions | Compensate for weak photometric texture on cotton lint. |
 | Multi-view association | Detections, masks, poses, semantic features | Same-boll tracks across views | Identify which 2D detections correspond to the same physical boll. |
 | 3D localization | Multi-view tracks and poses | Boll centers and 3D clusters | Place bolls into the reconstructed field/canopy. |
@@ -71,8 +73,9 @@ Recommended implementation path:
 video/images
   -> frame sampling and blur filtering
   -> COLMAP or VGGT/MASt3R camera geometry
-  -> dense point cloud or Gaussian splat training
+  -> dense point cloud or Gaussian-splat training
   -> boll detections projected into 3D
+  -> cross-view clustering to remove duplicate bolls
   -> viewer export with camera path and semantic anchors
 ```
 

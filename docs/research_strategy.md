@@ -89,3 +89,13 @@ Avoid public disclosure of any truly novel claim language before speaking with a
 - Add the 2026 Agronomy before/after defoliation boll extraction paper as evidence that defoliation matters, while distinguishing 2D counting from 3D morphology.
 - Reduce claims around "first benchmark" unless the benchmark definition is narrow: e.g., "first semantic-correspondence benchmark for pre/post-defoliation cotton boll 3D reconstruction from UAV imagery."
 - Keep LLM claims out of the main contribution unless the geometry/morphology results are already complete. The paper should stand on 3D phenotyping first.
+
+## Updated Differentiation After Near-Reference Review
+
+The near-reference review makes the contribution boundary sharper:
+
+- The 2024 UAV CCO paper already establishes field-scale UAV 3D point-cloud cotton boll phenotyping.
+- Cotton3DGaussians already establishes single-plant 3DGS plus 2D mask projection and cross-view clustering for boll mapping.
+- Our defensible gap is paired pre/post-defoliation UAV imagery with detection-guided semantic multi-view association, visibility-change analysis, and field-scale morphology uncertainty.
+
+Therefore, the paper should frame 3DGS as a reconstruction/viewer baseline and avoid claiming novelty from 3DGS alone. The key novelty should be the **defoliation-aware, detection-guided semantic 3D phenotyping protocol**.
