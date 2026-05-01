@@ -158,10 +158,19 @@ def add_front_matter(doc: Document) -> None:
 def add_section_plan(doc: Document) -> None:
     doc.add_heading("1 Introduction", level=1)
     doc.add_paragraph(
-        "This section should motivate why cotton boll analysis must move beyond 2D counting. It should introduce "
-        "defoliation as a visibility intervention, explain why textureless cotton lint challenges classical reconstruction, "
-        "and state the exact contributions: detection-guided 3D localization, morphology estimation, pre/post evaluation, "
-        "and robustness analysis."
+        "This section should motivate why cotton boll analysis must move beyond 2D counting while also avoiding "
+        "overclaims. Prior UAV cotton reconstruction and Cotton3DGaussians already show that cotton bolls can be "
+        "reconstructed in 3D under suitable capture conditions. The introduction should therefore frame this paper "
+        "around a narrower and stronger gap: paired pre- and post-defoliation UAV imagery, visibility-conditioned "
+        "boll morphology, and detection-guided semantic association under field-scale occlusion."
+    )
+    doc.add_paragraph(
+        "Proposed contribution wording: (i) a paired pre/post-defoliation UAV protocol for visibility-aware cotton "
+        "boll phenotyping; (ii) detection-guided semantic multi-view association that reduces dense annotation; "
+        "(iii) high-confidence boll morphology estimates including 3D center, diameter or length proxy, volume proxy, "
+        "visibility, and occlusion; (iv) a field-scale reconstruction viewer with semantic boll anchors; and "
+        "(v) an evaluated MoE/LLM reporting layer that converts measured morphology into structured agronomic "
+        "recommendations without computing the geometry."
     )
     add_note(
         doc,
@@ -175,16 +184,28 @@ def add_section_plan(doc: Document) -> None:
         "foundation-model features for correspondence; and promptable segmentation. The closest prior work must be "
         "treated directly, especially UAV-based cotton boll 3D reconstruction and Cotton3DGaussians."
     )
-
-    doc.add_heading("3 Method", level=1)
-    doc.add_paragraph(
-        "The method section should be modular: dataset audit, 2D detector prior, mask refinement, camera geometry, "
-        "DINOv2 correspondence, multi-view association, 3D localization, and morphology extraction. The LLM/reporting "
-        "component should remain optional and downstream."
-    )
     add_table(
         doc,
         "Table 1",
+        "Closest-prior contrast. The final manuscript should cite the two near papers directly and avoid claiming novelty from generic 3D reconstruction alone.",
+        ["Work", "Capture", "3D method", "Boll traits", "Gap left for this paper"],
+        [
+            ["UAV cotton 3D reconstruction", "UAV CCO/nadir", "Photogrammetric point cloud", "Count, volume, yield relation", "No paired pre/post visibility intervention or semantic association focus"],
+            ["Cotton3DGaussians", "Single-plant 360 smartphone", "3D Gaussian Splatting + mask projection", "Count, volume, plant architecture", "Not field-scale paired UAV defoliation; no MoE reporting evaluation"],
+            ["This work", "Paired pre/post UAV", "Detection-guided geometry/3DGS + semantic association", "Count, center, diameter/length proxy, volume proxy, visibility", "Visibility-aware field-scale morphology under defoliation"],
+        ],
+        widths=[1.25, 1.2, 1.55, 1.35, 1.95],
+    )
+
+    doc.add_heading("3 Method", level=1)
+    doc.add_paragraph(
+        "The method section should be modular: dataset audit, 2D detector prior, mask refinement, camera geometry or "
+        "3D Gaussian Splatting, DINOv2 correspondence, multi-view association, 3D localization, and morphology extraction. "
+        "The LLM/reporting component should remain optional and downstream."
+    )
+    add_table(
+        doc,
+        "Table 2",
         "Architecture modules and expected outputs. This table should stay early in the method section to keep the system readable.",
         ["Module", "Input", "Output", "Purpose"],
         [
@@ -192,10 +213,17 @@ def add_section_plan(doc: Document) -> None:
             ["2D detection", "RGB image", "Boxes, centers, count prior", "Reuse prior accepted counting work"],
             ["Mask refinement", "Boxes/centers", "Approx. silhouettes", "Support geometry and size estimation"],
             ["Geometry", "Image sequence", "Camera poses, point cloud", "Establish metric 3D frame"],
+            ["3DGS/viewer", "Poses and images", "Gaussian/point scene", "Visualize and compare reconstruction quality"],
             ["Association", "Detections, poses, features", "Boll tracks", "Link same boll across views"],
-            ["Morphology", "3D tracks", "Diameter, volume, visibility", "Deliver phenotyping measurements"],
+            ["Morphology", "3D tracks", "Diameter/length, volume, visibility", "Deliver high-confidence phenotyping measurements"],
+            ["MoE reporting", "Morphology JSON", "Structured report", "Evaluate decision support without changing geometry"],
         ],
         widths=[1.05, 1.25, 1.35, 2.35],
+    )
+    add_note(
+        doc,
+        "Measurement boundary",
+        "Report diameter, length, and volume only for high-confidence bolls with sufficient view support, scale calibration, and mask consistency. Whole-field morphology should include coverage and uncertainty."
     )
 
     doc.add_heading("4 Experiments", level=1)
@@ -205,7 +233,7 @@ def add_section_plan(doc: Document) -> None:
     )
     add_table(
         doc,
-        "Table 2",
+        "Table 3",
         "Main reconstruction and boll recovery comparison. Replace TBD values only with measured results.",
         ["Category", "Method", "Registered", "Points (K)", "RC up", "BRR up"],
         [
@@ -219,7 +247,7 @@ def add_section_plan(doc: Document) -> None:
     )
     add_table(
         doc,
-        "Table 3",
+        "Table 4",
         "Robustness grid for detection-guided 3D boll phenotyping.",
         ["Block", "Variant", "BRR up", "Diam. MAE", "Vol. err.", "Visibility"],
         [
@@ -236,18 +264,33 @@ def add_section_plan(doc: Document) -> None:
     )
     add_table(
         doc,
-        "Table 4",
+        "Table 5",
         "Pre- and post-defoliation morphology statistics.",
-        ["Trait", "Pre mean +/- SD", "Post mean +/- SD", "Delta", "Effect", "p"],
+        ["Trait", "Pre mean +/- SD", "Post mean +/- SD", "Delta", "Coverage", "p"],
         [
             ["Boll count", "TBD", "TBD", "TBD", "TBD", "TBD"],
             ["3D recovered bolls", "TBD", "TBD", "TBD", "TBD", "TBD"],
             ["Diameter (mm)", "TBD", "TBD", "TBD", "TBD", "TBD"],
+            ["Length (mm)", "TBD", "TBD", "TBD", "TBD", "TBD"],
             ["Volume (mm3)", "TBD", "TBD", "TBD", "TBD", "TBD"],
             ["Visibility", "TBD", "TBD", "TBD", "TBD", "TBD"],
             ["Occlusion", "TBD", "TBD", "TBD", "TBD", "TBD"],
         ],
         widths=[1.15, 1.1, 1.1, 0.65, 0.65, 0.45],
+    )
+    add_table(
+        doc,
+        "Table 6",
+        "MoE/LLM agronomic reporting ablation. The LLM receives only measured morphology JSON and is evaluated separately from geometry.",
+        ["Model family", "Model", "Schema", "Faithful", "Unsupported", "Latency"],
+        [
+            ["Dense reasoning", "Qwen3-32B", "TBD", "TBD", "TBD", "TBD"],
+            ["MoE reasoning", "Qwen3-30B-A3B", "TBD", "TBD", "TBD", "TBD"],
+            ["Classic MoE", "Mixtral/DeepSeek MoE", "TBD", "TBD", "TBD", "TBD"],
+            ["Agriculture", "AgriLLaMA-7B", "TBD", "TBD", "TBD", "TBD"],
+            ["Multimodal", "Gemma/Mistral/InternVL", "TBD", "TBD", "TBD", "TBD"],
+        ],
+        widths=[1.1, 1.5, 0.65, 0.7, 0.85, 0.65],
     )
 
     doc.add_heading("5 Discussion", level=1)
@@ -255,6 +298,12 @@ def add_section_plan(doc: Document) -> None:
         "Discuss what was reliable, what failed, and what must be treated as high-confidence subset morphology rather "
         "than whole-field perfect reconstruction. This is where duplicate frames, wind, weak baselines, scale uncertainty, "
         "and repeated white lint texture should be handled frankly."
+    )
+    doc.add_paragraph(
+        "The discussion should explicitly state how the work differs from the two closest references: the UAV CCO paper "
+        "establishes field-scale 3D cotton boll point-cloud phenotyping, and Cotton3DGaussians establishes single-plant "
+        "3DGS with mask projection. The present work should be defended through the paired defoliation protocol, "
+        "visibility-conditioned morphology, semantic association, and evaluated MoE reporting loop."
     )
 
     doc.add_heading("6 Conclusion", level=1)
