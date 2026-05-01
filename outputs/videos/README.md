@@ -52,3 +52,26 @@ ffmpeg -y \
 ```
 
 This video uses colored point samples and candidate boll anchors. It is a 2.5D visual reconstruction scaffold, not a final metric SfM/Gaussian-splat result. Keep the script and command; do not commit the generated MP4, preview JPG, frames, or PLY unless a final supplementary artifact is explicitly selected.
+
+## Pre/Post Measurement Reconstruction Video
+
+Command:
+
+```bash
+/Users/harshu/miniconda3/bin/python tools/build_prepost_measurement_video.py \
+  --manifest outputs/reconstruction_inputs/icml_dataset_sample/reconstruction_images.csv \
+  --out-video outputs/videos/prepost_measurement_reconstruction.mp4 \
+  --frames-dir outputs/videos/prepost_measurement_reconstruction_frames \
+  --preview outputs/videos/prepost_measurement_reconstruction_preview.jpg \
+  --fps 15
+
+ffmpeg -y \
+  -framerate 15 \
+  -i outputs/videos/prepost_measurement_reconstruction_frames/frame_%05d.jpg \
+  -c:v libx264 \
+  -pix_fmt yuv420p \
+  -movflags +faststart \
+  outputs/videos/prepost_measurement_reconstruction.mp4
+```
+
+This is the current best teaser artifact: real pre/post UAV frames, monochrome styling, detection-derived boll anchors, a 2.5D reconstruction flythrough, and proxy diameter/volume statistics. The measurement panel is intentionally labeled as proxy because centimeter-scale output requires GSD or field-scale calibration.
