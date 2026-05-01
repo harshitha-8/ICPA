@@ -75,3 +75,28 @@ ffmpeg -y \
 ```
 
 This is the current best teaser artifact: real pre/post UAV frames, monochrome styling, detection-derived boll anchors, a 2.5D reconstruction flythrough, and proxy diameter/volume statistics. The measurement panel is intentionally labeled as proxy because centimeter-scale output requires GSD or field-scale calibration.
+
+## Realistic Pre/Post Splat-Style Video
+
+Command:
+
+```bash
+/Users/harshu/miniconda3/bin/python tools/build_realistic_prepost_splat_video.py \
+  --manifest outputs/reconstruction_inputs/icml_dataset_sample/reconstruction_images.csv \
+  --out-video outputs/videos/realistic_prepost_splat_reconstruction.mp4 \
+  --frames-dir outputs/videos/realistic_prepost_splat_reconstruction_frames \
+  --preview outputs/videos/realistic_prepost_splat_reconstruction_preview.jpg \
+  --fps 15 \
+  --image-width 1100 \
+  --stride 3
+
+ffmpeg -y \
+  -framerate 15 \
+  -i outputs/videos/realistic_prepost_splat_reconstruction_frames/frame_%05d.jpg \
+  -c:v libx264 \
+  -pix_fmt yuv420p \
+  -movflags +faststart \
+  outputs/videos/realistic_prepost_splat_reconstruction.mp4
+```
+
+This version avoids artificial anchors and black backgrounds. It keeps real UAV texture visible and uses image-derived depth parallax for a more realistic splat-style MVP. It is still not a substitute for calibrated 3DGS.
