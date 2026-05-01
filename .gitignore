@@ -12,6 +12,8 @@ outputs/colmap/
 outputs/pointclouds/*.ply
 outputs/meshes/
 outputs/masks/
+outputs/counts/**/annotated_samples/
+outputs/reconstruction_inputs/**/images/
 outputs/literature_smoke/
 paper/word/_qa/
 logs/*.log
