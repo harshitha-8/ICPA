@@ -49,6 +49,28 @@ This six-model set gives a clean ablation:
 
 If compute is tight, use four models: Qwen3-32B, Mistral Small 3.1, AgriLLaMA-7B, and InternVL3-8B. That still covers reasoning, efficient multimodal, agriculture-domain adaptation, and visual grounding.
 
+## MoE Models To Include
+
+Mixture-of-experts models are worth adding because they test a different scaling mechanism: many total parameters, fewer active parameters per token. That is relevant for this project because the reporting layer may need strong reasoning while still controlling latency/cost.
+
+| MoE role | Candidate model | Why it is useful | Suggested comparison |
+|---|---|---|---|
+| Efficient MoE reasoning | `Qwen/Qwen3-30B-A3B` | Qwen-family MoE with about 3B activated parameters; useful for testing whether sparse activation gives strong schema-following at lower runtime. | Compare against dense `Qwen/Qwen3-32B`. |
+| Large MoE reasoning | `Qwen/Qwen3-235B-A22B` | Stronger Qwen MoE option when hosted inference is available; useful upper-bound open-weight result. | Compare against Qwen3-32B and DeepSeek-R1-Distill. |
+| Reasoning MoE upper bound | `deepseek-ai/DeepSeek-R1` or `deepseek-ai/DeepSeek-V3` | Large MoE models with strong reasoning/coding/reporting behavior; useful if API or server compute is available. | Use as upper-bound reporting model. |
+| Classic Apache MoE baseline | `mistralai/Mixtral-8x7B-Instruct-v0.1` or `mistralai/Mixtral-8x22B-Instruct-v0.1` | Clean, widely known MoE baseline from Mistral; Apache-2.0 and useful for reviewer familiarity. | Compare against dense Mistral Small 3.1. |
+| Open MoE research baseline | `allenai/OLMoE-1B-7B-0924-Instruct` | Smaller research MoE; useful as low-resource sparse baseline. | Latency and schema validity baseline. |
+
+Best practical MoE ablation:
+
+1. Dense reasoning: `Qwen/Qwen3-32B`
+2. Sparse reasoning: `Qwen/Qwen3-30B-A3B`
+3. Dense multimodal: `google/gemma-3-27b-it`
+4. Sparse/classic MoE: `mistralai/Mixtral-8x7B-Instruct-v0.1`
+5. Agriculture-specific: `agriLLM/agriLLaMA-7B`
+
+This lets the table test dense vs sparse, general vs agriculture-domain, and text-only vs multimodal.
+
 ## Why These Models Fit This Project
 
 The project needs structured agronomic interpretation, not generic chat. The LLM receives a JSON/table like:
@@ -110,6 +132,7 @@ The safest paper claim is:
 - Llama 3.3 70B is a strong text-only baseline with 128K context and strong reported reasoning benchmarks, but uses a custom Llama license.
 - AgriLLaMA-style AgriLLM checkpoints are valuable even if they are smaller, because they test domain adaptation directly.
 - DeepSeek-R1 distill models are useful as reasoning-specific baselines, especially for uncertainty and evidence tracing.
+- MoE models such as Qwen3-A3B/A22B, DeepSeek-V3/R1, Mixtral, and OLMoE let the ablation ask whether sparse activation improves the accuracy-latency tradeoff for structured agronomic reporting.
 - Phi-4, InternVL3, Molmo, and LLaVA-OneVision are useful if the experiment includes frame-level qualitative interpretation. They should not replace geometry for diameter or volume.
 - Recent agriculture benchmarks such as AgriBench, AgMMU, AgroBench, and AgriChat show that agriculture remains a difficult domain for general VLMs/LLMs, especially fine-grained perception, factual grounding, and expert-level decision support. That supports our choice to use LLMs only after the measured geometry has already been computed.
 - Reddit/LocalLLaMA discussions are useful for operational signs such as local latency, quantization, and hallucination anecdotes, but they should not be cited as scientific evidence in the paper. X searches did not return reliable indexed evidence for the target agriculture/model queries during this pass.
@@ -127,6 +150,13 @@ The safest paper claim is:
 - OpenGVLab/InternVL3-8B model card: https://huggingface.co/OpenGVLab/InternVL3-8B
 - allenai/Molmo-7B-D-0924 model card: https://huggingface.co/allenai/Molmo-7B-D-0924
 - LLaVA-OneVision model card: https://huggingface.co/llava-hf/llava-onevision-qwen2-7b-ov-hf
+- Qwen/Qwen3-30B-A3B model card: https://huggingface.co/Qwen/Qwen3-30B-A3B
+- Qwen/Qwen3-235B-A22B model card: https://huggingface.co/Qwen/Qwen3-235B-A22B
+- deepseek-ai/DeepSeek-R1 model card: https://huggingface.co/deepseek-ai/DeepSeek-R1
+- deepseek-ai/DeepSeek-V3 model card: https://huggingface.co/deepseek-ai/DeepSeek-V3
+- mistralai/Mixtral-8x7B-Instruct-v0.1 model card: https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1
+- mistralai/Mixtral-8x22B-Instruct-v0.1 model card: https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1
+- allenai/OLMoE-1B-7B-0924-Instruct model card: https://huggingface.co/allenai/OLMoE-1B-7B-0924-Instruct
 - AgriBench: https://arxiv.org/abs/2412.00465
 - AgMMU: https://arxiv.org/abs/2504.10568
 - AgroBench: https://arxiv.org/abs/2507.20519
