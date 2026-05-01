@@ -15,6 +15,8 @@ outputs/masks/
 outputs/literature_smoke/
 paper/word/_qa/
 logs/*.log
+tmp_pycache/
+tmp_video_frames/
 *.ckpt
 *.pt
 *.pth
