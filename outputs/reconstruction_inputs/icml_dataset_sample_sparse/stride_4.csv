@@ -1,0 +1,7 @@
+frame_index,source_image,phase,folder,viewer_image,sparse_split,split_frame_index
+0,/Volumes/T9/ICML/205_Post_Def_rgb/DJI_20250929125144_0324_D.JPG,post,205_Post_Def_rgb,outputs/reconstruction_inputs/icml_dataset_sample/images/00000_post_DJI_20250929125144_0324_D.JPG,stride_4,0
+8,/Volumes/T9/ICML/Post_def_rgb_part1/DJI_20250929125144_0324_D.JPG,post,Post_def_rgb_part1,outputs/reconstruction_inputs/icml_dataset_sample/images/00008_post_DJI_20250929125144_0324_D.JPG,stride_4,1
+16,/Volumes/T9/ICML/part3_post_def_rgb/DJI_20250929121717_0101_D.JPG,post,part3_post_def_rgb,outputs/reconstruction_inputs/icml_dataset_sample/images/00016_post_DJI_20250929121717_0101_D.JPG,stride_4,2
+20,/Volumes/T9/ICML/part4_post_def_rgb/DJI_20250929121413_0009_D.JPG,post,part4_post_def_rgb,outputs/reconstruction_inputs/icml_dataset_sample/images/00020_post_DJI_20250929121413_0009_D.JPG,stride_4,3
+4,/Volumes/T9/ICML/Part_one_pre_def_rgb/DJI_20250929100533_0546_D.JPG,pre,Part_one_pre_def_rgb,outputs/reconstruction_inputs/icml_dataset_sample/images/00004_pre_DJI_20250929100533_0546_D.JPG,stride_4,4
+12,/Volumes/T9/ICML/part 2_pre_def_rgb/DJI_20250929094759_0019_D.JPG,pre,part 2_pre_def_rgb,outputs/reconstruction_inputs/icml_dataset_sample/images/00012_pre_DJI_20250929094759_0019_D.JPG,stride_4,5

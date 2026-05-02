@@ -78,6 +78,25 @@ Add one robustness table or appendix table with:
 | Part/organ structure | boll/canopy/soil/branch separability | adapts part-level 3D evaluation to crop organs |
 | Long-tail robustness | pre/post, dense canopy, exposed lint, shadowed rows | shows the method survives field variability |
 
+## Sparse-View Robustness Add-On
+
+The MegaDepth-X thread is useful because it reminds us to evaluate pose/depth
+quality under sparse and messy imagery, not only on cherry-picked dense
+sequences. For cotton UAV reconstruction, add:
+
+| Split | Example manifest | Expected result |
+|---|---|---|
+| Dense | every selected frame | upper-bound reconstruction and morphology |
+| 2x sparse | every second frame | mild acquisition-budget reduction |
+| 4x sparse | every fourth frame | stress test for row repetition and weak lint texture |
+| Balanced sparse | equal frames per pre/post folder | fair pre/post defoliation comparison |
+
+Run each split through the same reconstruction backend and report registered
+images, point density, boll recovery, median view support, and diameter/volume
+variance. The goal is to show that the method is not merely a pretty viewer, but
+a pipeline whose geometric and organ-level behavior can be measured as view
+coverage changes.
+
 ## Closest-Prior Contrast Paragraph
 
 The manuscript can use this positioning:

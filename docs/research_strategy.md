@@ -22,6 +22,7 @@ The LLM component is deliberately secondary. It should appear only as an optiona
 | Cotton 3DGS | **Cotton3DGaussians**, Computers and Electronics in Agriculture 2025 | Uses 3D Gaussian Splatting, SAM/YOLO masks, and LiDAR comparison for boll number/volume. | Include 3DGS as a visual/reconstruction baseline or discussion. Emphasize field-scale UAV, textureless-lint matching failure, and foundation-model feature alignment. |
 | Defoliation boll extraction | **Cotton Boll Extraction and Boll Number Estimation from UAV RGB Imagery Before and After Defoliation**, Agronomy 2026 | Directly studies before/after defoliation and boll counting from RGB imagery. | This strengthens the agronomic motivation. Differentiate by moving from 2D extraction/counting to 3D morphology and visibility-aware reconstruction. |
 | General 3D foundation models | **DUSt3R**, CVPR 2024; **MASt3R**, ECCV 2024 | State-of-the-art dense matching/reconstruction without classical SfM assumptions. | Benchmark on a subset if feasible. If not, cite as the top-tier foundation-model reconstruction line and explain why crop-scale evaluation is still missing. |
+| Sparse-view reconstruction | **MegaDepth-X**, 2026 | Cleaned depth/pose collections for long-tail Internet photo reconstruction and sparse-view evaluation. | Borrow the evaluation idea: dense vs sparse UAV frame subsets, held-out consistency, and pose/depth cleanliness. It is not a crop dataset. |
 | Semantic feature fields | **Feature 3DGS**, CVPR 2024 | Distills 2D foundation-model features into 3D Gaussian primitives for semantic tasks. | Use as conceptual support for storing/rendering semantic features in 3D; your twist is measurement-grade crop morphology rather than open-vocabulary scene editing. |
 | 3D benchmark design | **HY3D-Bench**, Tencent Hunyuan3D 2026 | Large-scale 3D asset benchmark with cleaned geometry, sampled points, multi-view renderings, and part-level structure. | Use as evaluation inspiration only: standardized point sampling, multi-view consistency, and organ/part-level structure. It is not a cotton baseline. |
 | Dense visual features | **DINOv2**, TMLR 2024; **NeCo**, ICLR 2025 | DINOv2 provides dense self-supervised patch features; NeCo improves spatial consistency. | Use DINOv2 as the first implementation, and mention NeCo as a future/ablation backbone for correspondence stability. |
@@ -47,6 +48,7 @@ Existing cotton phenotyping studies have shown that UAV imagery can support boll
    - Compare SIFT, ORB, SuperPoint/SuperGlue if available, DINOv2-S/B/L.
    - Metrics: matches per pair, RANSAC inlier ratio, reprojection error, and match survival across 3-view windows.
    - This is the fastest high-value result because it directly validates the main hypothesis.
+   - Add a sparse-view stress test: use every frame, every second frame, every fourth frame, and a phase-balanced sparse subset. Report registration and morphology degradation.
 
 4. **Segmentation benchmark**
    - Manually annotate 30-50 images per condition if time is tight.

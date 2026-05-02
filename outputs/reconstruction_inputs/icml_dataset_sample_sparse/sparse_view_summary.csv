@@ -1,0 +1,31 @@
+split,phase,folder,num_frames
+stride_1,post,205_Post_Def_rgb,4
+stride_1,post,Post_def_rgb_part1,4
+stride_1,post,part3_post_def_rgb,4
+stride_1,post,part4_post_def_rgb,4
+stride_1,pre,Part_one_pre_def_rgb,4
+stride_1,pre,part 2_pre_def_rgb,4
+stride_2,post,205_Post_Def_rgb,2
+stride_2,post,Post_def_rgb_part1,2
+stride_2,post,part3_post_def_rgb,2
+stride_2,post,part4_post_def_rgb,2
+stride_2,pre,Part_one_pre_def_rgb,2
+stride_2,pre,part 2_pre_def_rgb,2
+stride_4,post,205_Post_Def_rgb,1
+stride_4,post,Post_def_rgb_part1,1
+stride_4,post,part3_post_def_rgb,1
+stride_4,post,part4_post_def_rgb,1
+stride_4,pre,Part_one_pre_def_rgb,1
+stride_4,pre,part 2_pre_def_rgb,1
+stride_8,post,205_Post_Def_rgb,1
+stride_8,post,Post_def_rgb_part1,1
+stride_8,post,part3_post_def_rgb,1
+stride_8,post,part4_post_def_rgb,1
+stride_8,pre,Part_one_pre_def_rgb,1
+stride_8,pre,part 2_pre_def_rgb,1
+balanced_4_per_group,post,205_Post_Def_rgb,4
+balanced_4_per_group,post,Post_def_rgb_part1,4
+balanced_4_per_group,post,part3_post_def_rgb,4
+balanced_4_per_group,post,part4_post_def_rgb,4
+balanced_4_per_group,pre,Part_one_pre_def_rgb,4
+balanced_4_per_group,pre,part 2_pre_def_rgb,4
