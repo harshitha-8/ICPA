@@ -30,9 +30,12 @@ ground-control scale validation is added to the reconstruction workflow.
 
 Current proxy measurement logic:
 
+- raw detector candidates are filtered into a measurement-ready subset;
+- white lint fraction increases extraction confidence;
+- green canopy fraction penalizes leaf-heavy boxes;
 - candidate diameter is estimated from the detector bounding-box width/height;
 - diameter in centimeters is `diameter_px * cm_per_pixel`;
 - volume is a spherical proxy from that diameter;
 - visibility is the contour area divided by bounding-box area;
-- the gallery is sorted by visibility and depth score so reviewers can inspect
-  where the detector is confident and where canopy occlusion causes failure.
+- the gallery is sorted by extraction confidence so reviewers can inspect where
+  the detector is reliable and where canopy occlusion causes failure.

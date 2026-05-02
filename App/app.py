@@ -164,7 +164,7 @@ INDEX_HTML = r"""<!doctype html>
     .metric span { color: var(--muted); font-size: 12px; }
     .grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       margin-bottom: 12px;
     }
@@ -179,7 +179,7 @@ INDEX_HTML = r"""<!doctype html>
       object-fit: contain;
     }
     canvas { cursor: grab; }
-    .viewer { grid-column: span 2; }
+    .viewer { grid-column: span 3; }
     .crop-gallery {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -245,8 +245,8 @@ INDEX_HTML = r"""<!doctype html>
     <section>
       <label for="phase">Phase</label>
       <select id="phase">
+        <option value="post" selected>Post-defoliation</option>
         <option value="pre">Pre-defoliation</option>
-        <option value="post">Post-defoliation</option>
       </select>
 
       <label for="imageSelect">Dataset image</label>
@@ -273,7 +273,8 @@ INDEX_HTML = r"""<!doctype html>
 
       <div class="grid">
         <div><div class="panel-title">Input frame</div><img id="inputImage" alt="input frame" /></div>
-        <div><div class="panel-title">Detector overlay</div><img id="overlayImage" alt="detector overlay" /></div>
+        <div><div class="panel-title">Raw detector overlay</div><img id="overlayImage" alt="detector overlay" /></div>
+        <div><div class="panel-title">Measurement-ready extraction</div><img id="extractionImage" alt="extraction overlay" /></div>
         <div><div class="panel-title">Morphology depth</div><img id="depthImage" alt="depth field" /></div>
         <div class="viewer"><div class="panel-title">Interactive point-cloud view</div><canvas id="cloudCanvas" width="920" height="520"></canvas></div>
         <div>
@@ -282,10 +283,10 @@ INDEX_HTML = r"""<!doctype html>
         </div>
       </div>
 
-      <div class="panel-title">Extracted cotton-boll candidates, strongest 36 by visibility/depth</div>
+      <div class="panel-title">Extracted cotton-boll candidates, strongest 36 by extraction confidence</div>
       <div class="crop-gallery" id="cropGallery"></div>
 
-      <div class="panel-title">Boll proxy measurements, top 75 candidates by visibility/depth</div>
+      <div class="panel-title">Boll proxy measurements, top 75 candidates by extraction confidence</div>
       <div class="table-wrap"><table id="measureTable"></table></div>
     </section>
   </div>
@@ -357,6 +358,7 @@ function renderResult(data) {
   document.getElementById("volMetric").textContent = s.median_volume_cm3_proxy;
   document.getElementById("inputImage").src = data.input_image;
   document.getElementById("overlayImage").src = data.annotated_image;
+  document.getElementById("extractionImage").src = data.extraction_overlay_image;
   document.getElementById("depthImage").src = data.depth_image;
   document.getElementById("exportText").innerHTML = `<strong>PLY:</strong><br>${s.ply}<br><br><strong>CSV:</strong><br>${s.measurements_csv}`;
   cloud = data.points;
@@ -373,7 +375,8 @@ function renderCrops(rows) {
       <div class="crop-meta">
         <strong>#${r.id} | ${r.diameter_cm_proxy} cm</strong>
         vol ${r.volume_cm3_proxy} cm3<br>
-        vis ${r.visibility_proxy} | depth ${r.depth_score}
+        q ${r.extraction_quality} | lint ${r.lint_fraction}<br>
+        green ${r.green_fraction} | depth ${r.depth_score}
       </div>
     </div>
   `).join("");
@@ -381,7 +384,7 @@ function renderCrops(rows) {
 
 function renderTable(rows) {
   const table = document.getElementById("measureTable");
-  const cols = ["id", "diameter_px", "diameter_cm_proxy", "volume_cm3_proxy", "visibility_proxy", "depth_score"];
+  const cols = ["id", "diameter_px", "diameter_cm_proxy", "volume_cm3_proxy", "extraction_quality", "lint_fraction", "green_fraction", "visibility_proxy", "depth_score"];
   table.innerHTML = `<thead><tr>${cols.map(c => `<th>${c}</th>`).join("")}</tr></thead>` +
     `<tbody>${rows.map(r => `<tr>${cols.map(c => `<td>${r[c]}</td>`).join("")}</tr>`).join("")}</tbody>`;
 }

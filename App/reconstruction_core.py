@@ -158,6 +158,7 @@ def encode_image(rgb: np.ndarray, max_width: int = 980) -> str:
 
 def compute_measurements(
     candidates: list[Any],
+    original_rgb: np.ndarray,
     depth: np.ndarray,
     original_shape: tuple[int, int],
     resized_shape: tuple[int, int],
@@ -180,18 +181,82 @@ def compute_measurements(
         radius_cm = 0.5 * diameter_cm
         volume_cm3 = (4.0 / 3.0) * np.pi * radius_cm**3
         visibility = float(np.clip(cand.area / max(cand.width * cand.height, 1), 0.0, 1.0))
+        lint_fraction, green_fraction, brightness_score = candidate_color_scores(original_rgb, cand)
         rows.append(
             {
                 "id": idx,
                 "x": cand.x,
                 "y": cand.y,
+                "width": cand.width,
+                "height": cand.height,
                 "diameter_px": round(float(diameter_px), 2),
                 "diameter_cm_proxy": round(float(diameter_cm), 3),
                 "volume_cm3_proxy": round(float(volume_cm3), 3),
                 "visibility_proxy": round(visibility, 3),
                 "depth_score": round(depth_score, 3),
+                "lint_fraction": round(lint_fraction, 3),
+                "green_fraction": round(green_fraction, 3),
+                "brightness_score": round(brightness_score, 3),
             }
         )
+    return add_extraction_quality(rows)
+
+
+def candidate_color_scores(rgb: np.ndarray, cand: Any) -> tuple[float, float, float]:
+    h, w = rgb.shape[:2]
+    x0 = int(np.clip(cand.x, 0, w - 1))
+    y0 = int(np.clip(cand.y, 0, h - 1))
+    x1 = int(np.clip(cand.x + cand.width, x0 + 1, w))
+    y1 = int(np.clip(cand.y + cand.height, y0 + 1, h))
+    crop = rgb[y0:y1, x0:x1]
+    if crop.size == 0:
+        return 0.0, 1.0, 0.0
+
+    hsv = cv2.cvtColor(crop, cv2.COLOR_RGB2HSV)
+    sat = hsv[..., 1].astype(np.float32)
+    val = hsv[..., 2].astype(np.float32)
+    crop_f = crop.astype(np.float32)
+    r, g, b = crop_f[..., 0], crop_f[..., 1], crop_f[..., 2]
+    exg = 2.0 * g - r - b
+
+    lint = ((sat < 110) & (val > 135)) | ((sat < 145) & (val > 178))
+    green = (exg > 18) & (g > r) & (g > b)
+    bright = val > 150
+    return (
+        float(np.mean(lint)),
+        float(np.mean(green)),
+        float(np.mean(bright)),
+    )
+
+
+def add_extraction_quality(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if not rows:
+        return rows
+    diameters = np.array([float(row["diameter_px"]) for row in rows], dtype=np.float32)
+    lo, median, hi = np.quantile(diameters, [0.08, 0.50, 0.92])
+    span = max(float(hi - lo), 1e-6)
+    for row in rows:
+        diameter = float(row["diameter_px"])
+        size_score = 1.0 - min(abs(diameter - float(median)) / span, 1.0)
+        lint = float(row["lint_fraction"])
+        green = float(row["green_fraction"])
+        visibility = float(row["visibility_proxy"])
+        depth = float(row["depth_score"])
+        brightness = float(row["brightness_score"])
+        quality = (
+            0.34 * lint
+            + 0.18 * visibility
+            + 0.16 * depth
+            + 0.14 * size_score
+            + 0.10 * brightness
+            + 0.08 * (1.0 - green)
+        )
+        if diameter < lo or diameter > hi:
+            quality *= 0.72
+        if green > 0.55 and lint < 0.18:
+            quality *= 0.55
+        row["size_score"] = round(float(size_score), 3)
+        row["extraction_quality"] = round(float(np.clip(quality, 0.0, 1.0)), 3)
     return rows
 
 
@@ -214,11 +279,18 @@ def save_measurements(path: Path, rows: list[dict[str, Any]]) -> None:
         "id",
         "x",
         "y",
+        "width",
+        "height",
         "diameter_px",
         "diameter_cm_proxy",
         "volume_cm3_proxy",
         "visibility_proxy",
         "depth_score",
+        "lint_fraction",
+        "green_fraction",
+        "brightness_score",
+        "size_score",
+        "extraction_quality",
     ]
     with path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -244,11 +316,13 @@ def extract_boll_crops(
         if cand_index < 0 or cand_index >= len(candidates):
             continue
         cand = candidates[cand_index]
-        pad = max(8, int(0.35 * max(cand.width, cand.height)))
-        x0 = max(0, cand.x - pad)
-        y0 = max(0, cand.y - pad)
-        x1 = min(w, cand.x + cand.width + pad)
-        y1 = min(h, cand.y + cand.height + pad)
+        half_window = max(56, int(1.7 * max(cand.width, cand.height)))
+        cx = cand.x + cand.width // 2
+        cy = cand.y + cand.height // 2
+        x0 = max(0, cx - half_window)
+        y0 = max(0, cy - half_window)
+        x1 = min(w, cx + half_window)
+        y1 = min(h, cy + half_window)
         if x1 <= x0 or y1 <= y0:
             continue
 
@@ -257,7 +331,8 @@ def extract_boll_crops(
         local_y0 = cand.y - y0
         local_x1 = local_x0 + cand.width
         local_y1 = local_y0 + cand.height
-        cv2.rectangle(crop, (local_x0, local_y0), (local_x1, local_y1), (46, 170, 97), max(1, crop.shape[0] // 80))
+        crop = emphasize_candidate_lint(crop, local_x0, local_y0, local_x1, local_y1)
+        cv2.rectangle(crop, (local_x0, local_y0), (local_x1, local_y1), (250, 218, 72), max(1, crop.shape[0] // 70))
         cv2.putText(
             crop,
             f"#{row['id']}",
@@ -280,6 +355,61 @@ def extract_boll_crops(
     return gallery
 
 
+def emphasize_candidate_lint(crop: np.ndarray, x0: int, y0: int, x1: int, y1: int) -> np.ndarray:
+    out = (crop.astype(np.float32) * 0.58).astype(np.uint8)
+    h, w = crop.shape[:2]
+    x0 = int(np.clip(x0, 0, w - 1))
+    y0 = int(np.clip(y0, 0, h - 1))
+    x1 = int(np.clip(x1, x0 + 1, w))
+    y1 = int(np.clip(y1, y0 + 1, h))
+    roi = crop[y0:y1, x0:x1]
+    hsv = cv2.cvtColor(roi, cv2.COLOR_RGB2HSV)
+    sat = hsv[..., 1]
+    val = hsv[..., 2]
+    lint = ((sat < 115) & (val > 135)) | ((sat < 150) & (val > 180))
+    highlighted = roi.copy()
+    highlighted[lint] = (
+        0.45 * highlighted[lint].astype(np.float32)
+        + 0.55 * np.array([255, 245, 190], dtype=np.float32)
+    ).astype(np.uint8)
+    out[y0:y1, x0:x1] = highlighted
+    return out
+
+
+def create_extraction_overlay(
+    rgb: np.ndarray,
+    candidates: list[Any],
+    measurement_rows: list[dict[str, Any]],
+    ready_rows: list[dict[str, Any]],
+) -> np.ndarray:
+    overlay = rgb.copy()
+    ready_ids = {int(row["id"]) for row in ready_rows}
+    display_rows = sorted(
+        measurement_rows,
+        key=lambda row: float(row["extraction_quality"]),
+        reverse=True,
+    )[:180]
+    for row in display_rows:
+        cand = candidates[int(row["id"]) - 1]
+        if int(row["id"]) in ready_ids:
+            color = (250, 218, 72)
+            thickness = max(2, min(rgb.shape[:2]) // 600)
+        else:
+            color = (140, 140, 140)
+            thickness = 1
+        cv2.rectangle(
+            overlay,
+            (cand.x, cand.y),
+            (cand.x + cand.width, cand.y + cand.height),
+            color,
+            thickness,
+        )
+    badge = f"measurement-ready: {len(ready_rows)} / raw: {len(candidates)}"
+    cv2.rectangle(overlay, (0, 0), (max(380, 12 * len(badge)), 42), (255, 255, 255), -1)
+    cv2.putText(overlay, badge, (12, 28), cv2.FONT_HERSHEY_SIMPLEX, 0.72, (20, 32, 25), 2, cv2.LINE_AA)
+    return overlay
+
+
 def reconstruct_dataset_image(
     phase: str,
     label: str | None,
@@ -299,6 +429,7 @@ def reconstruct_dataset_image(
     points, colors = depth_to_points(rgb, depth, max_points=max_points)
     measurements = compute_measurements(
         candidates=candidates,
+        original_rgb=original_rgb,
         depth=depth,
         original_shape=original_rgb.shape[:2],
         resized_shape=rgb.shape[:2],
@@ -312,13 +443,15 @@ def reconstruct_dataset_image(
     save_ply(ply_path, points, colors)
     save_measurements(csv_path, measurements)
 
-    visible = sorted(
-        measurements,
-        key=lambda row: (row["visibility_proxy"], row["depth_score"]),
-        reverse=True,
-    )[:75]
     robust_measurements = robust_subset(measurements)
-    boll_crops = extract_boll_crops(original_rgb, candidates, visible, out_dir)
+    robust_sorted = sorted(
+        robust_measurements,
+        key=lambda row: float(row["extraction_quality"]),
+        reverse=True,
+    )
+    visible = robust_sorted[:75]
+    boll_crops = extract_boll_crops(original_rgb, candidates, robust_sorted, out_dir)
+    extraction_overlay = create_extraction_overlay(original_rgb, candidates, measurements, robust_sorted)
     summary = {
         "image": str(image_path),
         "phase": resolved_phase,
@@ -337,6 +470,7 @@ def reconstruct_dataset_image(
         "input_image": encode_image(rgb),
         "annotated_image": encode_image(annotated),
         "depth_image": encode_image(depth_preview(depth)),
+        "extraction_overlay_image": encode_image(extraction_overlay),
         "measurements": visible,
         "boll_crops": boll_crops,
         "points": [
@@ -358,8 +492,14 @@ def robust_subset(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         return rows
     diameters = np.array([float(row["diameter_px"]) for row in rows], dtype=np.float32)
     lo, hi = np.quantile(diameters, [0.05, 0.90])
+    qualities = np.array([float(row.get("extraction_quality", 0.0)) for row in rows], dtype=np.float32)
+    quality_floor = max(0.22, float(np.quantile(qualities, 0.62)))
     return [
         row
         for row in rows
-        if lo <= float(row["diameter_px"]) <= hi and float(row["visibility_proxy"]) >= 0.05
+        if lo <= float(row["diameter_px"]) <= hi
+        and float(row["visibility_proxy"]) >= 0.05
+        and float(row.get("lint_fraction", 0.0)) >= 0.05
+        and float(row.get("green_fraction", 1.0)) <= 0.70
+        and float(row.get("extraction_quality", 0.0)) >= quality_floor
     ]
