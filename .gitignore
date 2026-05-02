@@ -22,6 +22,7 @@ outputs/videos/*.mp4
 outputs/videos/*.jpg
 outputs/figures/*.png
 outputs/figures/*.jpg
+outputs/app_assets/
 outputs/llm_eval/sample*
 outputs/literature_smoke/
 paper/word/_qa/
