@@ -62,6 +62,22 @@ The paper should not claim whole-field perfect boll diameter or volume. It shoul
 | Table 5 | Morphology measurement | diameter, length, volume, visibility, view support |
 | Table 6 | MoE/LLM reporting ablation | Qwen dense, Qwen MoE, Mixtral/DeepSeek MoE, AgriLLaMA, VLM |
 
+## Benchmark-Style Evaluation Add-On
+
+HY3D-Bench is useful as an evaluation-design reference because it treats 3D
+outputs as structured assets rather than screenshots. We should borrow that
+mindset without pretending HY3D-Bench is an agriculture baseline.
+
+Add one robustness table or appendix table with:
+
+| Axis | Cotton metric | Why it matters |
+|---|---|---|
+| Geometry validity | connected components, point density, optional non-manifold/hole count | prevents pretty but unusable reconstructions |
+| Sampled point quality | Chamfer/F-score when reference scans or repeated reconstructions exist | standardizes point-cloud comparison |
+| Multi-view consistency | held-out reprojection error, mask IoU across views | shows the 3D boll is not a single-view hallucination |
+| Part/organ structure | boll/canopy/soil/branch separability | adapts part-level 3D evaluation to crop organs |
+| Long-tail robustness | pre/post, dense canopy, exposed lint, shadowed rows | shows the method survives field variability |
+
 ## Closest-Prior Contrast Paragraph
 
 The manuscript can use this positioning:

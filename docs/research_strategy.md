@@ -23,6 +23,7 @@ The LLM component is deliberately secondary. It should appear only as an optiona
 | Defoliation boll extraction | **Cotton Boll Extraction and Boll Number Estimation from UAV RGB Imagery Before and After Defoliation**, Agronomy 2026 | Directly studies before/after defoliation and boll counting from RGB imagery. | This strengthens the agronomic motivation. Differentiate by moving from 2D extraction/counting to 3D morphology and visibility-aware reconstruction. |
 | General 3D foundation models | **DUSt3R**, CVPR 2024; **MASt3R**, ECCV 2024 | State-of-the-art dense matching/reconstruction without classical SfM assumptions. | Benchmark on a subset if feasible. If not, cite as the top-tier foundation-model reconstruction line and explain why crop-scale evaluation is still missing. |
 | Semantic feature fields | **Feature 3DGS**, CVPR 2024 | Distills 2D foundation-model features into 3D Gaussian primitives for semantic tasks. | Use as conceptual support for storing/rendering semantic features in 3D; your twist is measurement-grade crop morphology rather than open-vocabulary scene editing. |
+| 3D benchmark design | **HY3D-Bench**, Tencent Hunyuan3D 2026 | Large-scale 3D asset benchmark with cleaned geometry, sampled points, multi-view renderings, and part-level structure. | Use as evaluation inspiration only: standardized point sampling, multi-view consistency, and organ/part-level structure. It is not a cotton baseline. |
 | Dense visual features | **DINOv2**, TMLR 2024; **NeCo**, ICLR 2025 | DINOv2 provides dense self-supervised patch features; NeCo improves spatial consistency. | Use DINOv2 as the first implementation, and mention NeCo as a future/ablation backbone for correspondence stability. |
 | Segmentation | **SAM 2**, 2024 | Strong promptable image/video segmentation with memory. | Evaluate SAM2 auto vs DINO-prompted SAM2; avoid claiming SAM2 alone is novel. |
 | Agriculture LLMs | AgriVLM 2024, AgriLLM 2024, AgroGPT 2024 | LLM/VLM agriculture work exists but focuses on question answering, crop disease, or visual recognition. | Keep this as optional decision support, not as the main novelty. |
@@ -56,6 +57,7 @@ Existing cotton phenotyping studies have shown that UAV imagery can support boll
    - Use post-defoliation as the stronger geometry reference.
    - Extract boll clusters with SAM masks projected into the point cloud.
    - Report diameter/volume/girth distributions plus coefficient of variation and bootstrap confidence intervals.
+   - Add benchmark-style geometry checks inspired by recent 3D asset benchmarks: standardized point sampling, connected-component count, held-out view consistency, and organ/part-level completeness.
 
 6. **Optional reporting layer**
    - Convert morphology outputs into a structured JSON/table report.
@@ -87,6 +89,7 @@ Avoid public disclosure of any truly novel claim language before speaking with a
 - Add the 2024 ISPRS cotton boll 3D reconstruction paper as closest prior work.
 - Add Cotton3DGaussians as a strong 3DGS comparator.
 - Add the 2026 Agronomy before/after defoliation boll extraction paper as evidence that defoliation matters, while distinguishing 2D counting from 3D morphology.
+- Add HY3D-Bench only in the evaluation/protocol discussion, where it motivates standardized 3D quality checks rather than agricultural claims.
 - Reduce claims around "first benchmark" unless the benchmark definition is narrow: e.g., "first semantic-correspondence benchmark for pre/post-defoliation cotton boll 3D reconstruction from UAV imagery."
 - Keep LLM claims out of the main contribution unless the geometry/morphology results are already complete. The paper should stand on 3D phenotyping first.
 
