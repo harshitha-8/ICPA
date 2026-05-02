@@ -226,6 +226,60 @@ def save_measurements(path: Path, rows: list[dict[str, Any]]) -> None:
         writer.writerows(rows)
 
 
+def extract_boll_crops(
+    rgb: np.ndarray,
+    candidates: list[Any],
+    measurement_rows: list[dict[str, Any]],
+    out_dir: Path,
+    limit: int = 36,
+) -> list[dict[str, Any]]:
+    """Crop high-confidence cotton-boll candidates for UI inspection."""
+    crop_dir = out_dir / "boll_crops"
+    crop_dir.mkdir(parents=True, exist_ok=True)
+    h, w = rgb.shape[:2]
+    gallery: list[dict[str, Any]] = []
+
+    for row in measurement_rows[:limit]:
+        cand_index = int(row["id"]) - 1
+        if cand_index < 0 or cand_index >= len(candidates):
+            continue
+        cand = candidates[cand_index]
+        pad = max(8, int(0.35 * max(cand.width, cand.height)))
+        x0 = max(0, cand.x - pad)
+        y0 = max(0, cand.y - pad)
+        x1 = min(w, cand.x + cand.width + pad)
+        y1 = min(h, cand.y + cand.height + pad)
+        if x1 <= x0 or y1 <= y0:
+            continue
+
+        crop = rgb[y0:y1, x0:x1].copy()
+        local_x0 = cand.x - x0
+        local_y0 = cand.y - y0
+        local_x1 = local_x0 + cand.width
+        local_y1 = local_y0 + cand.height
+        cv2.rectangle(crop, (local_x0, local_y0), (local_x1, local_y1), (46, 170, 97), max(1, crop.shape[0] // 80))
+        cv2.putText(
+            crop,
+            f"#{row['id']}",
+            (6, 18),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.55,
+            (255, 255, 255),
+            2,
+            cv2.LINE_AA,
+        )
+        crop_path = crop_dir / f"boll_{int(row['id']):04d}.jpg"
+        cv2.imwrite(str(crop_path), cv2.cvtColor(crop, cv2.COLOR_RGB2BGR))
+        gallery.append(
+            {
+                **row,
+                "crop_image": encode_image(crop, max_width=240),
+                "crop_path": str(crop_path),
+            }
+        )
+    return gallery
+
+
 def reconstruct_dataset_image(
     phase: str,
     label: str | None,
@@ -264,6 +318,7 @@ def reconstruct_dataset_image(
         reverse=True,
     )[:75]
     robust_measurements = robust_subset(measurements)
+    boll_crops = extract_boll_crops(original_rgb, candidates, visible, out_dir)
     summary = {
         "image": str(image_path),
         "phase": resolved_phase,
@@ -283,6 +338,7 @@ def reconstruct_dataset_image(
         "annotated_image": encode_image(annotated),
         "depth_image": encode_image(depth_preview(depth)),
         "measurements": visible,
+        "boll_crops": boll_crops,
         "points": [
             [round(float(x), 5), round(float(y), 5), round(float(z), 5), int(r), int(g), int(b)]
             for (x, y, z), (r, g, b) in zip(points, colors)

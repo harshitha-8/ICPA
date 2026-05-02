@@ -149,7 +149,7 @@ INDEX_HTML = r"""<!doctype html>
     button:disabled { opacity: 0.58; cursor: progress; }
     .metrics {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
       margin-bottom: 14px;
     }
@@ -180,6 +180,36 @@ INDEX_HTML = r"""<!doctype html>
     }
     canvas { cursor: grab; }
     .viewer { grid-column: span 2; }
+    .crop-gallery {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      margin: 8px 0 14px;
+    }
+    .crop-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfa;
+      overflow: hidden;
+    }
+    .crop-card img {
+      border: 0;
+      border-radius: 0;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
+    .crop-meta {
+      padding: 7px 8px 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .crop-meta strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
     .table-wrap {
       max-height: 320px;
       overflow: auto;
@@ -195,6 +225,7 @@ INDEX_HTML = r"""<!doctype html>
     @media (max-width: 980px) {
       .layout, header { grid-template-columns: 1fr; }
       .grid, .metrics { grid-template-columns: 1fr; }
+      .crop-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .viewer { grid-column: auto; }
       .status { text-align: left; }
     }
@@ -235,6 +266,7 @@ INDEX_HTML = r"""<!doctype html>
       <div class="metrics">
         <div class="metric"><strong id="countMetric">-</strong><span>adjusted boll count</span></div>
         <div class="metric"><strong id="rawMetric">-</strong><span>raw candidates</span></div>
+        <div class="metric"><strong id="usableMetric">-</strong><span>measurement-ready candidates</span></div>
         <div class="metric"><strong id="diamMetric">-</strong><span>median diameter proxy, cm</span></div>
         <div class="metric"><strong id="volMetric">-</strong><span>median volume proxy, cm3</span></div>
       </div>
@@ -250,7 +282,10 @@ INDEX_HTML = r"""<!doctype html>
         </div>
       </div>
 
-      <div class="panel-title">Boll proxy measurements, first 75 candidates</div>
+      <div class="panel-title">Extracted cotton-boll candidates, strongest 36 by visibility/depth</div>
+      <div class="crop-gallery" id="cropGallery"></div>
+
+      <div class="panel-title">Boll proxy measurements, top 75 candidates by visibility/depth</div>
       <div class="table-wrap"><table id="measureTable"></table></div>
     </section>
   </div>
@@ -317,6 +352,7 @@ function renderResult(data) {
   const s = data.summary;
   document.getElementById("countMetric").textContent = s.adjusted_count;
   document.getElementById("rawMetric").textContent = s.raw_candidates;
+  document.getElementById("usableMetric").textContent = s.measurement_candidates;
   document.getElementById("diamMetric").textContent = s.median_diameter_cm_proxy;
   document.getElementById("volMetric").textContent = s.median_volume_cm3_proxy;
   document.getElementById("inputImage").src = data.input_image;
@@ -324,8 +360,23 @@ function renderResult(data) {
   document.getElementById("depthImage").src = data.depth_image;
   document.getElementById("exportText").innerHTML = `<strong>PLY:</strong><br>${s.ply}<br><br><strong>CSV:</strong><br>${s.measurements_csv}`;
   cloud = data.points;
+  renderCrops(data.boll_crops);
   renderTable(data.measurements);
   drawCloud();
+}
+
+function renderCrops(rows) {
+  const gallery = document.getElementById("cropGallery");
+  gallery.innerHTML = rows.map(r => `
+    <div class="crop-card">
+      <img src="${r.crop_image}" alt="extracted cotton boll ${r.id}" />
+      <div class="crop-meta">
+        <strong>#${r.id} | ${r.diameter_cm_proxy} cm</strong>
+        vol ${r.volume_cm3_proxy} cm3<br>
+        vis ${r.visibility_proxy} | depth ${r.depth_score}
+      </div>
+    </div>
+  `).join("");
 }
 
 function renderTable(rows) {
