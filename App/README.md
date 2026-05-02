@@ -9,6 +9,7 @@ but kept lightweight for this repository:
 - builds a fast morphology-aware monocular depth proxy,
 - renders a browser-based point-cloud viewer without Gradio or Plotly,
 - extracts a gallery of high-confidence cotton-boll candidate crops,
+- creates a configurable plot-grid map proxy with row/column cell summaries,
 - exports a local `.ply` scene point cloud and a `.csv` proxy measurement table,
 - reports diameter and volume proxies using a user-specified cm-per-pixel scale.
 
@@ -39,3 +40,12 @@ Current proxy measurement logic:
 - visibility is the contour area divided by bounding-box area;
 - the gallery is sorted by extraction confidence so reviewers can inspect where
   the detector is reliable and where canopy occlusion causes failure.
+
+Current plot mapping logic:
+
+- a `4 x 43` grid is overlaid on the central study area of the selected image;
+- measurement-ready candidates are assigned to image-coordinate cells;
+- each cell reports boll count, mean diameter proxy, mean volume proxy, and mean
+  extraction quality;
+- this becomes meter-accurate only after orthomosaic, camera pose, GPS/GCP, or
+  plot-boundary calibration is added.

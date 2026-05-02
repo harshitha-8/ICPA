@@ -410,6 +410,86 @@ def create_extraction_overlay(
     return overlay
 
 
+def create_plot_grid_map(
+    rgb: np.ndarray,
+    ready_rows: list[dict[str, Any]],
+    rows_count: int = 4,
+    cols_count: int = 43,
+) -> tuple[np.ndarray, list[dict[str, Any]]]:
+    """Create a row/column plot map from measurement-ready image candidates."""
+    overlay = rgb.copy()
+    h, w = rgb.shape[:2]
+    margin_x = int(w * 0.045)
+    margin_y = int(h * 0.06)
+    x0, y0 = margin_x, margin_y
+    x1, y1 = w - margin_x, h - margin_y
+
+    cell_w = (x1 - x0) / cols_count
+    cell_h = (y1 - y0) / rows_count
+    cell_stats: dict[tuple[int, int], list[dict[str, Any]]] = {}
+
+    for row in ready_rows:
+        cx = float(row["x"]) + 0.5 * float(row["width"])
+        cy = float(row["y"]) + 0.5 * float(row["height"])
+        if not (x0 <= cx <= x1 and y0 <= cy <= y1):
+            continue
+        col = int(np.clip((cx - x0) / cell_w, 0, cols_count - 1))
+        grid_row = int(np.clip((cy - y0) / cell_h, 0, rows_count - 1))
+        cell_stats.setdefault((grid_row, col), []).append(row)
+
+    tint = overlay.copy()
+    tint[y0:y1, x0:x1] = (
+        0.70 * tint[y0:y1, x0:x1].astype(np.float32)
+        + 0.30 * np.array([34, 178, 190], dtype=np.float32)
+    ).astype(np.uint8)
+    overlay = cv2.addWeighted(overlay, 0.72, tint, 0.28, 0)
+
+    cv2.rectangle(overlay, (x0, y0), (x1, y1), (230, 40, 40), max(3, min(h, w) // 450))
+    for r in range(1, rows_count):
+        y = int(round(y0 + r * cell_h))
+        cv2.line(overlay, (x0, y), (x1, y), (35, 35, 35), max(1, min(h, w) // 900))
+    for c in range(1, cols_count):
+        x = int(round(x0 + c * cell_w))
+        cv2.line(overlay, (x, y0), (x, y1), (235, 205, 55), max(1, min(h, w) // 900))
+
+    cell_rows: list[dict[str, Any]] = []
+    for (grid_row, col), values in sorted(cell_stats.items()):
+        count = len(values)
+        diameters = [float(item["diameter_cm_proxy"]) for item in values]
+        volumes = [float(item["volume_cm3_proxy"]) for item in values]
+        qualities = [float(item["extraction_quality"]) for item in values]
+        cx = int(round(x0 + (col + 0.5) * cell_w))
+        cy = int(round(y0 + (grid_row + 0.5) * cell_h))
+        radius = int(np.clip(3 + np.sqrt(count) * 1.4, 4, 14))
+        cv2.circle(overlay, (cx, cy), radius, (20, 210, 230), -1, cv2.LINE_AA)
+        if count >= 2:
+            cv2.putText(
+                overlay,
+                str(count),
+                (cx + radius + 2, cy + 3),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.34,
+                (255, 255, 255),
+                1,
+                cv2.LINE_AA,
+            )
+        cell_rows.append(
+            {
+                "row": grid_row + 1,
+                "column": col + 1,
+                "boll_count": count,
+                "mean_diameter_cm_proxy": round(float(np.mean(diameters)), 3),
+                "mean_volume_cm3_proxy": round(float(np.mean(volumes)), 3),
+                "mean_extraction_quality": round(float(np.mean(qualities)), 3),
+            }
+        )
+
+    legend = f"Plot-grid proxy: {rows_count} rows x {cols_count} columns | mapped candidates: {sum(v['boll_count'] for v in cell_rows)}"
+    cv2.rectangle(overlay, (0, 0), (min(w, max(540, 10 * len(legend))), 44), (255, 255, 255), -1)
+    cv2.putText(overlay, legend, (12, 29), cv2.FONT_HERSHEY_SIMPLEX, 0.68, (20, 32, 25), 2, cv2.LINE_AA)
+    return overlay, sorted(cell_rows, key=lambda item: item["boll_count"], reverse=True)
+
+
 def reconstruct_dataset_image(
     phase: str,
     label: str | None,
@@ -452,6 +532,7 @@ def reconstruct_dataset_image(
     visible = robust_sorted[:75]
     boll_crops = extract_boll_crops(original_rgb, candidates, robust_sorted, out_dir)
     extraction_overlay = create_extraction_overlay(original_rgb, candidates, measurements, robust_sorted)
+    plot_map, plot_cells = create_plot_grid_map(original_rgb, robust_sorted)
     summary = {
         "image": str(image_path),
         "phase": resolved_phase,
@@ -471,8 +552,10 @@ def reconstruct_dataset_image(
         "annotated_image": encode_image(annotated),
         "depth_image": encode_image(depth_preview(depth)),
         "extraction_overlay_image": encode_image(extraction_overlay),
+        "plot_map_image": encode_image(plot_map),
         "measurements": visible,
         "boll_crops": boll_crops,
+        "plot_cells": plot_cells[:120],
         "points": [
             [round(float(x), 5), round(float(y), 5), round(float(z), 5), int(r), int(g), int(b)]
             for (x, y, z), (r, g, b) in zip(points, colors)

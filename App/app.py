@@ -164,7 +164,7 @@ INDEX_HTML = r"""<!doctype html>
     .metric span { color: var(--muted); font-size: 12px; }
     .grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 12px;
       margin-bottom: 12px;
     }
@@ -179,6 +179,7 @@ INDEX_HTML = r"""<!doctype html>
       object-fit: contain;
     }
     canvas { cursor: grab; }
+    .map-panel { grid-column: span 2; }
     .viewer { grid-column: span 3; }
     .crop-gallery {
       display: grid;
@@ -226,7 +227,7 @@ INDEX_HTML = r"""<!doctype html>
       .layout, header { grid-template-columns: 1fr; }
       .grid, .metrics { grid-template-columns: 1fr; }
       .crop-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .viewer { grid-column: auto; }
+      .viewer, .map-panel { grid-column: auto; }
       .status { text-align: left; }
     }
   </style>
@@ -275,6 +276,7 @@ INDEX_HTML = r"""<!doctype html>
         <div><div class="panel-title">Input frame</div><img id="inputImage" alt="input frame" /></div>
         <div><div class="panel-title">Raw detector overlay</div><img id="overlayImage" alt="detector overlay" /></div>
         <div><div class="panel-title">Measurement-ready extraction</div><img id="extractionImage" alt="extraction overlay" /></div>
+        <div class="map-panel"><div class="panel-title">Plot grid map proxy</div><img id="plotMapImage" alt="plot grid map" /></div>
         <div><div class="panel-title">Morphology depth</div><img id="depthImage" alt="depth field" /></div>
         <div class="viewer"><div class="panel-title">Interactive point-cloud view</div><canvas id="cloudCanvas" width="920" height="520"></canvas></div>
         <div>
@@ -288,6 +290,9 @@ INDEX_HTML = r"""<!doctype html>
 
       <div class="panel-title">Boll proxy measurements, top 75 candidates by extraction confidence</div>
       <div class="table-wrap"><table id="measureTable"></table></div>
+
+      <div class="panel-title">Plot-cell map summary, highest-count cells</div>
+      <div class="table-wrap"><table id="plotCellTable"></table></div>
     </section>
   </div>
 </main>
@@ -359,11 +364,13 @@ function renderResult(data) {
   document.getElementById("inputImage").src = data.input_image;
   document.getElementById("overlayImage").src = data.annotated_image;
   document.getElementById("extractionImage").src = data.extraction_overlay_image;
+  document.getElementById("plotMapImage").src = data.plot_map_image;
   document.getElementById("depthImage").src = data.depth_image;
   document.getElementById("exportText").innerHTML = `<strong>PLY:</strong><br>${s.ply}<br><br><strong>CSV:</strong><br>${s.measurements_csv}`;
   cloud = data.points;
   renderCrops(data.boll_crops);
   renderTable(data.measurements);
+  renderPlotCells(data.plot_cells);
   drawCloud();
 }
 
@@ -385,6 +392,13 @@ function renderCrops(rows) {
 function renderTable(rows) {
   const table = document.getElementById("measureTable");
   const cols = ["id", "diameter_px", "diameter_cm_proxy", "volume_cm3_proxy", "extraction_quality", "lint_fraction", "green_fraction", "visibility_proxy", "depth_score"];
+  table.innerHTML = `<thead><tr>${cols.map(c => `<th>${c}</th>`).join("")}</tr></thead>` +
+    `<tbody>${rows.map(r => `<tr>${cols.map(c => `<td>${r[c]}</td>`).join("")}</tr>`).join("")}</tbody>`;
+}
+
+function renderPlotCells(rows) {
+  const table = document.getElementById("plotCellTable");
+  const cols = ["row", "column", "boll_count", "mean_diameter_cm_proxy", "mean_volume_cm3_proxy", "mean_extraction_quality"];
   table.innerHTML = `<thead><tr>${cols.map(c => `<th>${c}</th>`).join("")}</tr></thead>` +
     `<tbody>${rows.map(r => `<tr>${cols.map(c => `<td>${r[c]}</td>`).join("")}</tr>`).join("")}</tbody>`;
 }
