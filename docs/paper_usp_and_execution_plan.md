@@ -60,7 +60,33 @@ The paper should not claim whole-field perfect boll diameter or volume. It shoul
 | Table 3 | Reconstruction robustness | COLMAP, 3DGS scaffold/real 3DGS, VGGT/MASt3R if used |
 | Table 4 | Boll instance recovery | 2D detections, projected masks, 3D clustered bolls |
 | Table 5 | Morphology measurement | diameter, length, volume, visibility, view support |
-| Table 6 | MoE/LLM reporting ablation | Qwen dense, Qwen MoE, Mixtral/DeepSeek MoE, AgriLLaMA, VLM |
+| Table 6 | Tabular decision baseline | heuristic score, cascade/deep forest, optional XGBoost/MLP |
+| Table 7 | MoE/LLM reporting ablation | Qwen dense, Qwen MoE, Mixtral/DeepSeek MoE, AgriLLaMA, VLM |
+
+## Deep-Forest Baseline Add-On
+
+The close ISPRS paper uses a deep-forest style prediction module. We should not
+copy that as our main method, but it is valuable as a conventional baseline
+after feature extraction. Use it to test whether our measurement-ready features
+are predictive without relying on an LLM.
+
+Candidate-level features:
+
+- diameter and volume proxies;
+- visibility score;
+- depth score;
+- lint fraction;
+- green fraction;
+- extraction quality;
+- plot row/column context.
+
+Possible tasks:
+
+| Task | Target label needed | Metric |
+|---|---|---|
+| Valid boll filtering | valid boll / false detection | precision, recall, F1 |
+| Adhered-boll rejection | isolated / merged cluster | F1, false-merge rate |
+| Plot-cell trait prediction | manual plot count, yield, or quality | MAE, RMSE, R2 |
 
 ## Benchmark-Style Evaluation Add-On
 

@@ -24,6 +24,7 @@ The two ScienceDirect papers are close enough that they should shape the paper's
 - Acquisition route matters as much as the reconstruction algorithm.
 - Occlusion in middle/lower canopy is a central difficulty.
 - Boll count and boll volume can be linked to yield, but count and volume may be better for different yield components.
+- Its deep-forest component is best treated as a tabular prediction baseline after 3D features are extracted, not as a reconstruction method.
 
 **How we differentiate:**
 
@@ -31,6 +32,7 @@ The two ScienceDirect papers are close enough that they should shape the paper's
 - We can evaluate how defoliation changes visible boll count, candidate density, and eventual 3D morphology confidence.
 - We can add semantic/foundation-model correspondence for white, texture-poor cotton lint where classical photogrammetry may fail.
 - We can compare not only nadir/oblique route quality, but pre/post visibility and semantic association quality.
+- We can include a cascade-forest baseline for candidate validation, adhered-boll rejection, or plot-cell trait prediction from extracted morphology features.
 
 ## Reference 2: Cotton3DGaussians
 
@@ -90,6 +92,7 @@ Pre/post UAV RGB images
 | Mask source | inherited detector, SAM/SAM2, YOLO if weights are available | count MAE, mIoU/AP if labels exist, duplicate rate after 3D clustering |
 | 3D boll mapping | 2D-only count, 3D projected masks, cross-view clustered bolls | duplicate reduction, 3D center stability, volume distribution |
 | Trait estimation | count-only, volume proxy, count+volume | relation to manual/yield/plot labels if available |
+| Tabular prediction | heuristic threshold, cascade/deep forest, optional XGBoost/MLP | valid-boll F1, adhered-boll F1, yield/trait MAE/R2 if labels exist |
 
 ## Paper Framing Adjustment
 
