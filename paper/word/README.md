@@ -10,10 +10,10 @@ The 2026 ICPA and ConBAP full-paper instruction PDF states that Microsoft Word i
 
 - `build_icpa_docx.py`: reproducible builder for the working Word manuscript.
 - `icpa_manuscript_draft.docx`: generated Word-first skeleton manuscript.
-- `icpa_2026_mask_guided_cotton_skeleton.docx`: current detailed paper
-  skeleton aligned with the mask-guided 3D cotton boll reconstruction pipeline.
-- `icpa_2026_mask_guided_cotton_skeleton.md`: short Markdown source note for
-  the current skeleton.
+- `icpa_2026_mask_guided_cotton_until_algorithms.docx`: current Word-first
+  manuscript draft completed through Algorithm 4.
+- `icpa_2026_mask_guided_cotton_until_algorithms.md`: short Markdown source
+  note for the current manuscript draft.
 - `_qa/`: rendered page images for layout QA; not intended for submission.
 
 Note: the current machine does not expose LibreOffice/`soffice`, so the new
