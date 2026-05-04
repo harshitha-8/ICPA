@@ -3,6 +3,7 @@ __pycache__/
 *.pyo
 .DS_Store
 ._*
+~$*.docx
 *.egg-info/
 dist/
 build/

@@ -101,6 +101,26 @@ def cell_text(cell, text: str, bold: bool = False) -> None:
     cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
 
 
+def set_cell_borders(cell, top=None, bottom=None, left=None, right=None) -> None:
+    tc_pr = cell._tc.get_or_add_tcPr()
+    borders = tc_pr.first_child_found_in("w:tcBorders")
+    if borders is None:
+        borders = OxmlElement("w:tcBorders")
+        tc_pr.append(borders)
+    for edge_name, value in [("top", top), ("bottom", bottom), ("left", left), ("right", right)]:
+        edge = borders.find(qn(f"w:{edge_name}"))
+        if edge is None:
+            edge = OxmlElement(f"w:{edge_name}")
+            borders.append(edge)
+        if value is None:
+            edge.set(qn("w:val"), "nil")
+        else:
+            edge.set(qn("w:val"), "single")
+            edge.set(qn("w:sz"), str(value))
+            edge.set(qn("w:space"), "0")
+            edge.set(qn("w:color"), "000000")
+
+
 def widths(table, vals: list[float]) -> None:
     table.autofit = False
     table.alignment = WD_TABLE_ALIGNMENT.LEFT
@@ -148,33 +168,93 @@ def table(doc: Document, caption: str, headers: list[str], rows: list[list[str]]
             cell_text(cells[idx], value)
 
 
-def algorithm(doc: Document, title: str, inputs: str, output: str, steps: list[str]) -> None:
-    p = doc.add_paragraph()
-    p.paragraph_format.space_before = Pt(6)
-    p.paragraph_format.space_after = Pt(2)
-    r = p.add_run(title)
+def set_algorithm_line(cell, text: str) -> None:
+    cell.text = ""
+    p = cell.paragraphs[0]
+    p.paragraph_format.space_after = Pt(0)
+    p.paragraph_format.line_spacing = 1.0
+    for token in text.split("**"):
+        if token == "":
+            continue
+        run = p.add_run(token)
+        run.font.name = "Times New Roman"
+        run.font.size = Pt(10)
+        if text.split("**").index(token) % 2 == 1:
+            run.bold = True
+
+
+def algorithm(doc: Document, number: int, title: str, lines: list[tuple[str, str]]) -> None:
+    table_obj = doc.add_table(rows=1, cols=2)
+    table_obj.alignment = WD_TABLE_ALIGNMENT.LEFT
+    table_obj.autofit = False
+    widths(table_obj, [0.42, 5.55])
+    table_obj.style = "Table Grid"
+
+    title_cells = table_obj.rows[0].cells
+    title_cells[0].merge(title_cells[1])
+    title_cell = title_cells[0]
+    title_cell.text = ""
+    p = title_cell.paragraphs[0]
+    p.paragraph_format.space_after = Pt(1)
+    r = p.add_run(f"Algorithm {number} ")
     r.bold = True
-    paragraph(doc, f"Input: {inputs}", italic=True)
-    paragraph(doc, f"Output: {output}", italic=True)
-    number_steps(doc, steps)
+    r.font.size = Pt(11)
+    p.add_run(title).font.size = Pt(11)
+    set_cell_borders(title_cell, top=12, bottom=8, left=None, right=None)
+
+    for idx, (stmt, comment) in enumerate(lines, start=1):
+        cells = table_obj.add_row().cells
+        set_cell_borders(cells[0], top=None, bottom=None, left=None, right=None)
+        set_cell_borders(cells[1], top=None, bottom=None, left=None, right=None)
+
+        cells[0].text = ""
+        lp = cells[0].paragraphs[0]
+        lp.paragraph_format.space_after = Pt(0)
+        lr = lp.add_run(f"{idx}:")
+        lr.font.size = Pt(10)
+        lr.font.name = "Times New Roman"
+
+        cells[1].text = ""
+        rp = cells[1].paragraphs[0]
+        rp.paragraph_format.space_after = Pt(0)
+        parts = stmt.split("**")
+        for part_idx, part in enumerate(parts):
+            if not part:
+                continue
+            run = rp.add_run(part)
+            run.font.size = Pt(10)
+            run.font.name = "Times New Roman"
+            run.bold = part_idx % 2 == 1
+        if comment:
+            spacer = rp.add_run("\t▷ ")
+            spacer.font.size = Pt(10)
+            cr = rp.add_run(comment)
+            cr.font.size = Pt(10)
+            cr.font.name = "Times New Roman"
+
+    bottom = table_obj.add_row().cells
+    bottom[0].merge(bottom[1])
+    bottom[0].text = ""
+    set_cell_borders(bottom[0], top=8, bottom=None, left=None, right=None)
+    doc.add_paragraph().paragraph_format.space_after = Pt(2)
 
 
 def equations(doc: Document) -> None:
-    for idx, eq in enumerate(
-        [
-            "L = l_px * s",
-            "W = w_px * s",
-            "D = 0.5 * (w_box + h_box) * s",
-            "V_ellipsoid = (4/3) pi (L/2)(W/2)(W/2)",
-            "v = A_contour / A_box",
-            "q = f(r_lint, v, d, r_size, b, 1 - r_green)",
-        ],
-        start=1,
-    ):
+    eqs = [
+        "L_i = l_i s,     W_i = w_i s",
+        "D_i = 1/2 (w_i^box + h_i^box) s",
+        "V_i = 4π/3 · (L_i/2)(W_i/2)^2",
+        "ν_i = A_i^contour / A_i^box",
+        "q_i = λ_1 r_i^lint + λ_2 ν_i + λ_3 d_i + λ_4 r_i^size + λ_5 b_i + λ_6(1 - r_i^green)",
+        "C_rc = Σ_i 1[center_i ∈ G_rc]",
+    ]
+    for idx, eq in enumerate(eqs, start=1):
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         p.paragraph_format.space_after = Pt(2)
-        p.add_run(f"({idx})  {eq}")
+        run = p.add_run(f"({idx})   {eq}")
+        run.font.name = "Times New Roman"
+        run.font.size = Pt(10.5)
 
 
 def build_doc() -> None:
@@ -248,7 +328,7 @@ def build_doc() -> None:
     paragraph(doc, "The MVP app estimates a morphology-aware depth proxy from row position, brightness, lint likelihood, canopy greenness, and local texture. The depth image is converted into a colored point cloud for interactive review. Separately, pixels belonging to measurement-ready boll masks are projected into the same coordinate frame and exported as a boll-mask point cloud. The resulting viewer resembles a segmentation-to-3D review loop: the original image shows the mask evidence, while the 3D view highlights the selected boll evidence inside the reconstructed scene.")
     paragraph(doc, "This representation is useful for quality control and method development, but it is not a substitute for calibrated 3D reconstruction. A metric version should use camera poses, SfM/MVS, Gaussian Splatting with validated scale, RGB-D data, or ground-control-based orthomosaic geometry. The manuscript should report the current 3D output as a proxy review space unless such calibration is completed.")
     doc.add_heading("4.5 Trait estimation", level=2)
-    paragraph(doc, "Let s denote the image scale in mm per pixel, l_px and w_px denote the major and minor axes of the extracted mask, and w_box and h_box denote the detector-box width and height. The pipeline reports mask length L, mask width W, coarse detector diameter D, ellipsoid volume proxy V, visibility v, and extraction confidence q. Equations (1)-(6) define the planned trait computations.")
+    paragraph(doc, "Let s denote the image scale in mm per pixel, l_i and w_i denote the major and minor axes of the extracted mask for candidate i, and w_i^box and h_i^box denote the detector-box width and height. The pipeline reports mask length L_i, mask width W_i, coarse detector diameter D_i, ellipsoid volume proxy V_i, visibility nu_i, extraction confidence q_i, and plot-cell count C_rc. Equations (1)-(6) define the planned trait computations.")
     equations(doc)
     paragraph(doc, "The ellipsoid volume proxy assumes that a boll can be approximated by one major axis and two equal minor axes. This is a pragmatic approximation for ranking and comparison, not a physical volume measurement. When physical measurements become available, the model should report mean absolute error, relative volume error, and correlation against measured boll dimensions.")
     doc.add_heading("4.6 Plot-level mapping", level=2)
@@ -257,37 +337,55 @@ def build_doc() -> None:
     paragraph(doc, "The optional decision layer receives measured morphology records and converts them into structured agronomic summaries. It should not be described as performing detection, segmentation, or reconstruction. If included, open-source language models should be evaluated for schema validity, expert agreement, hallucination rate, latency, and consistency. This layer is downstream of geometry and should remain separate from the core reconstruction claims.")
 
     doc.add_heading("5 Algorithms", level=1)
-    algorithm(doc, "Algorithm 1. Mask-guided cotton boll phenotyping pipeline.", "UAV image I, phase p, scale s or calibration metadata, detector parameters, mask parameters.", "Measurement table, mask overlay, scene point cloud, boll-mask point cloud, and plot-cell summary.", [
-        "Resolve the image phase from metadata or greenness-based phase inference.",
-        "Detect raw cotton boll candidates with the phase-aware detector.",
-        "For each candidate, extract a prompt-style lint mask and compute mask statistics.",
-        "Score extraction quality using lint fraction, green penalty, visibility, size prior, brightness, and depth evidence.",
-        "Keep a measurement-ready subset for trait estimation and quality-control visualization.",
-        "Project selected mask pixels into the 3D review coordinate system.",
-        "Export image overlays, CSV trait records, full-scene PLY, boll-mask PLY, and plot-cell summaries.",
+    algorithm(doc, 1, "Mask-guided cotton boll phenotyping pipeline", [
+        ("**input:** UAV image I, phase p, scale s or calibration metadata, detector parameters Θ_d, mask parameters Θ_m", ""),
+        ("**initialize** candidate set B ← ∅, measurement set R ← ∅", ""),
+        ("**if** p is unknown **then** infer p from canopy greenness", "phase resolution"),
+        ("B ← DetectBolls(I, p; Θ_d)", "raw candidate detection"),
+        ("**for** each candidate b_i ∈ B **do**", ""),
+        ("    M_i, m_i ← ExtractMask(I, b_i; Θ_m)", "Algorithm 2"),
+        ("    x_i ← EstimateTraits(b_i, M_i, s)", "Equations (1)-(6)"),
+        ("    q_i ← ScoreCandidate(x_i, M_i, b_i)", "measurement readiness"),
+        ("    **if** q_i ≥ τ_q **then** R ← R ∪ {(b_i, M_i, x_i, q_i)}", "retain high-confidence candidate"),
+        ("**end for**", ""),
+        ("P_scene, P_boll ← ProjectTo3D(I, R)", "Algorithm 3"),
+        ("G ← AggregatePlotCells(R)", "Algorithm 4"),
+        ("**output** R, mask overlay, P_scene, P_boll, G", ""),
     ])
-    algorithm(doc, "Algorithm 2. SAM-style boll mask extraction.", "Candidate crop C and detector box b.", "Binary lint mask M and mask-shape statistics.", [
-        "Pad the detector box to include local context around the candidate.",
-        "Convert the crop to HSV color space and compute excess-green suppression.",
-        "Select low-saturation, high-value pixels consistent with cotton lint.",
-        "Apply morphological opening and closing to remove isolated noise and fill small gaps.",
-        "Compute connected components and retain the largest plausible lint component.",
-        "Estimate mask area, oriented length, and oriented width from the retained component.",
+    algorithm(doc, 2, "SAM-style boll mask extraction", [
+        ("**input:** image I, detector box b_i, color thresholds Θ_m", ""),
+        ("Crop padded region C_i around b_i", "local prompt window"),
+        ("Convert C_i from RGB to HSV and compute excess-green response", "color representation"),
+        ("M_i^0 ← pixels with low saturation, high value, and limited green response", "lint likelihood"),
+        ("M_i^1 ← Open(Close(M_i^0)) using an elliptical structuring element", "remove speckle"),
+        ("{K_j} ← ConnectedComponents(M_i^1)", "candidate components"),
+        ("M_i ← arg max_{K_j} Area(K_j)", "largest lint component"),
+        ("m_i ← {Area(M_i), length(M_i), width(M_i), centroid(M_i)}", "mask statistics"),
+        ("**output** M_i, m_i", ""),
     ])
-    algorithm(doc, "Algorithm 3. Mask-to-3D projection and trait estimation.", "Mask M, depth or calibrated geometry Z, scale s, and candidate metadata.", "Projected boll-mask points and proxy trait vector.", [
-        "Collect all foreground pixels from the mask and subsample if necessary for interactive rendering.",
-        "Map original image coordinates to the depth or reconstruction grid.",
-        "Back-project each selected pixel into the review coordinate system.",
-        "Assign candidate-specific colors for visualization and export a boll-mask PLY.",
-        "Compute L, W, D, V, v, and q using the mask, detector box, scale, and confidence terms.",
-        "Store the resulting trait vector with candidate identity and phase metadata.",
+    algorithm(doc, 3, "Mask-to-3D projection and trait estimation", [
+        ("**input:** mask M_i, depth or calibrated geometry Z, scale s, candidate b_i", ""),
+        ("S_i ← {(u, v) | M_i(u, v) = 1}", "foreground mask pixels"),
+        ("**if** |S_i| > N_max **then** subsample S_i for interactive review", "rendering budget"),
+        ("**for** each pixel (u, v) ∈ S_i **do**", ""),
+        ("    (x, y, z) ← BackProject(u, v, Z)", "proxy or calibrated geometry"),
+        ("    Append (x, y, z, color_i) to P_boll", "highlighted boll cloud"),
+        ("**end for**", ""),
+        ("Compute L_i, W_i, D_i, V_i, ν_i, q_i", "Equations (1)-(6)"),
+        ("Export P_boll as boll_mask_point_cloud.ply", "3D review artifact"),
+        ("**output** P_boll and trait vector x_i", ""),
     ])
-    algorithm(doc, "Algorithm 4. Plot-cell aggregation.", "Measurement-ready candidates R and plot grid G.", "Cell-level count, trait means, and confidence summaries.", [
-        "Define the row-column grid in image coordinates or calibrated field coordinates.",
-        "For each candidate, compute the center point from the detector box or mask centroid.",
-        "Assign the candidate to the corresponding grid cell when the center lies inside the study region.",
-        "For each occupied cell, compute count, mean trait values, mean confidence, and coverage.",
-        "Rank cells by count, uncertainty, or pre/post change for inspection and reporting.",
+    algorithm(doc, 4, "Plot-cell aggregation", [
+        ("**input:** measurement-ready candidates R and plot grid G with rows r and columns c", ""),
+        ("**initialize** C_rc ← 0 and trait lists T_rc ← ∅ for all cells G_rc", ""),
+        ("**for** each candidate i ∈ R **do**", ""),
+        ("    center_i ← centroid(M_i) or center(b_i)", "candidate location"),
+        ("    Find cell G_rc such that center_i ∈ G_rc", "grid assignment"),
+        ("    C_rc ← C_rc + 1", "cell count"),
+        ("    T_rc ← T_rc ∪ {L_i, W_i, D_i, V_i, q_i}", "cell traits"),
+        ("**end for**", ""),
+        ("Compute mean traits, coverage, and uncertainty for each occupied G_rc", "cell summary"),
+        ("**output** {C_rc, mean(T_rc), confidence_rc} for all occupied cells", ""),
     ])
 
     doc.add_heading("References", level=1)
