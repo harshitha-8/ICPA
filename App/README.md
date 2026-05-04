@@ -9,10 +9,11 @@ but kept lightweight for this repository:
 - builds a fast morphology-aware monocular depth proxy,
 - renders a browser-based point-cloud viewer without Gradio or Plotly,
 - extracts a gallery of high-confidence cotton-boll candidate crops,
+- renders SAM-style cotton-lint masks over the real image for candidate review,
 - creates a configurable plot-grid map proxy with row/column cell summaries,
-- renders a topographical boll-density landscape from the plot-cell map,
 - exports a local `.ply` scene point cloud and a `.csv` proxy measurement table,
-- reports diameter and volume proxies using a user-specified cm-per-pixel scale.
+- reports length, width, diameter, and volume proxies using a user-specified
+  cm-per-pixel scale.
 
 Run from the repository root:
 
@@ -35,12 +36,25 @@ Current proxy measurement logic:
 - raw detector candidates are filtered into a measurement-ready subset;
 - white lint fraction increases extraction confidence;
 - green canopy fraction penalizes leaf-heavy boxes;
-- candidate diameter is estimated from the detector bounding-box width/height;
+- detector boxes act as prompts for a deterministic SAM-style lint mask;
+- mask length and width are estimated from the largest lint-like connected
+  component in each prompted crop;
+- candidate diameter is retained from the detector bounding-box width/height as
+  a coarse fallback;
 - diameter in centimeters is `diameter_px * cm_per_pixel`;
-- volume is a spherical proxy from that diameter;
+- length and width in centimeters use the same scale assumption;
+- volume is reported both as a coarse spherical proxy and a mask-derived
+  ellipsoid proxy;
 - visibility is the contour area divided by bounding-box area;
 - the gallery is sorted by extraction confidence so reviewers can inspect where
   the detector is reliable and where canopy occlusion causes failure.
+
+SAM/SAM2 note: the current app does not claim to run Meta's official Segment
+Anything model. It uses the same prompt-first logic as a lightweight local
+placeholder: detector boxes prompt a cotton-lint mask. The defensible next step
+is to replace `candidate_lint_mask()` with SAM/SAM2 inference and compare mask
+IoU, length error, and volume error against a small expert-labeled validation
+set.
 
 Current plot mapping logic:
 
@@ -48,7 +62,5 @@ Current plot mapping logic:
 - measurement-ready candidates are assigned to image-coordinate cells;
 - each cell reports boll count, mean diameter proxy, mean volume proxy, and mean
   extraction quality;
-- the topographical landscape extrudes each cell by measurement-ready boll count
-  so spatial density can be inspected like a tactile terrain surface;
 - this becomes meter-accurate only after orthomosaic, camera pose, GPS/GCP, or
   plot-boundary calibration is added.

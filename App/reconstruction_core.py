@@ -182,6 +182,18 @@ def compute_measurements(
         volume_cm3 = (4.0 / 3.0) * np.pi * radius_cm**3
         visibility = float(np.clip(cand.area / max(cand.width * cand.height, 1), 0.0, 1.0))
         lint_fraction, green_fraction, brightness_score = candidate_color_scores(original_rgb, cand)
+        mask = candidate_lint_mask(original_rgb, cand)
+        mask_metrics = lint_mask_metrics(mask)
+        mask_length_cm = mask_metrics["length_px"] * gsd_cm_per_px
+        mask_width_cm = mask_metrics["width_px"] * gsd_cm_per_px
+        ellipsoid_volume_cm3 = (
+            (4.0 / 3.0)
+            * np.pi
+            * max(mask_length_cm, 0.0)
+            * max(mask_width_cm, 0.0)
+            * max(mask_width_cm, 0.0)
+            / 8.0
+        )
         rows.append(
             {
                 "id": idx,
@@ -192,6 +204,12 @@ def compute_measurements(
                 "diameter_px": round(float(diameter_px), 2),
                 "diameter_cm_proxy": round(float(diameter_cm), 3),
                 "volume_cm3_proxy": round(float(volume_cm3), 3),
+                "mask_area_px": int(mask_metrics["area_px"]),
+                "mask_length_px": round(float(mask_metrics["length_px"]), 2),
+                "mask_width_px": round(float(mask_metrics["width_px"]), 2),
+                "length_cm_proxy": round(float(mask_length_cm), 3),
+                "width_cm_proxy": round(float(mask_width_cm), 3),
+                "ellipsoid_volume_cm3_proxy": round(float(ellipsoid_volume_cm3), 3),
                 "visibility_proxy": round(visibility, 3),
                 "depth_score": round(depth_score, 3),
                 "lint_fraction": round(lint_fraction, 3),
@@ -200,6 +218,66 @@ def compute_measurements(
             }
         )
     return add_extraction_quality(rows)
+
+
+def candidate_lint_mask(rgb: np.ndarray, cand: Any) -> np.ndarray:
+    """Return the largest lint-like connected component inside one candidate box.
+
+    This is a deterministic SAM-style placeholder: detector boxes act like
+    prompts, and the mask is the extracted low-saturation bright cotton region.
+    Replace this function with SAM/SAM2 inference when model weights are wired in.
+    """
+    h, w = rgb.shape[:2]
+    pad = max(2, int(0.10 * max(cand.width, cand.height)))
+    x0 = int(np.clip(cand.x - pad, 0, w - 1))
+    y0 = int(np.clip(cand.y - pad, 0, h - 1))
+    x1 = int(np.clip(cand.x + cand.width + pad, x0 + 1, w))
+    y1 = int(np.clip(cand.y + cand.height + pad, y0 + 1, h))
+    crop = rgb[y0:y1, x0:x1]
+    if crop.size == 0:
+        return np.zeros((1, 1), dtype=np.uint8)
+
+    hsv = cv2.cvtColor(crop, cv2.COLOR_RGB2HSV)
+    sat = hsv[..., 1].astype(np.float32)
+    val = hsv[..., 2].astype(np.float32)
+    crop_f = crop.astype(np.float32)
+    r, g, b = crop_f[..., 0], crop_f[..., 1], crop_f[..., 2]
+    exg = 2.0 * g - r - b
+
+    lint = (((sat < 112) & (val > 132)) | ((sat < 155) & (val > 185))) & (exg < 52)
+    mask = (lint.astype(np.uint8) * 255)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+
+    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=8)
+    if num_labels <= 1:
+        return np.zeros_like(mask, dtype=np.uint8)
+    largest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
+    return ((labels == largest).astype(np.uint8) * 255)
+
+
+def lint_mask_metrics(mask: np.ndarray) -> dict[str, float]:
+    area_px = int(np.count_nonzero(mask))
+    if area_px < 4:
+        return {"area_px": 0, "length_px": 0.0, "width_px": 0.0}
+
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if not contours:
+        return {"area_px": area_px, "length_px": 0.0, "width_px": 0.0}
+    contour = max(contours, key=cv2.contourArea)
+    (_, _), (a, b), _ = cv2.minAreaRect(contour)
+    length_px = max(float(a), float(b))
+    width_px = min(float(a), float(b))
+    if width_px <= 0.0:
+        ys, xs = np.where(mask > 0)
+        length_px = float(max(xs.max() - xs.min() + 1, ys.max() - ys.min() + 1))
+        width_px = float(min(xs.max() - xs.min() + 1, ys.max() - ys.min() + 1))
+    return {
+        "area_px": area_px,
+        "length_px": length_px,
+        "width_px": width_px,
+    }
 
 
 def candidate_color_scores(rgb: np.ndarray, cand: Any) -> tuple[float, float, float]:
@@ -284,6 +362,12 @@ def save_measurements(path: Path, rows: list[dict[str, Any]]) -> None:
         "diameter_px",
         "diameter_cm_proxy",
         "volume_cm3_proxy",
+        "mask_area_px",
+        "mask_length_px",
+        "mask_width_px",
+        "length_cm_proxy",
+        "width_cm_proxy",
+        "ellipsoid_volume_cm3_proxy",
         "visibility_proxy",
         "depth_score",
         "lint_fraction",
@@ -333,16 +417,6 @@ def extract_boll_crops(
         local_y1 = local_y0 + cand.height
         crop = emphasize_candidate_lint(crop, local_x0, local_y0, local_x1, local_y1)
         cv2.rectangle(crop, (local_x0, local_y0), (local_x1, local_y1), (250, 218, 72), max(1, crop.shape[0] // 70))
-        cv2.putText(
-            crop,
-            f"#{row['id']}",
-            (6, 18),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.55,
-            (255, 255, 255),
-            2,
-            cv2.LINE_AA,
-        )
         crop_path = crop_dir / f"boll_{int(row['id']):04d}.jpg"
         cv2.imwrite(str(crop_path), cv2.cvtColor(crop, cv2.COLOR_RGB2BGR))
         gallery.append(
@@ -374,6 +448,63 @@ def emphasize_candidate_lint(crop: np.ndarray, x0: int, y0: int, x1: int, y1: in
     ).astype(np.uint8)
     out[y0:y1, x0:x1] = highlighted
     return out
+
+
+def create_mask_overlay(
+    rgb: np.ndarray,
+    candidates: list[Any],
+    ready_rows: list[dict[str, Any]],
+    limit: int = 120,
+) -> np.ndarray:
+    """Draw SAM-style cotton boll masks on top of the real image."""
+    overlay = rgb.copy()
+    mask_layer = rgb.copy()
+    palette = [
+        (22, 154, 180),
+        (248, 196, 65),
+        (58, 145, 95),
+        (218, 104, 76),
+        (122, 104, 188),
+    ]
+    for pos, row in enumerate(ready_rows[:limit]):
+        cand_index = int(row["id"]) - 1
+        if cand_index < 0 or cand_index >= len(candidates):
+            continue
+        cand = candidates[cand_index]
+        pad = max(2, int(0.10 * max(cand.width, cand.height)))
+        h, w = rgb.shape[:2]
+        x0 = int(np.clip(cand.x - pad, 0, w - 1))
+        y0 = int(np.clip(cand.y - pad, 0, h - 1))
+        x1 = int(np.clip(cand.x + cand.width + pad, x0 + 1, w))
+        y1 = int(np.clip(cand.y + cand.height + pad, y0 + 1, h))
+        mask = candidate_lint_mask(rgb, cand)
+        if mask.shape[:2] != (y1 - y0, x1 - x0) or np.count_nonzero(mask) < 4:
+            continue
+
+        color = np.array(palette[pos % len(palette)], dtype=np.float32)
+        roi = mask_layer[y0:y1, x0:x1]
+        pix = mask > 0
+        roi[pix] = (0.48 * roi[pix].astype(np.float32) + 0.52 * color).astype(np.uint8)
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        shifted = [cnt + np.array([[[x0, y0]]], dtype=np.int32) for cnt in contours]
+        cv2.drawContours(overlay, shifted, -1, tuple(int(v) for v in color), max(1, min(h, w) // 650), cv2.LINE_AA)
+        if pos < 45:
+            cv2.putText(
+                overlay,
+                str(row["id"]),
+                (cand.x, max(14, cand.y - 3)),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.38,
+                (255, 255, 255),
+                1,
+                cv2.LINE_AA,
+            )
+
+    overlay = cv2.addWeighted(overlay, 0.62, mask_layer, 0.38, 0)
+    badge = f"SAM-style lint masks: {min(len(ready_rows), limit)} candidates | proxy until SAM/SAM2 validation"
+    cv2.rectangle(overlay, (0, 0), (min(rgb.shape[1], max(620, 9 * len(badge))), 44), (255, 255, 255), -1)
+    cv2.putText(overlay, badge, (12, 29), cv2.FONT_HERSHEY_SIMPLEX, 0.64, (20, 32, 25), 2, cv2.LINE_AA)
+    return overlay
 
 
 def create_extraction_overlay(
@@ -532,6 +663,7 @@ def reconstruct_dataset_image(
     visible = robust_sorted[:75]
     boll_crops = extract_boll_crops(original_rgb, candidates, robust_sorted, out_dir)
     extraction_overlay = create_extraction_overlay(original_rgb, candidates, measurements, robust_sorted)
+    mask_overlay = create_mask_overlay(original_rgb, candidates, robust_sorted)
     plot_map, plot_cells = create_plot_grid_map(original_rgb, robust_sorted)
     summary = {
         "image": str(image_path),
@@ -543,6 +675,9 @@ def reconstruct_dataset_image(
         "gsd_cm_per_px": gsd_cm_per_px,
         "median_diameter_cm_proxy": round(float(np.median([r["diameter_cm_proxy"] for r in robust_measurements])) if robust_measurements else 0.0, 3),
         "median_volume_cm3_proxy": round(float(np.median([r["volume_cm3_proxy"] for r in robust_measurements])) if robust_measurements else 0.0, 3),
+        "median_length_cm_proxy": round(float(np.median([r["length_cm_proxy"] for r in robust_measurements])) if robust_measurements else 0.0, 3),
+        "median_width_cm_proxy": round(float(np.median([r["width_cm_proxy"] for r in robust_measurements])) if robust_measurements else 0.0, 3),
+        "median_ellipsoid_volume_cm3_proxy": round(float(np.median([r["ellipsoid_volume_cm3_proxy"] for r in robust_measurements])) if robust_measurements else 0.0, 3),
         "ply": str(ply_path),
         "measurements_csv": str(csv_path),
     }
@@ -552,6 +687,7 @@ def reconstruct_dataset_image(
         "annotated_image": encode_image(annotated),
         "depth_image": encode_image(depth_preview(depth)),
         "extraction_overlay_image": encode_image(extraction_overlay),
+        "mask_overlay_image": encode_image(mask_overlay),
         "plot_map_image": encode_image(plot_map),
         "measurements": visible,
         "boll_crops": boll_crops,
