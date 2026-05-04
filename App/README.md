@@ -10,6 +10,7 @@ but kept lightweight for this repository:
 - renders a browser-based point-cloud viewer without Gradio or Plotly,
 - extracts a gallery of high-confidence cotton-boll candidate crops,
 - creates a configurable plot-grid map proxy with row/column cell summaries,
+- renders a topographical boll-density landscape from the plot-cell map,
 - exports a local `.ply` scene point cloud and a `.csv` proxy measurement table,
 - reports diameter and volume proxies using a user-specified cm-per-pixel scale.
 
@@ -47,5 +48,7 @@ Current plot mapping logic:
 - measurement-ready candidates are assigned to image-coordinate cells;
 - each cell reports boll count, mean diameter proxy, mean volume proxy, and mean
   extraction quality;
+- the topographical landscape extrudes each cell by measurement-ready boll count
+  so spatial density can be inspected like a tactile terrain surface;
 - this becomes meter-accurate only after orthomosaic, camera pose, GPS/GCP, or
   plot-boundary calibration is added.

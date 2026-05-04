@@ -181,6 +181,11 @@ INDEX_HTML = r"""<!doctype html>
     canvas { cursor: grab; }
     .map-panel { grid-column: span 2; }
     .viewer { grid-column: span 3; }
+    .terrain-panel { grid-column: span 3; }
+    #topoCanvas {
+      aspect-ratio: 16 / 7;
+      cursor: default;
+    }
     .crop-gallery {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -227,7 +232,7 @@ INDEX_HTML = r"""<!doctype html>
       .layout, header { grid-template-columns: 1fr; }
       .grid, .metrics { grid-template-columns: 1fr; }
       .crop-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .viewer, .map-panel { grid-column: auto; }
+      .viewer, .map-panel, .terrain-panel { grid-column: auto; }
       .status { text-align: left; }
     }
   </style>
@@ -277,6 +282,7 @@ INDEX_HTML = r"""<!doctype html>
         <div><div class="panel-title">Raw detector overlay</div><img id="overlayImage" alt="detector overlay" /></div>
         <div><div class="panel-title">Measurement-ready extraction</div><img id="extractionImage" alt="extraction overlay" /></div>
         <div class="map-panel"><div class="panel-title">Plot grid map proxy</div><img id="plotMapImage" alt="plot grid map" /></div>
+        <div class="terrain-panel"><div class="panel-title">Topographical boll-density landscape</div><canvas id="topoCanvas" width="980" height="430"></canvas></div>
         <div><div class="panel-title">Morphology depth</div><img id="depthImage" alt="depth field" /></div>
         <div class="viewer"><div class="panel-title">Interactive point-cloud view</div><canvas id="cloudCanvas" width="920" height="520"></canvas></div>
         <div>
@@ -310,6 +316,8 @@ const imageSelect = document.getElementById("imageSelect");
 const runButton = document.getElementById("runButton");
 const canvas = document.getElementById("cloudCanvas");
 const ctx = canvas.getContext("2d");
+const topoCanvas = document.getElementById("topoCanvas");
+const topoCtx = topoCanvas.getContext("2d");
 
 async function loadDataset() {
   const res = await fetch("/api/images");
@@ -371,6 +379,7 @@ function renderResult(data) {
   renderCrops(data.boll_crops);
   renderTable(data.measurements);
   renderPlotCells(data.plot_cells);
+  drawTopoLandscape(data.plot_cells);
   drawCloud();
 }
 
@@ -401,6 +410,84 @@ function renderPlotCells(rows) {
   const cols = ["row", "column", "boll_count", "mean_diameter_cm_proxy", "mean_volume_cm3_proxy", "mean_extraction_quality"];
   table.innerHTML = `<thead><tr>${cols.map(c => `<th>${c}</th>`).join("")}</tr></thead>` +
     `<tbody>${rows.map(r => `<tr>${cols.map(c => `<td>${r[c]}</td>`).join("")}</tr>`).join("")}</tbody>`;
+}
+
+function drawTopoLandscape(rows) {
+  const w = topoCanvas.width;
+  const h = topoCanvas.height;
+  topoCtx.clearRect(0, 0, w, h);
+  topoCtx.fillStyle = "#fbfcfa";
+  topoCtx.fillRect(0, 0, w, h);
+
+  const gridRows = 4;
+  const gridCols = 43;
+  const byCell = new Map(rows.map(r => [`${r.row}-${r.column}`, r]));
+  const maxCount = Math.max(1, ...rows.map(r => Number(r.boll_count) || 0));
+  const tileW = Math.min(18, (w - 90) / (gridCols * 0.62));
+  const tileH = tileW * 0.48;
+  const originX = 44;
+  const originY = 218;
+
+  drawTopoLabel("Height = measurement-ready boll count per plot cell", 18, 28);
+  drawTopoLabel("Image-coordinate proxy; needs orthomosaic/GCP/camera poses for meter-accurate mapping", 18, h - 18, "#687165");
+
+  for (let r = gridRows; r >= 1; r--) {
+    for (let c = gridCols; c >= 1; c--) {
+      const cell = byCell.get(`${r}-${c}`) || { boll_count: 0, mean_extraction_quality: 0 };
+      const count = Number(cell.boll_count) || 0;
+      const q = Number(cell.mean_extraction_quality) || 0;
+      const blockH = count === 0 ? 1.5 : 4 + (count / maxCount) * 82;
+      const sx = originX + (c - 1) * tileW * 0.62 + (r - 1) * tileW * 0.34;
+      const sy = originY + (r - 1) * tileH * 2.0 - (c - 1) * tileH * 0.08;
+      const color = topoColor(count / maxCount, q);
+      drawBlock(sx, sy, tileW, tileH, blockH, color);
+    }
+  }
+}
+
+function topoColor(t, q) {
+  const low = [211, 222, 196];
+  const high = [28, 154, 176];
+  const boost = Math.max(0.45, Math.min(1, 0.55 + q));
+  return low.map((v, i) => Math.round((v + (high[i] - v) * t) * boost));
+}
+
+function drawBlock(x, y, tw, th, bh, color) {
+  const top = `rgb(${color[0]},${color[1]},${color[2]})`;
+  const sideA = `rgb(${Math.max(0, color[0] - 34)},${Math.max(0, color[1] - 42)},${Math.max(0, color[2] - 36)})`;
+  const sideB = `rgb(${Math.max(0, color[0] - 58)},${Math.max(0, color[1] - 60)},${Math.max(0, color[2] - 54)})`;
+  const pTop = [[x, y - bh], [x + tw / 2, y - th - bh], [x + tw, y - bh], [x + tw / 2, y + th - bh]];
+  const pRight = [[x + tw, y - bh], [x + tw / 2, y + th - bh], [x + tw / 2, y + th], [x + tw, y]];
+  const pLeft = [[x, y - bh], [x + tw / 2, y + th - bh], [x + tw / 2, y + th], [x, y]];
+  fillPoly(pLeft, sideA);
+  fillPoly(pRight, sideB);
+  fillPoly(pTop, top);
+  strokePoly(pTop, "rgba(22,32,19,0.22)");
+}
+
+function fillPoly(points, fill) {
+  topoCtx.beginPath();
+  topoCtx.moveTo(points[0][0], points[0][1]);
+  for (const p of points.slice(1)) topoCtx.lineTo(p[0], p[1]);
+  topoCtx.closePath();
+  topoCtx.fillStyle = fill;
+  topoCtx.fill();
+}
+
+function strokePoly(points, stroke) {
+  topoCtx.beginPath();
+  topoCtx.moveTo(points[0][0], points[0][1]);
+  for (const p of points.slice(1)) topoCtx.lineTo(p[0], p[1]);
+  topoCtx.closePath();
+  topoCtx.strokeStyle = stroke;
+  topoCtx.lineWidth = 0.7;
+  topoCtx.stroke();
+}
+
+function drawTopoLabel(text, x, y, color = "#162013") {
+  topoCtx.fillStyle = color;
+  topoCtx.font = "15px Inter, system-ui, sans-serif";
+  topoCtx.fillText(text, x, y);
 }
 
 function drawCloud() {
