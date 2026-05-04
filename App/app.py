@@ -280,7 +280,7 @@ INDEX_HTML = r"""<!doctype html>
         <div class="mask-panel"><div class="panel-title">SAM-style boll mask overlay</div><img id="maskImage" alt="SAM-style boll mask overlay" /></div>
         <div class="map-panel"><div class="panel-title">Plot grid map proxy</div><img id="plotMapImage" alt="plot grid map" /></div>
         <div><div class="panel-title">Morphology depth</div><img id="depthImage" alt="depth field" /></div>
-        <div class="viewer"><div class="panel-title">Interactive point-cloud view</div><canvas id="cloudCanvas" width="920" height="520"></canvas></div>
+        <div class="viewer"><div class="panel-title">Interactive point-cloud view, masked bolls highlighted</div><canvas id="cloudCanvas" width="920" height="520"></canvas></div>
         <div>
           <div class="panel-title">Exports</div>
           <p id="exportText">Run reconstruction to create local PLY and CSV outputs.</p>
@@ -302,6 +302,7 @@ INDEX_HTML = r"""<!doctype html>
 <script>
 let dataset = {pre: [], post: []};
 let cloud = [];
+let bollCloud = [];
 let angleX = -0.9;
 let angleZ = 0.35;
 let dragging = false;
@@ -369,8 +370,9 @@ function renderResult(data) {
   document.getElementById("maskImage").src = data.mask_overlay_image;
   document.getElementById("plotMapImage").src = data.plot_map_image;
   document.getElementById("depthImage").src = data.depth_image;
-  document.getElementById("exportText").innerHTML = `<strong>PLY:</strong><br>${s.ply}<br><br><strong>CSV:</strong><br>${s.measurements_csv}`;
+  document.getElementById("exportText").innerHTML = `<strong>Scene PLY:</strong><br>${s.ply}<br><br><strong>Boll-mask PLY:</strong><br>${s.boll_mask_ply}<br><br><strong>CSV:</strong><br>${s.measurements_csv}<br><br><strong>Mask points:</strong> ${s.boll_mask_point_count}`;
   cloud = data.points;
+  bollCloud = data.boll_points || [];
   renderCrops(data.boll_crops);
   renderTable(data.measurements);
   renderPlotCells(data.plot_cells);
@@ -420,11 +422,18 @@ function drawCloud() {
     let y1 = sa * x + ca * y;
     let y2 = cb * y1 - sb * z;
     let z2 = sb * y1 + cb * z;
-    return [w * 0.5 + x1 * w * 0.86, h * 0.58 - y2 * w * 0.86, z2, p[3], p[4], p[5]];
-  }).sort((a, b) => a[2] - b[2]);
+    return [w * 0.5 + x1 * w * 0.86, h * 0.58 - y2 * w * 0.86, z2, p[3], p[4], p[5], 1.8];
+  }).concat(bollCloud.map(p => {
+    let x = p[0], y = p[1], z = p[2];
+    let x1 = ca * x - sa * y;
+    let y1 = sa * x + ca * y;
+    let y2 = cb * y1 - sb * z;
+    let z2 = sb * y1 + cb * z + 0.012;
+    return [w * 0.5 + x1 * w * 0.86, h * 0.58 - y2 * w * 0.86, z2, p[3], p[4], p[5], 3.2];
+  })).sort((a, b) => a[2] - b[2]);
   for (const p of projected) {
     ctx.fillStyle = `rgb(${p[3]},${p[4]},${p[5]})`;
-    ctx.fillRect(p[0], p[1], 1.8, 1.8);
+    ctx.fillRect(p[0], p[1], p[6], p[6]);
   }
 }
 
