@@ -60,6 +60,13 @@ unstructured image collections, including unposed and uncalibrated inputs. This
 direction is attractive for fast MVP experiments, but it should be treated as
 research infrastructure rather than a guaranteed agricultural measurement tool.
 
+NAS3R is especially relevant to the UAV setting because it predicts camera
+parameters and 3D Gaussian structure from unposed context views. That makes it a
+candidate for local post-defoliation patches where COLMAP struggles or where
+camera metadata is incomplete. It should be tested on a small overlapping image
+subset and judged by held-out view quality, mask reprojection consistency, and
+scale availability.
+
 Use this as:
 
 - a rapid reconstruction candidate if code and GPU support are available;
@@ -189,7 +196,7 @@ not bale output.
 | 2 | Orthomosaic/GCP plot alignment | Yes, if metadata exists | Needed for field-coordinate row/column mapping and scale. |
 | 3 | Local 3DGS after stable poses | Next | Useful for visual reconstruction and mask projection in visible patches. |
 | 4 | SAM/SAM2 masks on selected bolls | Next | Better mask quality, but must be validated against expert masks. |
-| 5 | Feed-forward GS such as YoNoSplat | Exploratory | Promising for fast reconstruction; not yet the core measurement claim. |
+| 5 | Feed-forward GS such as NAS3R/YoNoSplat | Exploratory | Promising for unposed or weakly calibrated reconstruction; not yet the core measurement claim. |
 | 6 | Decorative WebGL terrain/map views | No for paper claims | Useful for interface inspiration, not trait measurement. |
 
 ## Immediate Repo/App Decision
@@ -213,6 +220,8 @@ the paper from overclaiming.
   https://www.sciencedirect.com/science/article/pii/S0168169925003990
 - YoNoSplat, ICLR 2026, Microsoft Research:
   https://www.microsoft.com/en-us/research/publication/yonosplat-you-only-need-one-model-for-feedforward-3d-gaussian-splatting/
+- NAS3R, CVPR 2026:
+  https://github.com/ranrhuang/NAS3R
 - Metric assessment of 3D Gaussian Splatting for UAV-based reconstruction,
   ISPRS Archives, 2026:
   https://isprs-archives.copernicus.org/articles/XLVIII-2-W12-2026/143/2026/
