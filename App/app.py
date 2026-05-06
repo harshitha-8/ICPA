@@ -80,17 +80,19 @@ INDEX_HTML = r"""<!doctype html>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ICPA Cotton 3D App</title>
+  <title>ICPA Cotton Phenotyping Workspace</title>
   <style>
     :root {
       color-scheme: light;
-      --bg: #f5f7f4;
+      --bg: #f6f8f4;
       --panel: #ffffff;
-      --ink: #162013;
-      --muted: #687165;
-      --line: #dfe6dc;
-      --accent: #247a50;
-      --accent-2: #146d8f;
+      --ink: #182116;
+      --muted: #65715f;
+      --line: #dfe7dc;
+      --accent: #2f7d4f;
+      --accent-dark: #225f3c;
+      --soft: #eef5ec;
+      --warn: #8a5a18;
       --danger: #a43d3d;
     }
     * { box-sizing: border-box; }
@@ -100,30 +102,34 @@ INDEX_HTML = r"""<!doctype html>
       color: var(--ink);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    main { padding: 18px; max-width: 1500px; margin: 0 auto; }
+    main { max-width: 1440px; margin: 0 auto; padding: 18px; }
     header {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: minmax(0, 1fr) auto;
       gap: 16px;
       align-items: end;
-      padding: 12px 0 18px;
       border-bottom: 1px solid var(--line);
-      margin-bottom: 16px;
+      padding: 8px 0 16px;
+      margin-bottom: 14px;
     }
-    h1 { font-size: 24px; line-height: 1.15; margin: 0 0 6px; letter-spacing: 0; }
+    h1 { margin: 0 0 6px; font-size: 25px; line-height: 1.15; letter-spacing: 0; }
+    h2 { margin: 0 0 10px; font-size: 17px; letter-spacing: 0; }
     p { margin: 0; color: var(--muted); line-height: 1.45; }
-    .status { color: var(--muted); font-size: 13px; text-align: right; }
+    .byline { color: var(--muted); font-size: 13px; text-align: right; }
+    .status { margin-top: 4px; color: var(--muted); font-size: 12px; }
     .layout {
       display: grid;
-      grid-template-columns: 330px minmax(0, 1fr);
-      gap: 16px;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
     }
-    section {
+    .panel {
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 14px;
     }
+    .controls { position: sticky; top: 14px; }
     label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 6px; }
     select, input {
       width: 100%;
@@ -136,40 +142,58 @@ INDEX_HTML = r"""<!doctype html>
       font-size: 14px;
     }
     button {
-      width: 100%;
-      min-height: 42px;
       border: 0;
       border-radius: 6px;
       background: var(--accent);
       color: #fff;
       font-weight: 700;
-      margin-top: 14px;
       cursor: pointer;
     }
-    button:disabled { opacity: 0.58; cursor: progress; }
+    #runButton { width: 100%; min-height: 42px; margin-top: 14px; }
+    button:disabled { opacity: 0.6; cursor: progress; }
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .tab {
+      min-height: 38px;
+      background: #fff;
+      color: var(--accent-dark);
+      border: 1px solid var(--line);
+    }
+    .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .page { display: none; }
+    .page.active { display: block; }
     .metrics {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .metric {
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 10px;
       background: #fbfcfa;
-      min-height: 72px;
+      min-height: 74px;
     }
-    .metric strong { display: block; font-size: 20px; line-height: 1.2; }
+    .metric strong { display: block; font-size: 21px; line-height: 1.15; }
     .metric span { color: var(--muted); font-size: 12px; }
-    .grid {
+    .image-grid {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
-      margin-bottom: 12px;
     }
-    .panel-title { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
-    img, canvas {
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+      gap: 12px;
+      align-items: start;
+    }
+    .figure-title { font-size: 13px; font-weight: 700; color: var(--muted); margin: 0 0 7px; }
+    img {
       display: block;
       width: 100%;
       border: 1px solid var(--line);
@@ -178,15 +202,12 @@ INDEX_HTML = r"""<!doctype html>
       aspect-ratio: 4 / 3;
       object-fit: contain;
     }
-    canvas { cursor: grab; }
-    .map-panel { grid-column: span 2; }
-    .viewer { grid-column: span 3; }
-    .mask-panel { grid-column: span 2; }
+    .map-image { aspect-ratio: 16 / 10; }
     .crop-gallery {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 10px;
-      margin: 8px 0 14px;
+      margin-top: 8px;
     }
     .crop-card {
       border: 1px solid var(--line);
@@ -200,20 +221,10 @@ INDEX_HTML = r"""<!doctype html>
       aspect-ratio: 1 / 1;
       object-fit: cover;
     }
-    .crop-meta {
-      padding: 7px 8px 8px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.35;
-    }
-    .crop-meta strong {
-      display: block;
-      color: var(--ink);
-      font-size: 13px;
-      margin-bottom: 2px;
-    }
+    .crop-meta { padding: 7px 8px 8px; font-size: 12px; color: var(--muted); line-height: 1.35; }
+    .crop-meta strong { display: block; color: var(--ink); font-size: 13px; margin-bottom: 2px; }
     .table-wrap {
-      max-height: 320px;
+      max-height: 380px;
       overflow: auto;
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -223,13 +234,39 @@ INDEX_HTML = r"""<!doctype html>
     th, td { border-bottom: 1px solid var(--line); padding: 8px; text-align: right; white-space: nowrap; }
     th:first-child, td:first-child { text-align: left; }
     th { position: sticky; top: 0; background: #f7faf6; color: var(--muted); }
+    .note {
+      border: 1px solid #ead8ad;
+      background: #fff9e9;
+      color: var(--warn);
+      border-radius: 8px;
+      padding: 12px;
+      line-height: 1.45;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .export-box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfa;
+      overflow-wrap: anywhere;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      color: var(--muted);
+      background: #fbfcfa;
+    }
     .error { color: var(--danger); margin-top: 10px; font-size: 13px; }
     @media (max-width: 980px) {
-      .layout, header { grid-template-columns: 1fr; }
-      .grid, .metrics { grid-template-columns: 1fr; }
+      header, .layout, .two-col { grid-template-columns: 1fr; }
+      .byline { text-align: left; }
+      .controls { position: static; }
+      .tabs, .metrics, .image-grid { grid-template-columns: 1fr; }
       .crop-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .viewer, .map-panel, .mask-panel { grid-column: auto; }
-      .status { text-align: left; }
     }
   </style>
 </head>
@@ -237,14 +274,18 @@ INDEX_HTML = r"""<!doctype html>
 <main>
   <header>
     <div>
-      <h1>ICPA Cotton 3D Reconstruction Workspace</h1>
-      <p>Dataset frame selection, detector overlay, SAM-style lint masks, morphology-depth preview, point-cloud navigation, and proxy boll measurements.</p>
+      <h1>ICPA Cotton Phenotyping Workspace</h1>
+      <p>Pre/post-defoliation scouting, boll counting, plot-grid mapping, and proxy trait review.</p>
     </div>
-    <div class="status" id="datasetStatus">Loading dataset index...</div>
+    <div class="byline">
+      <strong>Created by Harshitha Manjunatha</strong>
+      <div class="status" id="datasetStatus">Loading dataset index...</div>
+    </div>
   </header>
 
   <div class="layout">
-    <section>
+    <section class="panel controls">
+      <h2>Run Setup</h2>
       <label for="phase">Phase</label>
       <select id="phase">
         <option value="post" selected>Post-defoliation</option>
@@ -254,65 +295,86 @@ INDEX_HTML = r"""<!doctype html>
       <label for="imageSelect">Dataset image</label>
       <select id="imageSelect"></select>
 
-      <label for="maxPoints">Point cloud density</label>
-      <input id="maxPoints" type="number" min="2000" max="50000" step="1000" value="12000" />
-
-      <label for="gsd">Scale assumption, cm per pixel</label>
+      <label for="gsd">Proxy scale, cm per pixel</label>
       <input id="gsd" type="number" min="0.001" max="5" step="0.001" value="0.250" />
 
-      <button id="runButton">Generate Reconstruction</button>
+      <button id="runButton">Run Cotton Analysis</button>
       <div class="error" id="error"></div>
+      <div class="note" style="margin-top:12px">
+        Bale estimation is not produced from the current volume proxy. A defensible bale estimate needs calibrated field area, boll mass or lint-turnout calibration, and validation against harvested yield.
+      </div>
     </section>
 
-    <section>
-      <div class="metrics">
-        <div class="metric"><strong id="countMetric">-</strong><span>adjusted boll count</span></div>
-        <div class="metric"><strong id="rawMetric">-</strong><span>raw candidates</span></div>
-        <div class="metric"><strong id="usableMetric">-</strong><span>measurement-ready candidates</span></div>
-        <div class="metric"><strong id="diamMetric">-</strong><span>median mask length x width, cm</span></div>
-        <div class="metric"><strong id="volMetric">-</strong><span>median ellipsoid volume proxy, cm3</span></div>
-      </div>
+    <section class="panel">
+      <nav class="tabs" aria-label="Workspace pages">
+        <button class="tab active" data-page="overview">Overview</button>
+        <button class="tab" data-page="scouting">Scouting Map</button>
+        <button class="tab" data-page="measurements">Measurements</button>
+        <button class="tab" data-page="exports">Exports & Notes</button>
+      </nav>
 
-      <div class="grid">
-        <div><div class="panel-title">Input frame</div><img id="inputImage" alt="input frame" /></div>
-        <div><div class="panel-title">Raw detector overlay</div><img id="overlayImage" alt="detector overlay" /></div>
-        <div><div class="panel-title">Measurement-ready extraction</div><img id="extractionImage" alt="extraction overlay" /></div>
-        <div class="mask-panel"><div class="panel-title">SAM-style boll mask overlay</div><img id="maskImage" alt="SAM-style boll mask overlay" /></div>
-        <div class="map-panel"><div class="panel-title">Plot grid map proxy</div><img id="plotMapImage" alt="plot grid map" /></div>
-        <div><div class="panel-title">Morphology depth</div><img id="depthImage" alt="depth field" /></div>
-        <div class="viewer"><div class="panel-title">Interactive point-cloud view, masked bolls highlighted</div><canvas id="cloudCanvas" width="920" height="520"></canvas></div>
-        <div>
-          <div class="panel-title">Exports</div>
-          <p id="exportText">Run reconstruction to create local PLY and CSV outputs.</p>
+      <section id="overview" class="page active">
+        <div class="metrics">
+          <div class="metric"><strong id="countMetric">-</strong><span>adjusted boll count</span></div>
+          <div class="metric"><strong id="rawMetric">-</strong><span>raw candidates</span></div>
+          <div class="metric"><strong id="usableMetric">-</strong><span>measurement-ready candidates</span></div>
+          <div class="metric"><strong id="diamMetric">-</strong><span>median mask length x width, cm</span></div>
+          <div class="metric"><strong id="volMetric">-</strong><span>median ellipsoid volume proxy, cm3</span></div>
         </div>
-      </div>
+        <div class="image-grid">
+          <div><div class="figure-title">Input frame</div><img id="inputImage" alt="input frame" /></div>
+          <div><div class="figure-title">Raw detector overlay</div><img id="overlayImage" alt="detector overlay" /></div>
+          <div><div class="figure-title">Measurement-ready extraction</div><img id="extractionImage" alt="extraction overlay" /></div>
+        </div>
+      </section>
 
-      <div class="panel-title">Extracted cotton-boll candidates, strongest 36 by extraction confidence</div>
-      <div class="crop-gallery" id="cropGallery"></div>
+      <section id="scouting" class="page">
+        <div class="two-col">
+          <div>
+            <div class="figure-title">Row-column scouting map</div>
+            <img class="map-image" id="plotMapImage" alt="plot grid map" />
+          </div>
+          <div>
+            <h2>Scouting Interpretation</h2>
+            <p>The useful idea from geospatial 3D sports-map visualizations is spatial organization: place the activity on a map that matches the real site. For this cotton work, the current safe version is a plot-grid scouting map, not a fake terrain surface.</p>
+            <div class="note">This grid is image-coordinate scouting. It becomes a field-coordinate map only after orthomosaic, camera pose, GPS/GCP, or plot-boundary calibration.</div>
+          </div>
+        </div>
+        <div class="figure-title" style="margin-top:12px">Highest-count plot cells</div>
+        <div class="table-wrap"><table id="plotCellTable"></table></div>
+      </section>
 
-      <div class="panel-title">Boll proxy measurements, top 75 candidates by extraction confidence</div>
-      <div class="table-wrap"><table id="measureTable"></table></div>
+      <section id="measurements" class="page">
+        <div class="note">Length, width, diameter, and volume remain proxy traits until scale calibration and physical boll measurements are added. The count and scouting layers are currently more reliable than bale or volume estimation.</div>
+        <div class="figure-title">Extracted cotton-boll candidates, strongest 36 by confidence</div>
+        <div class="crop-gallery" id="cropGallery"></div>
+        <div class="figure-title" style="margin-top:12px">Top 75 proxy measurement candidates</div>
+        <div class="table-wrap"><table id="measureTable"></table></div>
+      </section>
 
-      <div class="panel-title">Plot-cell map summary, highest-count cells</div>
-      <div class="table-wrap"><table id="plotCellTable"></table></div>
+      <section id="exports" class="page">
+        <div class="two-col">
+          <div>
+            <div class="figure-title">Morphology depth proxy</div>
+            <img id="depthImage" alt="depth field" />
+          </div>
+          <div>
+            <h2>Exports</h2>
+            <div id="exportText" class="export-box">Run analysis to create local PLY and CSV outputs.</div>
+            <div class="note" style="margin-top:12px">The SAM-to-3D highlighted overlay has been removed for now. It should return only after calibrated reconstruction or a stronger multi-view geometry step makes the 3D evidence defensible.</div>
+          </div>
+        </div>
+      </section>
     </section>
   </div>
 </main>
 
 <script>
 let dataset = {pre: [], post: []};
-let cloud = [];
-let bollCloud = [];
-let angleX = -0.9;
-let angleZ = 0.35;
-let dragging = false;
-let last = [0, 0];
 
 const phase = document.getElementById("phase");
 const imageSelect = document.getElementById("imageSelect");
 const runButton = document.getElementById("runButton");
-const canvas = document.getElementById("cloudCanvas");
-const ctx = canvas.getContext("2d");
 
 async function loadDataset() {
   const res = await fetch("/api/images");
@@ -331,6 +393,11 @@ function updateChoices() {
   }
 }
 
+function showPage(pageId) {
+  document.querySelectorAll(".page").forEach(page => page.classList.toggle("active", page.id === pageId));
+  document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.dataset.page === pageId));
+}
+
 async function run() {
   runButton.disabled = true;
   runButton.textContent = "Running...";
@@ -342,7 +409,7 @@ async function run() {
       body: JSON.stringify({
         phase: phase.value,
         label: imageSelect.value,
-        max_points: Number(document.getElementById("maxPoints").value),
+        max_points: 8000,
         gsd_cm_per_px: Number(document.getElementById("gsd").value)
       })
     });
@@ -353,7 +420,7 @@ async function run() {
     document.getElementById("error").textContent = err.message;
   } finally {
     runButton.disabled = false;
-    runButton.textContent = "Generate Reconstruction";
+    runButton.textContent = "Run Cotton Analysis";
   }
 }
 
@@ -367,16 +434,12 @@ function renderResult(data) {
   document.getElementById("inputImage").src = data.input_image;
   document.getElementById("overlayImage").src = data.annotated_image;
   document.getElementById("extractionImage").src = data.extraction_overlay_image;
-  document.getElementById("maskImage").src = data.mask_overlay_image;
   document.getElementById("plotMapImage").src = data.plot_map_image;
   document.getElementById("depthImage").src = data.depth_image;
-  document.getElementById("exportText").innerHTML = `<strong>Scene PLY:</strong><br>${s.ply}<br><br><strong>Boll-mask PLY:</strong><br>${s.boll_mask_ply}<br><br><strong>CSV:</strong><br>${s.measurements_csv}<br><br><strong>Mask points:</strong> ${s.boll_mask_point_count}`;
-  cloud = data.points;
-  bollCloud = data.boll_points || [];
+  document.getElementById("exportText").innerHTML = `<strong>Scene PLY:</strong><br>${s.ply}<br><br><strong>CSV:</strong><br>${s.measurements_csv}<br><br><strong>Scene points:</strong> ${s.point_count}`;
   renderCrops(data.boll_crops);
   renderTable(data.measurements);
   renderPlotCells(data.plot_cells);
-  drawCloud();
 }
 
 function renderCrops(rows) {
@@ -386,9 +449,8 @@ function renderCrops(rows) {
       <img src="${r.crop_image}" alt="extracted cotton boll ${r.id}" />
       <div class="crop-meta">
         <strong>#${r.id} | ${r.length_cm_proxy} x ${r.width_cm_proxy} cm</strong>
-        ellipsoid vol ${r.ellipsoid_volume_cm3_proxy} cm3<br>
-        q ${r.extraction_quality} | mask ${r.mask_area_px}px<br>
-        green ${r.green_fraction} | depth ${r.depth_score}
+        vol proxy ${r.ellipsoid_volume_cm3_proxy} cm3<br>
+        q ${r.extraction_quality} | mask ${r.mask_area_px}px
       </div>
     </div>
   `).join("");
@@ -396,7 +458,7 @@ function renderCrops(rows) {
 
 function renderTable(rows) {
   const table = document.getElementById("measureTable");
-  const cols = ["id", "mask_length_px", "mask_width_px", "length_cm_proxy", "width_cm_proxy", "ellipsoid_volume_cm3_proxy", "extraction_quality", "mask_area_px", "lint_fraction", "green_fraction", "visibility_proxy", "depth_score"];
+  const cols = ["id", "length_cm_proxy", "width_cm_proxy", "diameter_cm_proxy", "ellipsoid_volume_cm3_proxy", "extraction_quality", "lint_fraction", "green_fraction", "visibility_proxy"];
   table.innerHTML = `<thead><tr>${cols.map(c => `<th>${c}</th>`).join("")}</tr></thead>` +
     `<tbody>${rows.map(r => `<tr>${cols.map(c => `<td>${r[c]}</td>`).join("")}</tr>`).join("")}</tbody>`;
 }
@@ -408,45 +470,7 @@ function renderPlotCells(rows) {
     `<tbody>${rows.map(r => `<tr>${cols.map(c => `<td>${r[c]}</td>`).join("")}</tr>`).join("")}</tbody>`;
 }
 
-function drawCloud() {
-  const w = canvas.width;
-  const h = canvas.height;
-  ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, w, h);
-  const ca = Math.cos(angleZ), sa = Math.sin(angleZ);
-  const cb = Math.cos(angleX), sb = Math.sin(angleX);
-  const projected = cloud.map(p => {
-    let x = p[0], y = p[1], z = p[2];
-    let x1 = ca * x - sa * y;
-    let y1 = sa * x + ca * y;
-    let y2 = cb * y1 - sb * z;
-    let z2 = sb * y1 + cb * z;
-    return [w * 0.5 + x1 * w * 0.86, h * 0.58 - y2 * w * 0.86, z2, p[3], p[4], p[5], 1.8];
-  }).concat(bollCloud.map(p => {
-    let x = p[0], y = p[1], z = p[2];
-    let x1 = ca * x - sa * y;
-    let y1 = sa * x + ca * y;
-    let y2 = cb * y1 - sb * z;
-    let z2 = sb * y1 + cb * z + 0.012;
-    return [w * 0.5 + x1 * w * 0.86, h * 0.58 - y2 * w * 0.86, z2, p[3], p[4], p[5], 3.2];
-  })).sort((a, b) => a[2] - b[2]);
-  for (const p of projected) {
-    ctx.fillStyle = `rgb(${p[3]},${p[4]},${p[5]})`;
-    ctx.fillRect(p[0], p[1], p[6], p[6]);
-  }
-}
-
-canvas.addEventListener("mousedown", e => { dragging = true; last = [e.clientX, e.clientY]; canvas.style.cursor = "grabbing"; });
-window.addEventListener("mouseup", () => { dragging = false; canvas.style.cursor = "grab"; });
-window.addEventListener("mousemove", e => {
-  if (!dragging) return;
-  angleZ += (e.clientX - last[0]) * 0.006;
-  angleX += (e.clientY - last[1]) * 0.006;
-  last = [e.clientX, e.clientY];
-  drawCloud();
-});
-
+document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => showPage(tab.dataset.page)));
 phase.addEventListener("change", updateChoices);
 runButton.addEventListener("click", run);
 loadDataset();

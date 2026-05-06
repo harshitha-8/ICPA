@@ -7,10 +7,8 @@ but kept lightweight for this repository:
 - indexes the current `/Volumes/T9/ICML` pre/post-defoliation dataset,
 - runs the reusable cotton boll detector from `algorithms/cotton_boll_detector.py`,
 - builds a fast morphology-aware monocular depth proxy,
-- renders a browser-based point-cloud viewer without Gradio or Plotly,
 - extracts a gallery of high-confidence cotton-boll candidate crops,
 - renders SAM-style cotton-lint masks over the real image for candidate review,
-- projects mask-selected boll pixels into a separate highlighted 3D point cloud,
 - creates a configurable plot-grid map proxy with row/column cell summaries,
 - exports a local `.ply` scene point cloud and a `.csv` proxy measurement table,
 - reports length, width, diameter, and volume proxies using a user-specified
@@ -46,8 +44,6 @@ Current proxy measurement logic:
 - length and width in centimeters use the same scale assumption;
 - volume is reported both as a coarse spherical proxy and a mask-derived
   ellipsoid proxy;
-- the highlighted 3D boll cloud is a mask-depth projection for review, not a
-  final Gaussian Splatting reconstruction;
 - visibility is the contour area divided by bounding-box area;
 - the gallery is sorted by extraction confidence so reviewers can inspect where
   the detector is reliable and where canopy occlusion causes failure.
@@ -67,3 +63,15 @@ Current plot mapping logic:
   extraction quality;
 - this becomes meter-accurate only after orthomosaic, camera pose, GPS/GCP, or
   plot-boundary calibration is added.
+
+Current UI structure:
+
+- Overview: count metrics and core image overlays;
+- Scouting Map: row-column plot proxy and highest-count cells;
+- Measurements: crop gallery and proxy trait table;
+- Exports & Notes: scene PLY, CSV, depth proxy, and the bale-estimation caveat.
+
+The previous SAM-to-3D highlighted overlay is intentionally removed from the UI
+until calibrated reconstruction or stronger multi-view geometry is available.
+Bale estimation is also not reported from the current volume proxy; it requires
+field area, boll-mass or lint-turnout calibration, and validation against yield.

@@ -145,72 +145,6 @@ def depth_to_points(
     return points, colors
 
 
-def mask_rows_to_points(
-    rgb: np.ndarray,
-    depth: np.ndarray,
-    candidates: list[Any],
-    ready_rows: list[dict[str, Any]],
-    original_shape: tuple[int, int],
-    resized_shape: tuple[int, int],
-    max_points: int = 9000,
-) -> tuple[np.ndarray, np.ndarray]:
-    """Project mask-selected boll pixels into the same proxy 3D space as depth."""
-    oh, ow = original_shape
-    rh, rw = resized_shape
-    selected: list[tuple[int, int, int]] = []
-
-    for row in ready_rows:
-        cand_index = int(row["id"]) - 1
-        if cand_index < 0 or cand_index >= len(candidates):
-            continue
-        cand = candidates[cand_index]
-        pad = max(2, int(0.10 * max(cand.width, cand.height)))
-        x0 = int(np.clip(cand.x - pad, 0, ow - 1))
-        y0 = int(np.clip(cand.y - pad, 0, oh - 1))
-        x1 = int(np.clip(cand.x + cand.width + pad, x0 + 1, ow))
-        y1 = int(np.clip(cand.y + cand.height + pad, y0 + 1, oh))
-        mask = candidate_lint_mask(rgb, cand)
-        if mask.shape[:2] != (y1 - y0, x1 - x0):
-            continue
-        ys, xs = np.where(mask > 0)
-        if len(xs) == 0:
-            continue
-        stride = max(1, len(xs) // 80)
-        for x_local, y_local in zip(xs[::stride], ys[::stride]):
-            selected.append((x0 + int(x_local), y0 + int(y_local), int(row["id"])))
-
-    if not selected:
-        return np.empty((0, 3), dtype=np.float32), np.empty((0, 3), dtype=np.uint8)
-    if len(selected) > max_points:
-        indices = np.linspace(0, len(selected) - 1, max_points, dtype=np.int32)
-        selected = [selected[i] for i in indices]
-
-    coords = np.array(selected, dtype=np.float32)
-    ox = coords[:, 0]
-    oy = coords[:, 1]
-    rx = np.clip(np.round(ox * (rw / max(ow, 1))).astype(np.int32), 0, rw - 1)
-    ry = np.clip(np.round(oy * (rh / max(oh, 1))).astype(np.int32), 0, rh - 1)
-
-    x = (rx.astype(np.float32) - rw / 2.0) / max(rw, rh)
-    y = (rh / 2.0 - ry.astype(np.float32)) / max(rw, rh)
-    z = depth[ry, rx].astype(np.float32) * (80.0 / max(rw, rh))
-    points = np.column_stack([x, y, z])
-
-    palette = np.array(
-        [
-            [255, 226, 84],
-            [31, 190, 215],
-            [95, 220, 140],
-            [245, 125, 92],
-            [175, 130, 230],
-        ],
-        dtype=np.uint8,
-    )
-    ids = coords[:, 2].astype(np.int32)
-    colors = palette[ids % len(palette)]
-    return points, colors
-
-
 def encode_image(rgb: np.ndarray, max_width: int = 980) -> str:
     h, w = rgb.shape[:2]
     if w > max_width:
@@ -522,7 +456,7 @@ def create_mask_overlay(
     ready_rows: list[dict[str, Any]],
     limit: int = 120,
 ) -> np.ndarray:
-    """Draw SAM-style cotton boll masks on top of the real image."""
+    """Draw prompt-style cotton boll masks on top of the real image."""
     overlay = rgb.copy()
     mask_layer = rgb.copy()
     palette = [
@@ -567,7 +501,7 @@ def create_mask_overlay(
             )
 
     overlay = cv2.addWeighted(overlay, 0.62, mask_layer, 0.38, 0)
-    badge = f"SAM-style lint masks: {min(len(ready_rows), limit)} candidates | proxy until SAM/SAM2 validation"
+    badge = f"Prompt-style lint masks: {min(len(ready_rows), limit)} candidates | proxy until validated masks"
     cv2.rectangle(overlay, (0, 0), (min(rgb.shape[1], max(620, 9 * len(badge))), 44), (255, 255, 255), -1)
     cv2.putText(overlay, badge, (12, 29), cv2.FONT_HERSHEY_SIMPLEX, 0.64, (20, 32, 25), 2, cv2.LINE_AA)
     return overlay
@@ -716,7 +650,6 @@ def reconstruct_dataset_image(
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_dir = OUTPUT_ROOT / f"{image_path.stem}_{stamp}"
     ply_path = out_dir / "scene_point_cloud.ply"
-    boll_ply_path = out_dir / "boll_mask_point_cloud.ply"
     csv_path = out_dir / "boll_measurement_proxy.csv"
     save_ply(ply_path, points, colors)
 
@@ -727,15 +660,6 @@ def reconstruct_dataset_image(
         reverse=True,
     )
     visible = robust_sorted[:75]
-    boll_points, boll_colors = mask_rows_to_points(
-        rgb=original_rgb,
-        depth=depth,
-        candidates=candidates,
-        ready_rows=robust_sorted[:160],
-        original_shape=original_rgb.shape[:2],
-        resized_shape=rgb.shape[:2],
-    )
-    save_ply(boll_ply_path, boll_points, boll_colors)
     save_measurements(csv_path, measurements)
     boll_crops = extract_boll_crops(original_rgb, candidates, robust_sorted, out_dir)
     extraction_overlay = create_extraction_overlay(original_rgb, candidates, measurements, robust_sorted)
@@ -748,7 +672,6 @@ def reconstruct_dataset_image(
         "raw_candidates": len(candidates),
         "measurement_candidates": len(robust_measurements),
         "point_count": len(points),
-        "boll_mask_point_count": len(boll_points),
         "gsd_cm_per_px": gsd_cm_per_px,
         "median_diameter_cm_proxy": round(float(np.median([r["diameter_cm_proxy"] for r in robust_measurements])) if robust_measurements else 0.0, 3),
         "median_volume_cm3_proxy": round(float(np.median([r["volume_cm3_proxy"] for r in robust_measurements])) if robust_measurements else 0.0, 3),
@@ -756,7 +679,6 @@ def reconstruct_dataset_image(
         "median_width_cm_proxy": round(float(np.median([r["width_cm_proxy"] for r in robust_measurements])) if robust_measurements else 0.0, 3),
         "median_ellipsoid_volume_cm3_proxy": round(float(np.median([r["ellipsoid_volume_cm3_proxy"] for r in robust_measurements])) if robust_measurements else 0.0, 3),
         "ply": str(ply_path),
-        "boll_mask_ply": str(boll_ply_path),
         "measurements_csv": str(csv_path),
     }
     return {
@@ -773,10 +695,6 @@ def reconstruct_dataset_image(
         "points": [
             [round(float(x), 5), round(float(y), 5), round(float(z), 5), int(r), int(g), int(b)]
             for (x, y, z), (r, g, b) in zip(points, colors)
-        ],
-        "boll_points": [
-            [round(float(x), 5), round(float(y), 5), round(float(z), 5), int(r), int(g), int(b)]
-            for (x, y, z), (r, g, b) in zip(boll_points, boll_colors)
         ],
     }
 
