@@ -129,6 +129,35 @@ llm:
     context_graph: true            # 3D morphology entity graph
     num_frames: 50                 # Frames to sample from UAV sequence
 
+# Stage 3b: 3D Gaussian Splatting + SPZ Export
+gaussian_splatting:
+  backend: "gsplat"                  # Options: gsplat, nerfstudio
+  device: "mps"                      # Options: cuda, mps, cpu
+  sh_degree: 3
+  num_iterations: 30000              # Full quality; use 7000 for quick test
+  densification_interval: 100
+  opacity_reset_interval: 3000
+  lr_position: 0.00016
+  lr_opacity: 0.05
+  lr_scale: 0.005
+  lr_rotation: 0.001
+  lr_sh: 0.0025
+  percent_dense: 0.01
+  densify_grad_threshold: 0.0002
+  opacity_threshold: 0.3             # For boll filtering
+
+  # SPZ v4 export
+  spz_export:
+    coordinate_system: "RDF"         # COLMAP convention → auto-converts to RUB
+    fractional_bits: 12
+    sh1_bits: 5
+    shrest_bits: 4
+
+  # Web viewer
+  web_viewer:
+    port: 8765
+    auto_open: true
+
 # Experiment settings
 experiment:
   seed: 42

@@ -75,6 +75,9 @@ scikit-learn
 pillow
 exifread
 tqdm
+gsplat>=1.0
+zstandard>=0.21
+plyfile>=0.9
 ```
 
 ## Quick Start
@@ -95,7 +98,22 @@ python pipeline/reconstruction/run_colmap_baseline.py
 # 5. Run semantic reconstruction
 python pipeline/reconstruction/semantic_bundle_adjustment.py
 
-# 6. Extract morphology
+# 5b. Train 3D Gaussian Splat (requires COLMAP output)
+python pipeline/gaussian_splatting/train_gaussian_splat.py
+
+# 5c. Export to SPZ v4 (web-deliverable compressed format)
+python pipeline/gaussian_splatting/export_spz.py
+
+# 5d. Extract morphology from Gaussian primitives
+python pipeline/gaussian_splatting/splat_morphology.py
+
+# 5e. Or run the full 3DGS pipeline at once
+python pipeline/gaussian_splatting/run_pipeline.py
+
+# 5f. Launch 3D web viewer
+python -m http.server 8765 --directory outputs/web_export
+
+# 6. Extract morphology (point cloud baseline)
 python pipeline/morphology_extraction/extract_boll_morphology.py
 
 # 7. Run LLM reasoning
@@ -105,3 +123,4 @@ python llm/reasoning_engine/reasoning_engine.py
 ## License
 
 Research use only. Contact authors for permissions.
+

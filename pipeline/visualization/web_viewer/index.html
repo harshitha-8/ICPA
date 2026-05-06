@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICPA Cotton Boll 3D Viewer — Gaussian Splatting (SPZ)</title>
+    <meta name="description" content="Interactive 3D Gaussian Splatting viewer for UAV-captured cotton field reconstruction. Pre/post defoliation comparison with boll morphology annotations.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Three.js + Gaussian Splat Viewer -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <!-- Overlay UI -->
+    <header id="header">
+        <div class="header-left">
+            <div class="logo-mark"></div>
+            <div>
+                <h1>Cotton Boll 3D</h1>
+                <p class="subtitle">Gaussian Splatting — SPZ v4</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="condition-toggle" id="conditionToggle">
+                <button class="toggle-btn active" data-condition="post_defoliation" id="btnPost">
+                    Post-Defoliation
+                </button>
+                <button class="toggle-btn" data-condition="pre_defoliation" id="btnPre">
+                    Pre-Defoliation
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3D Canvas -->
+    <canvas id="splat-canvas"></canvas>
+
+    <!-- Info Panel -->
+    <aside id="info-panel" class="panel">
+        <h2>Scene Info</h2>
+        <div class="stat-row">
+            <span class="stat-label">Gaussians</span>
+            <span class="stat-value" id="statGaussians">—</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">File Size</span>
+            <span class="stat-value" id="statFileSize">—</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Load Time</span>
+            <span class="stat-value" id="statLoadTime">—</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">FPS</span>
+            <span class="stat-value" id="statFPS">—</span>
+        </div>
+        <hr>
+        <h2>Boll Morphology</h2>
+        <div class="stat-row">
+            <span class="stat-label">Bolls Detected</span>
+            <span class="stat-value" id="statBolls">—</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Avg Diameter</span>
+            <span class="stat-value" id="statDiameter">—</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Avg Volume</span>
+            <span class="stat-value" id="statVolume">—</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Avg Girth</span>
+            <span class="stat-value" id="statGirth">—</span>
+        </div>
+    </aside>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay">
+        <div class="loader">
+            <div class="spinner"></div>
+            <p id="loadingText">Loading splat…</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boll tooltip -->
+    <div id="boll-tooltip" class="tooltip" style="display:none;">
+        <div class="tooltip-title">Boll #<span id="tooltipId">0</span></div>
+        <div class="tooltip-row"><span>Diameter</span><span id="tooltipDiam">—</span></div>
+        <div class="tooltip-row"><span>Girth</span><span id="tooltipGirth">—</span></div>
+        <div class="tooltip-row"><span>Volume</span><span id="tooltipVol">—</span></div>
+    </div>
+
+    <!-- Controls hint -->
+    <footer id="controls-hint">
+        <span>🖱 Drag to orbit</span>
+        <span>⚙ Scroll to zoom</span>
+        <span>⇧+Drag to pan</span>
+    </footer>
+
+    <script type="module" src="viewer.js"></script>
+</body>
+</html>
