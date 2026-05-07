@@ -1,0 +1,18 @@
+{
+  "artifact_type": "image-derived 2.5D UAV orthomap",
+  "scientific_boundary": "This is not calibrated 3D reconstruction. It is a deterministic canopy/lint visibility surface from real UAV RGB images.",
+  "figure": "/Volumes/T9/ICPA/outputs/figures/uav_orthomap_3d/pre_post_uav_2p5d_orthomap.png",
+  "map_views": {
+    "pre": "/Volumes/T9/ICPA/outputs/figures/uav_orthomap_3d/pre-defoliation_uav_2p5d_map_view.png",
+    "post": "/Volumes/T9/ICPA/outputs/figures/uav_orthomap_3d/post-defoliation_uav_2p5d_map_view.png"
+  },
+  "outputs": {
+    "pre_ply": "/Volumes/T9/ICPA/outputs/figures/uav_orthomap_3d/pre-defoliation_uav_2p5d_orthomap.ply",
+    "post_ply": "/Volumes/T9/ICPA/outputs/figures/uav_orthomap_3d/post-defoliation_uav_2p5d_orthomap.ply"
+  },
+  "sources": {
+    "pre": "/Volumes/T9/ICML/Part_one_pre_def_rgb/DJI_20250929095743_0311_D.JPG",
+    "post": "/Volumes/T9/ICML/205_Post_Def_rgb/DJI_20250929124505_0127_D.JPG"
+  },
+  "next_step": "Run COLMAP/SfM-MVS, NAS3R, or local 3DGS on overlapping pre/post subsets before claiming metric boll diameter or volume."
+}
