@@ -5,6 +5,8 @@
   "limit": 12,
   "candidates_csv": "outputs/metrics/measurement_ready_bolls/measurement_ready_candidates.csv",
   "gallery": "outputs/metrics/local_boll_2p5d_reconstruction/local_boll_2p5d_gallery.png",
+  "best_view": "outputs/metrics/local_boll_2p5d_reconstruction/best_local_boll_2p5d_view.png",
+  "rotation_video": "outputs/metrics/local_boll_2p5d_reconstruction/best_local_boll_2p5d_rotation.mp4",
   "summary_csv": "outputs/metrics/local_boll_2p5d_reconstruction/local_boll_2p5d_summary.csv",
   "ply_dir": "outputs/metrics/local_boll_2p5d_reconstruction/ply"
 }

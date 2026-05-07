@@ -12,6 +12,8 @@ import argparse
 import csv
 import json
 import math
+import shutil
+import subprocess
 from pathlib import Path
 
 import matplotlib
@@ -69,12 +71,23 @@ def estimate_local_height(rgb: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     lint = np.clip((value - 0.48) / 0.38, 0.0, 1.0) * np.clip((0.55 - saturation) / 0.55, 0.0, 1.0)
     lint *= np.clip((70.0 - exg * 255.0) / 120.0, 0.0, 1.0)
     lint_img = Image.fromarray((normalize(lint) * 255).astype(np.uint8))
-    lint_smooth = np.asarray(lint_img.filter(ImageFilter.GaussianBlur(radius=1.2)), dtype=np.float32) / 255.0
-    height = normalize(0.64 * lint_smooth + 0.24 * texture + 0.12 * value)
+    lint_smooth = np.asarray(lint_img.filter(ImageFilter.GaussianBlur(radius=2.2)), dtype=np.float32) / 255.0
+    lint_broad = np.asarray(lint_img.filter(ImageFilter.GaussianBlur(radius=7.0)), dtype=np.float32) / 255.0
+    texture_smooth = np.asarray(
+        Image.fromarray((texture * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(radius=1.4)),
+        dtype=np.float32,
+    ) / 255.0
+    # Keep cotton-like lobes while suppressing needle-like spikes that make the
+    # proxy look synthetic. This remains a monocular inspection surface.
+    height = normalize(0.56 * lint_smooth + 0.24 * lint_broad + 0.12 * texture_smooth + 0.08 * value)
+    height = np.asarray(
+        Image.fromarray((height * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(radius=1.0)),
+        dtype=np.float32,
+    ) / 255.0
     return height, normalize(lint)
 
 
-def write_ply(path: Path, rgb: np.ndarray, height: np.ndarray, z_scale: float = 0.32) -> None:
+def write_ply(path: Path, rgb: np.ndarray, height: np.ndarray, z_scale: float = 0.20) -> None:
     h, w = height.shape
     yy, xx = np.mgrid[0:h, 0:w]
     x = xx.astype(np.float32) / max(w - 1, 1) - 0.5
@@ -101,22 +114,71 @@ def plot_surface(ax: plt.Axes, rgb: np.ndarray, height: np.ndarray, title: str) 
     yy, xx = np.mgrid[0:h, 0:w]
     x = xx / max(w - 1, 1)
     y = 1.0 - yy / max(h - 1, 1)
-    z = height * 0.36
+    z = height * 0.22
     ax.plot_surface(
         x,
         y,
         z,
-        rstride=1,
-        cstride=1,
+        rstride=2,
+        cstride=2,
         facecolors=rgb.astype(np.float32) / 255.0,
         linewidth=0,
         antialiased=False,
         shade=False,
     )
-    ax.view_init(elev=48, azim=-58)
-    ax.set_box_aspect((1, 1, 0.34))
+    ax.view_init(elev=44, azim=-58)
+    ax.set_box_aspect((1, 1, 0.22))
     ax.set_axis_off()
     ax.set_title(title, fontsize=8, fontweight="bold", pad=1)
+
+
+def build_single_view(rgb: np.ndarray, height: np.ndarray, output_path: Path, title: str, azim: float = -58.0) -> None:
+    fig = plt.figure(figsize=(7.5, 6.2), dpi=210)
+    fig.patch.set_facecolor("white")
+    ax = fig.add_subplot(1, 1, 1, projection="3d")
+    plot_surface(ax, rgb, height, title)
+    ax.view_init(elev=42, azim=azim)
+    fig.tight_layout()
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output_path, bbox_inches="tight", pad_inches=0.05)
+    plt.close(fig)
+
+
+def build_rotation_video(
+    rgb: np.ndarray,
+    height: np.ndarray,
+    output_path: Path,
+    title: str,
+    frames: int = 90,
+    fps: int = 18,
+) -> bool:
+    ffmpeg = shutil.which("ffmpeg")
+    if ffmpeg is None:
+        return False
+    frame_dir = output_path.parent / "_rotation_frames"
+    frame_dir.mkdir(parents=True, exist_ok=True)
+    for old in frame_dir.glob("frame_*.png"):
+        old.unlink()
+    for idx in range(frames):
+        azim = -70.0 + 360.0 * idx / frames
+        frame_path = frame_dir / f"frame_{idx:04d}.png"
+        build_single_view(rgb, height, frame_path, title, azim=azim)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    cmd = [
+        ffmpeg,
+        "-y",
+        "-framerate",
+        str(fps),
+        "-i",
+        str(frame_dir / "frame_%04d.png"),
+        "-pix_fmt",
+        "yuv420p",
+        "-vf",
+        "pad=ceil(iw/2)*2:ceil(ih/2)*2",
+        str(output_path),
+    ]
+    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return True
 
 
 def build_gallery(results: list[dict[str, object]], output_path: Path) -> None:
@@ -159,6 +221,7 @@ def run(args: argparse.Namespace) -> None:
     rows = read_candidates(args.candidates_csv, args.phase, args.limit)
     results: list[dict[str, object]] = []
     summary_rows: list[dict[str, str | int | float]] = []
+    best_result: dict[str, object] | None = None
     for idx, row in enumerate(rows, start=1):
         crop, _ = crop_candidate(row, args.crop_size)
         rgb = np.asarray(crop, dtype=np.uint8)
@@ -177,6 +240,8 @@ def run(args: argparse.Namespace) -> None:
                 "height": height,
             }
         )
+        if best_result is None:
+            best_result = {"rank": row["rank"], "score": row["measurement_ready_score"], "rgb": rgb, "height": height}
         summary_rows.append(
             {
                 "local_rank": idx,
@@ -194,6 +259,21 @@ def run(args: argparse.Namespace) -> None:
         )
     gallery_path = args.out_dir / "local_boll_2p5d_gallery.png"
     build_gallery(results, gallery_path)
+    best_view_path = args.out_dir / "best_local_boll_2p5d_view.png"
+    video_path = args.out_dir / "best_local_boll_2p5d_rotation.mp4"
+    video_created = False
+    if best_result is not None:
+        title = f"Best local cotton cluster | rank {best_result['rank']} | score {best_result['score']}"
+        build_single_view(best_result["rgb"], best_result["height"], best_view_path, title)  # type: ignore[arg-type]
+        if args.video:
+            video_created = build_rotation_video(
+                best_result["rgb"],  # type: ignore[arg-type]
+                best_result["height"],  # type: ignore[arg-type]
+                video_path,
+                title,
+                frames=args.video_frames,
+                fps=args.video_fps,
+            )
     write_summary(args.out_dir / "local_boll_2p5d_summary.csv", summary_rows)
     manifest = {
         "artifact_type": "local cotton boll 2.5D reconstruction proxy",
@@ -202,6 +282,8 @@ def run(args: argparse.Namespace) -> None:
         "limit": args.limit,
         "candidates_csv": str(args.candidates_csv),
         "gallery": str(gallery_path),
+        "best_view": str(best_view_path),
+        "rotation_video": str(video_path) if video_created else "",
         "summary_csv": str(args.out_dir / "local_boll_2p5d_summary.csv"),
         "ply_dir": str(ply_dir),
     }
@@ -220,6 +302,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--phase", choices=["pre", "post"], default="post")
     parser.add_argument("--limit", type=int, default=12)
     parser.add_argument("--crop-size", type=int, default=220)
+    parser.add_argument("--video", action="store_true")
+    parser.add_argument("--video-frames", type=int, default=72)
+    parser.add_argument("--video-fps", type=int, default=18)
     return parser.parse_args()
 
 

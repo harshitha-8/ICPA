@@ -31,6 +31,7 @@ outputs/metrics/**/reconstruction_seed_images/
 outputs/metrics/**/local_reconstruction_subsets/**/images/
 outputs/metrics/local_boll_2p5d_reconstruction/crops/
 outputs/metrics/local_boll_2p5d_reconstruction/ply/
+outputs/metrics/local_boll_2p5d_reconstruction/_rotation_frames/
 outputs/metrics/measurement_ready_bolls_smoke/
 paper/word/_qa/
 logs/*.log
