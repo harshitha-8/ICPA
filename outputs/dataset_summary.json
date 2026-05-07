@@ -1,0 +1,22 @@
+{
+  "dataset": "ICPA Cotton Boll UAV Imagery",
+  "capture_date": "2025-09-29",
+  "sensor": "DJI UAV (RGB)",
+  "pre_defoliation": {
+    "total_images": 680,
+    "folders": [
+      "Part_one_pre_def_rgb",
+      "part 2_pre_def_rgb"
+    ]
+  },
+  "post_defoliation": {
+    "total_images": 869,
+    "folders": [
+      "Post_def_rgb_part1",
+      "205_Post_Def_rgb",
+      "part3_post_def_rgb",
+      "part4_post_def_rgb"
+    ]
+  },
+  "grand_total": 1549
+}
