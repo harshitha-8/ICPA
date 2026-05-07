@@ -1,0 +1,10 @@
+{
+  "artifact_type": "local cotton boll 2.5D reconstruction proxy",
+  "scientific_boundary": "Single-image monocular proxy; not calibrated boll 3D or volume.",
+  "phase": "post",
+  "limit": 12,
+  "candidates_csv": "outputs/metrics/measurement_ready_bolls/measurement_ready_candidates.csv",
+  "gallery": "outputs/metrics/local_boll_2p5d_reconstruction/local_boll_2p5d_gallery.png",
+  "summary_csv": "outputs/metrics/local_boll_2p5d_reconstruction/local_boll_2p5d_summary.csv",
+  "ply_dir": "outputs/metrics/local_boll_2p5d_reconstruction/ply"
+}

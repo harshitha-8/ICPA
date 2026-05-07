@@ -29,6 +29,8 @@ outputs/literature_smoke/
 outputs/metrics/**/top_crops/
 outputs/metrics/**/reconstruction_seed_images/
 outputs/metrics/**/local_reconstruction_subsets/**/images/
+outputs/metrics/local_boll_2p5d_reconstruction/crops/
+outputs/metrics/local_boll_2p5d_reconstruction/ply/
 outputs/metrics/measurement_ready_bolls_smoke/
 paper/word/_qa/
 logs/*.log
