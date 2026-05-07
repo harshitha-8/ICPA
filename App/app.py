@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import json
 import socket
+import base64
+import csv
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
@@ -12,7 +14,36 @@ from urllib.parse import urlparse
 from reconstruction_core import dataset_payload, reconstruct_dataset_image
 
 APP_DIR = Path(__file__).resolve().parent
+REPO_ROOT = APP_DIR.parent
 DEFAULT_PORT = 8917
+LOCAL_BOLL_DIR = REPO_ROOT / "outputs" / "metrics" / "local_boll_2p5d_reconstruction"
+
+
+def encode_file(path: Path, mime: str) -> str:
+    if not path.exists():
+        return ""
+    return f"data:{mime};base64," + base64.b64encode(path.read_bytes()).decode("ascii")
+
+
+def local_boll_payload() -> dict[str, object]:
+    summary_path = LOCAL_BOLL_DIR / "local_boll_2p5d_summary.csv"
+    rows: list[dict[str, str]] = []
+    if summary_path.exists():
+        with summary_path.open("r", newline="", encoding="utf-8") as f:
+            rows = list(csv.DictReader(f))
+    if rows and rows[0].get("crop_path"):
+        crop_path = Path(rows[0]["crop_path"])
+        best_crop = crop_path if crop_path.is_absolute() else REPO_ROOT / crop_path
+    else:
+        best_crop = LOCAL_BOLL_DIR / "crops" / "001_post_DJI_20250929124623_0166_D_cand333.jpg"
+    return {
+        "scientific_boundary": "Interactive single-crop 2.5D proxy; not calibrated boll 3D or volume.",
+        "gallery_image": encode_file(LOCAL_BOLL_DIR / "local_boll_2p5d_gallery.png", "image/png"),
+        "best_view_image": encode_file(LOCAL_BOLL_DIR / "best_local_boll_2p5d_view.png", "image/png"),
+        "best_crop_image": encode_file(best_crop, "image/jpeg"),
+        "rotation_video": "/asset/local-boll-video",
+        "summary": rows[:12],
+    }
 
 
 def find_free_port(start: int = DEFAULT_PORT, end: int = 8999) -> int:
@@ -37,6 +68,12 @@ class CottonAppHandler(BaseHTTPRequestHandler):
             return
         if parsed.path == "/api/images":
             self._send_json(dataset_payload())
+            return
+        if parsed.path == "/api/local-boll":
+            self._send_json(local_boll_payload())
+            return
+        if parsed.path == "/asset/local-boll-video":
+            self._send_file(LOCAL_BOLL_DIR / "best_local_boll_2p5d_rotation.mp4", "video/mp4")
             return
         self.send_error(404)
 
@@ -70,6 +107,17 @@ class CottonAppHandler(BaseHTTPRequestHandler):
         body = json.dumps(payload).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _send_file(self, path: Path, mime: str) -> None:
+        if not path.exists():
+            self.send_error(404)
+            return
+        body = path.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", mime)
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
@@ -153,7 +201,7 @@ INDEX_HTML = r"""<!doctype html>
     button:disabled { opacity: 0.6; cursor: progress; }
     .tabs {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 8px;
       margin-bottom: 12px;
     }
@@ -261,8 +309,42 @@ INDEX_HTML = r"""<!doctype html>
       background: #fbfcfa;
     }
     .error { color: var(--danger); margin-top: 10px; font-size: 13px; }
+    .boll3d-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+      gap: 12px;
+      align-items: start;
+    }
+    .interactive-stage {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+    #boll3dCanvas {
+      display: block;
+      width: 100%;
+      height: 520px;
+      cursor: grab;
+      touch-action: none;
+      background: #fff;
+    }
+    #boll3dCanvas:active { cursor: grabbing; }
+    .small-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    video {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: block;
+    }
     @media (max-width: 980px) {
-      header, .layout, .two-col { grid-template-columns: 1fr; }
+      header, .layout, .two-col, .boll3d-grid, .small-grid { grid-template-columns: 1fr; }
       .byline { text-align: left; }
       .controls { position: static; }
       .tabs, .metrics, .image-grid { grid-template-columns: 1fr; }
@@ -310,6 +392,7 @@ INDEX_HTML = r"""<!doctype html>
         <button class="tab active" data-page="overview">Overview</button>
         <button class="tab" data-page="scouting">Scouting Map</button>
         <button class="tab" data-page="measurements">Measurements</button>
+        <button class="tab" data-page="local3d">Local Boll 3D</button>
         <button class="tab" data-page="exports">Exports & Notes</button>
       </nav>
 
@@ -352,6 +435,30 @@ INDEX_HTML = r"""<!doctype html>
         <div class="table-wrap"><table id="measureTable"></table></div>
       </section>
 
+      <section id="local3d" class="page">
+        <div class="note">This page shows local cotton boll/cluster 2.5D proxies from real UAV crops. Drag the interactive view to rotate the selected crop. These views are for target selection and visual review; calibrated volume still requires multi-view geometry and scale validation.</div>
+        <div class="boll3d-grid">
+          <div>
+            <div class="figure-title">Ranked local cotton-cluster reconstructions, 3 rows x 4 columns</div>
+            <img class="map-image" id="localBollGallery" alt="local cotton boll 2.5D reconstruction gallery" />
+          </div>
+          <div>
+            <div class="figure-title">Interactive selected crop, drag to rotate</div>
+            <div class="interactive-stage"><canvas id="boll3dCanvas" width="760" height="520"></canvas></div>
+          </div>
+        </div>
+        <div class="small-grid" style="margin-top:12px">
+          <div>
+            <div class="figure-title">Best static view</div>
+            <img id="localBollBestView" alt="best local cotton boll 2.5D view" />
+          </div>
+          <div>
+            <div class="figure-title">Rotation video</div>
+            <video id="localBollVideo" controls muted loop playsinline></video>
+          </div>
+        </div>
+      </section>
+
       <section id="exports" class="page">
         <div class="two-col">
           <div>
@@ -371,6 +478,10 @@ INDEX_HTML = r"""<!doctype html>
 
 <script>
 let dataset = {pre: [], post: []};
+let localBoll = null;
+let bollPoints = [];
+let bollRotation = {x: -0.68, y: 0.72};
+let dragState = null;
 
 const phase = document.getElementById("phase");
 const imageSelect = document.getElementById("imageSelect");
@@ -381,6 +492,16 @@ async function loadDataset() {
   dataset = await res.json();
   document.getElementById("datasetStatus").textContent = `${dataset.pre.length} pre frames, ${dataset.post.length} post frames indexed`;
   updateChoices();
+  loadLocalBoll();
+}
+
+async function loadLocalBoll() {
+  const res = await fetch("/api/local-boll");
+  localBoll = await res.json();
+  document.getElementById("localBollGallery").src = localBoll.gallery_image;
+  document.getElementById("localBollBestView").src = localBoll.best_view_image;
+  document.getElementById("localBollVideo").src = localBoll.rotation_video;
+  buildInteractiveBoll(localBoll.best_crop_image);
 }
 
 function updateChoices() {
@@ -474,6 +595,120 @@ document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", (
 phase.addEventListener("change", updateChoices);
 runButton.addEventListener("click", run);
 loadDataset();
+
+function buildInteractiveBoll(src) {
+  if (!src) return;
+  const img = new Image();
+  img.onload = () => {
+    const sample = document.createElement("canvas");
+    const size = 130;
+    sample.width = size;
+    sample.height = size;
+    const sctx = sample.getContext("2d");
+    sctx.drawImage(img, 0, 0, size, size);
+    const data = sctx.getImageData(0, 0, size, size).data;
+    bollPoints = [];
+    for (let y = 0; y < size; y += 2) {
+      for (let x = 0; x < size; x += 2) {
+        const i = (y * size + x) * 4;
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        const maxc = Math.max(r, g, b) / 255;
+        const minc = Math.min(r, g, b) / 255;
+        const sat = maxc > 0 ? (maxc - minc) / maxc : 0;
+        const exg = 2 * g - r - b;
+        const lint = Math.max(0, Math.min(1, (maxc - 0.48) / 0.38)) * Math.max(0, Math.min(1, (0.58 - sat) / 0.58)) * Math.max(0, Math.min(1, (90 - exg) / 150));
+        const gray = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        const edge = localContrast(data, size, x, y);
+        let z = 0.22 * lint + 0.10 * Math.sqrt(Math.max(lint, 0)) + 0.035 * edge + 0.025 * gray;
+        z = Math.min(0.32, z);
+        if (maxc < 0.22 && lint < 0.05) z *= 0.35;
+        bollPoints.push({
+          x: (x / (size - 1) - 0.5) * 2.0,
+          y: (0.5 - y / (size - 1)) * 2.0,
+          z,
+          r, g, b,
+          radius: 1.45 + 2.0 * lint
+        });
+      }
+    }
+    drawInteractiveBoll();
+  };
+  img.src = src;
+}
+
+function localContrast(data, size, x, y) {
+  const i = (y * size + x) * 4;
+  const center = (data[i] + data[i + 1] + data[i + 2]) / 3;
+  const x2 = Math.min(size - 1, x + 2);
+  const y2 = Math.min(size - 1, y + 2);
+  const ix = (y * size + x2) * 4;
+  const iy = (y2 * size + x) * 4;
+  const gx = Math.abs(center - (data[ix] + data[ix + 1] + data[ix + 2]) / 3);
+  const gy = Math.abs(center - (data[iy] + data[iy + 1] + data[iy + 2]) / 3);
+  return Math.min(1, Math.sqrt(gx * gx + gy * gy) / 110);
+}
+
+function drawInteractiveBoll() {
+  const canvas = document.getElementById("boll3dCanvas");
+  const ctx = canvas.getContext("2d");
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.max(640, Math.floor(rect.width * dpr));
+  canvas.height = Math.max(430, Math.floor(rect.height * dpr));
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const w = rect.width;
+  const h = rect.height;
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, w, h);
+  const cx = w / 2;
+  const cy = h / 2 + 22;
+  const scale = Math.min(w, h) * 0.30;
+  const sinY = Math.sin(bollRotation.y), cosY = Math.cos(bollRotation.y);
+  const sinX = Math.sin(bollRotation.x), cosX = Math.cos(bollRotation.x);
+  const projected = bollPoints.map(p => {
+    const x1 = p.x * cosY + p.z * sinY;
+    const z1 = -p.x * sinY + p.z * cosY;
+    const y1 = p.y * cosX - z1 * sinX;
+    const z2 = p.y * sinX + z1 * cosX;
+    return {...p, px: cx + x1 * scale, py: cy - y1 * scale, depth: z2};
+  }).sort((a, b) => a.depth - b.depth);
+  ctx.shadowColor = "rgba(0,0,0,0.10)";
+  ctx.shadowBlur = 7;
+  ctx.shadowOffsetY = 5;
+  ctx.fillStyle = "rgba(42, 35, 28, 0.16)";
+  ctx.beginPath();
+  ctx.ellipse(cx, cy + scale * 0.78, scale * 0.86, scale * 0.16, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowColor = "transparent";
+  for (const p of projected) {
+    const shade = 0.78 + 0.34 * Math.max(0, p.depth + 0.2);
+    const sr = Math.round(Math.min(255, p.r * shade));
+    const sg = Math.round(Math.min(255, p.g * shade));
+    const sb = Math.round(Math.min(255, p.b * shade));
+    ctx.fillStyle = `rgb(${sr}, ${sg}, ${sb})`;
+    ctx.beginPath();
+    ctx.ellipse(p.px, p.py, p.radius, p.radius * 0.72, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#65715f";
+  ctx.font = "12px Inter, system-ui, sans-serif";
+  ctx.fillText("Drag to rotate selected cotton cluster | monocular 2.5D proxy", 14, h - 16);
+}
+
+const canvas = document.getElementById("boll3dCanvas");
+canvas.addEventListener("pointerdown", e => {
+  dragState = {x: e.clientX, y: e.clientY, rx: bollRotation.x, ry: bollRotation.y};
+  canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener("pointermove", e => {
+  if (!dragState) return;
+  bollRotation.y = dragState.ry + (e.clientX - dragState.x) * 0.012;
+  bollRotation.x = Math.max(-1.25, Math.min(0.15, dragState.rx + (e.clientY - dragState.y) * 0.010));
+  drawInteractiveBoll();
+});
+canvas.addEventListener("pointerup", () => { dragState = null; });
+window.addEventListener("resize", () => { if (bollPoints.length) drawInteractiveBoll(); });
 </script>
 </body>
 </html>

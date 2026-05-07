@@ -8,6 +8,8 @@ but kept lightweight for this repository:
 - runs the reusable cotton boll detector from `algorithms/cotton_boll_detector.py`,
 - builds a fast morphology-aware monocular depth proxy,
 - extracts a gallery of high-confidence cotton-boll candidate crops,
+- adds a local cotton-boll 2.5D review page with a ranked `3 x 4` crop gallery,
+  a drag-rotatable selected crop, and a rendered rotation video,
 - renders SAM-style cotton-lint masks over the real image for candidate review,
 - creates a configurable plot-grid map proxy with row/column cell summaries,
 - exports a local `.ply` scene point cloud and a `.csv` proxy measurement table,
@@ -69,9 +71,14 @@ Current UI structure:
 - Overview: count metrics and core image overlays;
 - Scouting Map: row-column plot proxy and highest-count cells;
 - Measurements: crop gallery and proxy trait table;
+- Local Boll 3D: ranked local cotton-boll candidates, best static view,
+  interactive drag rotation, and MP4 rotation artifact;
 - Exports & Notes: scene PLY, CSV, depth proxy, and the bale-estimation caveat.
 
 The previous SAM-to-3D highlighted overlay is intentionally removed from the UI
 until calibrated reconstruction or stronger multi-view geometry is available.
+Boll rotation on the Local Boll 3D page is a visual 2.5D review of a real crop,
+not a calibrated multi-view reconstruction. It is meant to help select plausible
+organ-level targets before running heavier reconstruction or manual validation.
 Bale estimation is also not reported from the current volume proxy; it requires
 field area, boll-mass or lint-turnout calibration, and validation against yield.
