@@ -1,0 +1,31 @@
+{
+  "artifact_type": "measurement-ready cotton boll candidate mining",
+  "scientific_boundary": "Candidate mining for reconstruction, not ground-truth boll labels.",
+  "dataset_root": "/Volumes/T9/ICML",
+  "long_edge": 760,
+  "max_images_per_phase": 80,
+  "max_candidates_per_image": 100,
+  "outputs": {
+    "candidates_csv": "outputs/metrics/measurement_ready_bolls/measurement_ready_candidates.csv",
+    "image_summary_csv": "outputs/metrics/measurement_ready_bolls/image_candidate_summary.csv",
+    "top_crops_dir": "outputs/metrics/measurement_ready_bolls/top_crops",
+    "contact_sheet": "outputs/metrics/measurement_ready_bolls/top_crops_contact_sheet.jpg",
+    "reconstruction_seed_images": "outputs/metrics/measurement_ready_bolls/reconstruction_seed_images"
+  },
+  "phase_summary": {
+    "pre": {
+      "candidates": 8000,
+      "images": 80,
+      "mean_readiness": 0.5840764902467831,
+      "high_confidence_candidates_score_ge_0_45": 8000,
+      "high_confidence_candidates_score_ge_0_55": 6326
+    },
+    "post": {
+      "candidates": 8000,
+      "images": 80,
+      "mean_readiness": 0.6357051184272339,
+      "high_confidence_candidates_score_ge_0_45": 8000,
+      "high_confidence_candidates_score_ge_0_55": 8000
+    }
+  }
+}

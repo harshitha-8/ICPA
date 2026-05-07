@@ -26,6 +26,10 @@ outputs/figures/*.jpg
 outputs/app_assets/
 outputs/llm_eval/sample*
 outputs/literature_smoke/
+outputs/metrics/**/top_crops/
+outputs/metrics/**/reconstruction_seed_images/
+outputs/metrics/**/local_reconstruction_subsets/**/images/
+outputs/metrics/measurement_ready_bolls_smoke/
 paper/word/_qa/
 logs/*.log
 tmp_pycache/

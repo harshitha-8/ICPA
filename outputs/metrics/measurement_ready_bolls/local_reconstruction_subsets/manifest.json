@@ -1,0 +1,12 @@
+{
+  "artifact_type": "local reconstruction subset builder",
+  "source_candidates": "outputs/metrics/measurement_ready_bolls/measurement_ready_candidates.csv",
+  "out_dir": "outputs/metrics/measurement_ready_bolls/local_reconstruction_subsets",
+  "anchors_per_phase": 2,
+  "window_sizes": [
+    20,
+    60
+  ],
+  "manifest_only": true,
+  "summary_csv": "outputs/metrics/measurement_ready_bolls/local_reconstruction_subsets/local_reconstruction_subsets.csv"
+}
