@@ -16,8 +16,13 @@ import shutil
 import subprocess
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageFilter
 
 
 def normalize(values: np.ndarray) -> np.ndarray:
@@ -104,84 +109,65 @@ def write_ply(path: Path, rgb: np.ndarray, height: np.ndarray, z_scale: float = 
             )
 
 
-def perspective_coefficients(src: list[tuple[float, float]], dst: list[tuple[float, float]]) -> list[float]:
-    matrix = []
-    target = []
-    for (x, y), (u, v) in zip(dst, src):
-        matrix.append([x, y, 1, 0, 0, 0, -u * x, -u * y])
-        matrix.append([0, 0, 0, x, y, 1, -v * x, -v * y])
-        target.extend([u, v])
-    return np.linalg.solve(np.asarray(matrix, dtype=np.float64), np.asarray(target, dtype=np.float64)).tolist()
-
-
-def shaded_real_texture(rgb: np.ndarray, height: np.ndarray) -> Image.Image:
+def shaded_real_texture(rgb: np.ndarray, height: np.ndarray) -> np.ndarray:
     texture = rgb.astype(np.float32) / 255.0
-    height_img = Image.fromarray((height * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(radius=2.0))
+    height_img = Image.fromarray((height * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(radius=1.8))
     h = np.asarray(height_img, dtype=np.float32) / 255.0
     gy, gx = np.gradient(h)
-    relief = normalize(-0.45 * gx - 0.70 * gy + 0.08 * h)
-    cotton_weight = np.clip((h - 0.25) / 0.55, 0.0, 1.0)[..., None]
-    shade = (0.96 + 0.13 * (relief - 0.5))[..., None]
-    shaded = texture * (1.0 - cotton_weight) + np.clip(texture * shade + 0.012, 0.0, 1.0) * cotton_weight
-    shaded = np.clip(shaded * 1.03, 0.0, 1.0)
-    return Image.fromarray((shaded * 255).astype(np.uint8), mode="RGB")
+    relief = normalize(-0.34 * gx - 0.55 * gy + 0.12 * h)
+    cotton_weight = np.clip((h - 0.22) / 0.55, 0.0, 1.0)[..., None]
+    shade = (0.95 + 0.16 * (relief - 0.5))[..., None]
+    shaded = texture * (1.0 - cotton_weight) + np.clip(texture * shade + 0.02, 0.0, 1.0) * cotton_weight
+    return np.clip(shaded * 1.02, 0.0, 1.0)
 
 
-def render_real_crop_tilt(
-    rgb: np.ndarray,
-    height: np.ndarray,
-    title: str,
-    azim: float = -58.0,
-    canvas_size: tuple[int, int] = (1180, 900),
-) -> Image.Image:
-    canvas_w, canvas_h = canvas_size
-    canvas = Image.new("RGB", canvas_size, "white")
-    draw = ImageDraw.Draw(canvas)
-    rad = math.radians(azim)
-    yaw = math.sin(rad)
-    depth = math.cos(rad)
-    patch = shaded_real_texture(rgb, height).convert("RGBA")
-    src_w, src_h = patch.size
-
-    base_w = canvas_w * (0.60 + 0.08 * abs(depth))
-    base_h = base_w * (src_h / max(src_w, 1)) * 0.62
-    cx = canvas_w * 0.50
-    cy = canvas_h * 0.54
-    top_w = base_w * (0.82 + 0.05 * depth)
-    bottom_w = base_w * (1.02 - 0.03 * depth)
-    skew = yaw * canvas_w * 0.085
-    rise = canvas_h * 0.040 * abs(depth)
-    dst = [
-        (cx - top_w / 2 + skew, cy - base_h / 2 - rise),
-        (cx + top_w / 2 + skew, cy - base_h / 2 - rise),
-        (cx + bottom_w / 2 - skew, cy + base_h / 2 + rise),
-        (cx - bottom_w / 2 - skew, cy + base_h / 2 + rise),
-    ]
-
-    src = [(0, 0), (src_w, 0), (src_w, src_h), (0, src_h)]
-    coeffs = perspective_coefficients(src, dst)
-    warped = patch.transform(canvas_size, Image.Transform.PERSPECTIVE, coeffs, Image.Resampling.BICUBIC)
-
-    shadow = Image.new("RGBA", canvas_size, (0, 0, 0, 0))
-    shadow_draw = ImageDraw.Draw(shadow)
-    shadow_draw.polygon([(x, y + 32) for x, y in dst], fill=(44, 37, 29, 40))
-    shadow = shadow.filter(ImageFilter.GaussianBlur(radius=18))
-    canvas = Image.alpha_composite(canvas.convert("RGBA"), shadow)
-    canvas = Image.alpha_composite(canvas, warped).convert("RGB")
-
-    draw = ImageDraw.Draw(canvas)
-    draw.text((38, 24), title, fill=(26, 28, 24))
-    draw.text(
-        (38, canvas_h - 42),
-        "Real UAV crop texture with subtle monocular 2.5D relief; not calibrated metric geometry.",
-        fill=(95, 105, 90),
+def plot_surface(ax: plt.Axes, rgb: np.ndarray, height: np.ndarray, title: str, azim: float) -> None:
+    h, w = height.shape
+    yy, xx = np.mgrid[0:h:h * 1j, 0:w:w * 1j]
+    x = xx / max(w - 1, 1)
+    y = 1.0 - yy / max(h - 1, 1)
+    z = np.asarray(
+        Image.fromarray((height * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(radius=2.2)),
+        dtype=np.float32,
+    ) / 255.0
+    z *= 0.135
+    texture = shaded_real_texture(rgb, height)
+    ax.plot_surface(
+        x,
+        y,
+        z,
+        rstride=1,
+        cstride=1,
+        facecolors=texture,
+        linewidth=0,
+        antialiased=True,
+        shade=False,
     )
-    return canvas
+    ax.view_init(elev=39, azim=azim)
+    ax.set_box_aspect((1, 1, 0.17))
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_zlim(0, 0.16)
+    ax.set_axis_off()
+    ax.set_title(title, fontsize=8, fontweight="bold", pad=0)
 
 
 def build_single_view(rgb: np.ndarray, height: np.ndarray, output_path: Path, title: str, azim: float = -58.0) -> None:
+    fig = plt.figure(figsize=(8.0, 6.4), dpi=180)
+    fig.patch.set_facecolor("white")
+    ax = fig.add_subplot(1, 1, 1, projection="3d")
+    plot_surface(ax, rgb, height, title, azim)
+    fig.text(
+        0.04,
+        0.035,
+        "Real UAV crop texture draped over a monocular 2.5D relief; not calibrated metric geometry.",
+        fontsize=7,
+        color="#65715f",
+    )
+    fig.tight_layout(pad=0.1)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    render_real_crop_tilt(rgb, height, title, azim=azim).save(output_path, quality=96)
+    fig.savefig(output_path, bbox_inches="tight", pad_inches=0.04)
+    plt.close(fig)
 
 
 def build_rotation_video(
@@ -224,26 +210,28 @@ def build_rotation_video(
 def build_gallery(results: list[dict[str, object]], output_path: Path) -> None:
     cols = 4
     rows = math.ceil(len(results) / cols)
-    tile_w, tile_h = 520, 390
-    margin_x, margin_y = 44, 82
-    gallery = Image.new("RGB", (cols * tile_w + 2 * margin_x, rows * tile_h + margin_y + 40), "white")
-    draw = ImageDraw.Draw(gallery)
-    draw.text((margin_x, 20), "Local Cotton Boll/Cluster 2.5D Views From Real UAV Crops", fill=(18, 20, 18))
-    draw.text((margin_x, 48), "Photo-preserving tilt views for target selection; not calibrated metric 3D.", fill=(82, 91, 79))
+    fig = plt.figure(figsize=(cols * 3.35, rows * 3.05), dpi=180)
+    fig.patch.set_facecolor("white")
     for idx, result in enumerate(results, start=1):
-        title = f"Rank {result['rank']} | score {result['score']}"
-        tile = render_real_crop_tilt(
+        ax = fig.add_subplot(rows, cols, idx, projection="3d")
+        plot_surface(
+            ax,
             result["rgb"],  # type: ignore[arg-type]
             result["height"],  # type: ignore[arg-type]
-            title,
-            azim=-55.0,
-            canvas_size=(tile_w, tile_h),
+            f"Rank {result['rank']} | score {result['score']}",
+            -56.0,
         )
-        row = (idx - 1) // cols
-        col = (idx - 1) % cols
-        gallery.paste(tile, (margin_x + col * tile_w, margin_y + row * tile_h))
+    fig.suptitle(
+        "Local Cotton Boll/Cluster 2.5D Reconstructions From Real UAV Crops\n"
+        "Real texture on soft monocular relief for target selection; not calibrated metric 3D.",
+        fontsize=13,
+        fontweight="bold",
+        y=0.985,
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.94), pad=0.3)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    gallery.save(output_path, quality=96)
+    fig.savefig(output_path, bbox_inches="tight", pad_inches=0.04)
+    plt.close(fig)
 
 
 def write_summary(path: Path, rows: list[dict[str, str | int | float]]) -> None:
@@ -340,7 +328,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out-dir", type=Path, default=Path("outputs/metrics/local_boll_2p5d_reconstruction"))
     parser.add_argument("--phase", choices=["pre", "post"], default="post")
     parser.add_argument("--limit", type=int, default=12)
-    parser.add_argument("--crop-size", type=int, default=220)
+    parser.add_argument("--crop-size", type=int, default=300)
     parser.add_argument("--video", action="store_true")
     parser.add_argument("--video-frames", type=int, default=72)
     parser.add_argument("--video-fps", type=int, default=18)
