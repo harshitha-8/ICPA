@@ -16,13 +16,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import matplotlib
-
-matplotlib.use("Agg")
-
-import matplotlib.pyplot as plt
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 
 
 def normalize(values: np.ndarray) -> np.ndarray:
@@ -109,44 +104,84 @@ def write_ply(path: Path, rgb: np.ndarray, height: np.ndarray, z_scale: float = 
             )
 
 
-def plot_surface(ax: plt.Axes, rgb: np.ndarray, height: np.ndarray, title: str) -> None:
-    h, w = height.shape
-    yy, xx = np.mgrid[0:h, 0:w]
-    x = xx / max(w - 1, 1)
-    y = 1.0 - yy / max(h - 1, 1)
-    z = height * 0.12
+def perspective_coefficients(src: list[tuple[float, float]], dst: list[tuple[float, float]]) -> list[float]:
+    matrix = []
+    target = []
+    for (x, y), (u, v) in zip(dst, src):
+        matrix.append([x, y, 1, 0, 0, 0, -u * x, -u * y])
+        matrix.append([0, 0, 0, x, y, 1, -v * x, -v * y])
+        target.extend([u, v])
+    return np.linalg.solve(np.asarray(matrix, dtype=np.float64), np.asarray(target, dtype=np.float64)).tolist()
+
+
+def shaded_real_texture(rgb: np.ndarray, height: np.ndarray) -> Image.Image:
     texture = rgb.astype(np.float32) / 255.0
-    texture = np.clip(texture * 1.04 + 0.015, 0.0, 1.0)
-    ax.plot_surface(
-        x,
-        y,
-        z,
-        rstride=1,
-        cstride=1,
-        facecolors=texture,
-        linewidth=0,
-        antialiased=False,
-        shade=False,
+    height_img = Image.fromarray((height * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(radius=2.0))
+    h = np.asarray(height_img, dtype=np.float32) / 255.0
+    gy, gx = np.gradient(h)
+    relief = normalize(-0.45 * gx - 0.70 * gy + 0.08 * h)
+    cotton_weight = np.clip((h - 0.25) / 0.55, 0.0, 1.0)[..., None]
+    shade = (0.96 + 0.13 * (relief - 0.5))[..., None]
+    shaded = texture * (1.0 - cotton_weight) + np.clip(texture * shade + 0.012, 0.0, 1.0) * cotton_weight
+    shaded = np.clip(shaded * 1.03, 0.0, 1.0)
+    return Image.fromarray((shaded * 255).astype(np.uint8), mode="RGB")
+
+
+def render_real_crop_tilt(
+    rgb: np.ndarray,
+    height: np.ndarray,
+    title: str,
+    azim: float = -58.0,
+    canvas_size: tuple[int, int] = (1180, 900),
+) -> Image.Image:
+    canvas_w, canvas_h = canvas_size
+    canvas = Image.new("RGB", canvas_size, "white")
+    draw = ImageDraw.Draw(canvas)
+    rad = math.radians(azim)
+    yaw = math.sin(rad)
+    depth = math.cos(rad)
+    patch = shaded_real_texture(rgb, height).convert("RGBA")
+    src_w, src_h = patch.size
+
+    base_w = canvas_w * (0.60 + 0.08 * abs(depth))
+    base_h = base_w * (src_h / max(src_w, 1)) * 0.62
+    cx = canvas_w * 0.50
+    cy = canvas_h * 0.54
+    top_w = base_w * (0.82 + 0.05 * depth)
+    bottom_w = base_w * (1.02 - 0.03 * depth)
+    skew = yaw * canvas_w * 0.085
+    rise = canvas_h * 0.040 * abs(depth)
+    dst = [
+        (cx - top_w / 2 + skew, cy - base_h / 2 - rise),
+        (cx + top_w / 2 + skew, cy - base_h / 2 - rise),
+        (cx + bottom_w / 2 - skew, cy + base_h / 2 + rise),
+        (cx - bottom_w / 2 - skew, cy + base_h / 2 + rise),
+    ]
+
+    src = [(0, 0), (src_w, 0), (src_w, src_h), (0, src_h)]
+    coeffs = perspective_coefficients(src, dst)
+    warped = patch.transform(canvas_size, Image.Transform.PERSPECTIVE, coeffs, Image.Resampling.BICUBIC)
+
+    shadow = Image.new("RGBA", canvas_size, (0, 0, 0, 0))
+    shadow_draw = ImageDraw.Draw(shadow)
+    shadow_draw.polygon([(x, y + 32) for x, y in dst], fill=(44, 37, 29, 40))
+    shadow = shadow.filter(ImageFilter.GaussianBlur(radius=18))
+    canvas = Image.alpha_composite(canvas.convert("RGBA"), shadow)
+    canvas = Image.alpha_composite(canvas, warped).convert("RGB")
+
+    draw = ImageDraw.Draw(canvas)
+    draw.text((38, 24), title, fill=(26, 28, 24))
+    draw.text(
+        (38, canvas_h - 42),
+        "Real UAV crop texture with subtle monocular 2.5D relief; not calibrated metric geometry.",
+        fill=(95, 105, 90),
     )
-    ax.view_init(elev=50, azim=-58)
-    ax.set_box_aspect((1, 1, 0.12))
-    ax.set_xlim(0, 1)
-    ax.set_ylim(0, 1)
-    ax.set_zlim(0, 0.16)
-    ax.set_axis_off()
-    ax.set_title(title, fontsize=8, fontweight="bold", pad=1)
+    return canvas
 
 
 def build_single_view(rgb: np.ndarray, height: np.ndarray, output_path: Path, title: str, azim: float = -58.0) -> None:
-    fig = plt.figure(figsize=(7.5, 6.2), dpi=210)
-    fig.patch.set_facecolor("white")
-    ax = fig.add_subplot(1, 1, 1, projection="3d")
-    plot_surface(ax, rgb, height, title)
-    ax.view_init(elev=50, azim=azim)
-    fig.tight_layout()
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(output_path, bbox_inches="tight", pad_inches=0.05)
-    plt.close(fig)
+    render_real_crop_tilt(rgb, height, title, azim=azim).save(output_path, quality=96)
 
 
 def build_rotation_video(
@@ -189,27 +224,26 @@ def build_rotation_video(
 def build_gallery(results: list[dict[str, object]], output_path: Path) -> None:
     cols = 4
     rows = math.ceil(len(results) / cols)
-    fig = plt.figure(figsize=(cols * 3.3, rows * 3.1), dpi=180)
-    fig.patch.set_facecolor("white")
+    tile_w, tile_h = 520, 390
+    margin_x, margin_y = 44, 82
+    gallery = Image.new("RGB", (cols * tile_w + 2 * margin_x, rows * tile_h + margin_y + 40), "white")
+    draw = ImageDraw.Draw(gallery)
+    draw.text((margin_x, 20), "Local Cotton Boll/Cluster 2.5D Views From Real UAV Crops", fill=(18, 20, 18))
+    draw.text((margin_x, 48), "Photo-preserving tilt views for target selection; not calibrated metric 3D.", fill=(82, 91, 79))
     for idx, result in enumerate(results, start=1):
-        ax = fig.add_subplot(rows, cols, idx, projection="3d")
-        plot_surface(
-            ax,
+        title = f"Rank {result['rank']} | score {result['score']}"
+        tile = render_real_crop_tilt(
             result["rgb"],  # type: ignore[arg-type]
             result["height"],  # type: ignore[arg-type]
-            f"Rank {result['rank']} | score {result['score']}",
+            title,
+            azim=-55.0,
+            canvas_size=(tile_w, tile_h),
         )
-    fig.suptitle(
-        "Local Cotton Boll/Cluster 2.5D Reconstructions From Real UAV Crops\n"
-        "Monocular proxy surfaces for selecting targets; not calibrated metric 3D.",
-        fontsize=13,
-        fontweight="bold",
-        y=0.99,
-    )
-    fig.tight_layout(rect=(0, 0, 1, 0.94))
+        row = (idx - 1) // cols
+        col = (idx - 1) % cols
+        gallery.paste(tile, (margin_x + col * tile_w, margin_y + row * tile_h))
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(output_path, bbox_inches="tight")
-    plt.close(fig)
+    gallery.save(output_path, quality=96)
 
 
 def write_summary(path: Path, rows: list[dict[str, str | int | float]]) -> None:
