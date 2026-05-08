@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import csv
 from pathlib import Path
 
 from docx import Document
@@ -14,17 +15,21 @@ from docx.shared import Inches, Pt, RGBColor
 
 
 BASE = Path(__file__).resolve().parent
+REPO_ROOT = BASE.parents[1]
 DOCX_OUT = BASE / "icpa_2026_mask_guided_cotton_until_algorithms.docx"
 MD_OUT = BASE / "icpa_2026_mask_guided_cotton_until_algorithms.md"
 TITLE = "Mask-Guided 3D Cotton Boll Reconstruction for Pre- and Post-Defoliation Phenotyping"
+EXPERIMENT_DIR = REPO_ROOT / "outputs" / "experiments" / "icpa_paper_metrics"
 
 
 REFERENCES = [
+    "Adke, S., Li, C., Rasheed, K. M., and Maier, F. W. 2022. Supervised and weakly supervised deep learning for segmentation and counting of cotton bolls using proximal imagery. Sensors 22(10):3688.",
     "DeTone, D., Malisiewicz, T., and Rabinovich, A. 2018. SuperPoint: Self-supervised interest point detection and description. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops.",
     "Edelsbrunner, H., Kirkpatrick, D., and Seidel, R. 1983. On the shape of a set of points in the plane. IEEE Transactions on Information Theory 29(4):551-559.",
-    "Jiang, X., Li, Z., Li, D., Zhang, Y., Hu, J., Lin, F., and Zhou, J. 2025. Cotton3DGaussians: 3D Gaussian-based three-dimensional reconstruction and phenotyping for cotton bolls. The Plant Phenomics.",
+    "Jiang, L., Sun, J., Chee, P. W., Li, C., and Fu, L. 2025. Cotton3DGaussians: Multiview 3D Gaussian Splatting for boll mapping and plant architecture analysis. Computers and Electronics in Agriculture 234:110293.",
     "Kerbl, B., Kopanas, G., Leimkuehler, T., and Drettakis, G. 2023. 3D Gaussian Splatting for real-time radiance field rendering. ACM Transactions on Graphics 42(4):1-14.",
     "Kirillov, A., Mintun, E., Ravi, N., Mao, H., Rolland, C., Gustafson, L., et al. 2023. Segment Anything. Proceedings of the IEEE/CVF International Conference on Computer Vision.",
+    "Li, Y., Cao, Z., Lu, H., Xiao, Y., Zhu, Y., and Cremers, A. B. 2016. In-field cotton detection via region-based semantic image segmentation. Computers and Electronics in Agriculture 127:475-486.",
     "Mildenhall, B., Srinivasan, P. P., Tancik, M., Barron, J. T., Ramamoorthi, R., and Ng, R. 2020. NeRF: Representing scenes as neural radiance fields for view synthesis. Proceedings of the European Conference on Computer Vision.",
     "Oquab, M., Darcet, T., Moutakanni, T., Vo, H., Szafraniec, M., Khalidov, V., et al. 2023. DINOv2: Learning robust visual features without supervision. arXiv:2304.07193.",
     "Ravi, N., Gabeur, V., Hu, Y.-T., Hu, R., Ryali, C., Ma, T., et al. 2024. SAM 2: Segment Anything in Images and Videos. arXiv:2408.00714.",
@@ -32,6 +37,7 @@ REFERENCES = [
     "Schoenberger, J. L., and Frahm, J.-M. 2016. Structure-from-Motion revisited. Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition.",
     "Schoenberger, J. L., Zheng, E., Frahm, J.-M., and Pollefeys, M. 2016. Pixelwise view selection for unstructured multi-view stereo. Proceedings of the European Conference on Computer Vision.",
     "Sun, S., Li, C., Paterson, A. H., Jiang, Y., Xu, R., Robertson, J. S., et al. 2020. Three-dimensional photogrammetric mapping of cotton bolls in situ based on point cloud segmentation and clustering. ISPRS Journal of Photogrammetry and Remote Sensing 160:195-207.",
+    "Tan, C., Sun, J., Song, H., and Li, C. 2025. A customized density map model and Segment Anything model for cotton boll number, size, and yield prediction in aerial images. Computers and Electronics in Agriculture 232:110065.",
     "Wang, S., Leroy, V., Cabon, Y., Chidlovskii, B., and Revaud, J. 2024. DUSt3R: Geometric 3D vision made easy. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.",
     "Wang, S., Leroy, V., Cabon, Y., Chidlovskii, B., and Revaud, J. 2024. MASt3R: Grounding image matching in 3D with mast3r. Proceedings of the European Conference on Computer Vision.",
     "Wang, J., Chen, M., Karaev, N., Vedaldi, A., Rupprecht, C., and Novotny, D. 2025. VGGT: Visual Geometry Grounded Transformer. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.",
@@ -68,6 +74,133 @@ def paragraph(doc: Document, text: str = "", style: str | None = None, italic: b
     p.paragraph_format.space_after = Pt(4)
     run = p.add_run(text)
     run.italic = italic
+
+
+def read_csv_rows(path: Path) -> list[dict[str, str]]:
+    with path.open("r", newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def figure(doc: Document, number: int, path: Path, caption: str, width_inches: float = 6.6) -> None:
+    if not path.exists():
+        paragraph(doc, f"Figure {number} placeholder: {caption} [missing file: {path}]", italic=True)
+        return
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p.add_run()
+    run.add_picture(str(path), width=Inches(width_inches))
+    cap = doc.add_paragraph()
+    cap.paragraph_format.space_after = Pt(6)
+    r = cap.add_run(f"Figure {number} ")
+    r.bold = True
+    cap.add_run(caption)
+
+
+def value(path: Path, key_col: str, key: str, value_col: str) -> str:
+    for row in read_csv_rows(path):
+        if row.get(key_col) == key:
+            return row[value_col]
+    return ""
+
+
+def fmt(value: str | float, ndigits: int = 3) -> str:
+    try:
+        return f"{float(value):.{ndigits}f}"
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def pct(value: str | float) -> str:
+    try:
+        return f"{float(value):+.2f}%"
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def add_experimental_sections(doc: Document) -> None:
+    tdir = EXPERIMENT_DIR / "tables"
+    fdir = EXPERIMENT_DIR / "figures"
+    phase_counts = read_csv_rows(tdir / "table_1_phase_count_summary.csv")
+    candidate_summary = read_csv_rows(tdir / "table_3_candidate_phase_summary.csv")
+    contrast = read_csv_rows(tdir / "table_4_phase_contrast.csv")
+    ablation = read_csv_rows(tdir / "table_5_candidate_score_ablation.csv")
+    grid = read_csv_rows(tdir / "table_6_plot_grid_proxy_summary.csv")
+    volume_mutation = read_csv_rows(tdir / "table_7_proxy_volume_mutation.csv")
+    local_2p5d = read_csv_rows(tdir / "table_8_local_2p5d_summary.csv")
+    ci = read_csv_rows(tdir / "table_9_phase_confidence_intervals.csv")
+
+    doc.add_heading("6 Experimental Design and Current Proxy Results", level=1)
+    paragraph(doc, "This section reports the current experimental outputs generated from the available UAV folders. The values are useful for writing the results section and for deciding what must be validated next, but they should be interpreted with the calibration boundary stated earlier. Counts are produced by the current detector, while length, diameter, and volume are proxy traits derived from mask geometry and a provisional image scale. The final submission should add manual labels, physical boll measurements, or calibrated geometry before claiming metric accuracy.")
+
+    doc.add_heading("6.1 Dataset-scale audit", level=2)
+    paragraph(doc, "The first audit separates pre- and post-defoliation imagery by folder name and runs the phase-aware detector across the full image set. This provides a reproducible accounting of the current data volume and detector load before any filtering to measurement-ready candidates.")
+    table(doc, "Table 3 Phase-level detector audit on the current UAV folders.", ["Phase", "Images", "Detected count", "Raw candidates", "Mean count/image"], [
+        [row["phase"], row["images"], row["total_count"], row["total_raw_candidates"], fmt(row["mean_count"], 1)] for row in phase_counts
+    ], [0.75, 0.75, 1.25, 1.25, 1.35])
+    paragraph(doc, "The detector produces millions of candidate bolls across 1,549 images. The pre-defoliation subset has a higher mean adjusted count per image, whereas the post-defoliation subset supplies more raw retained candidate regions. This difference should be read together with the current pre-phase multiplier and should be revisited after manual count validation.")
+
+    doc.add_heading("6.2 Measurement-ready candidate analysis", level=2)
+    paragraph(doc, "For organ-scale analysis, the pipeline samples high-confidence candidates from each phase and summarizes mask-derived traits. The measurement-readiness score combines lint fraction, visibility, brightness, shape regularity, size prior, green penalty, and phase. It is a ranking signal for inspection and downstream trait estimation rather than a ground-truth correctness score.")
+    table(doc, "Table 4 Measurement-ready candidate statistics. Diameter and volume are proxy values under the current scale assumption.", ["Phase", "Candidates", "Ready score", "Lint frac.", "Green frac.", "Visibility", "Diam. proxy (cm)", "Vol. proxy (cm3)"], [
+        [row["phase"], row["candidates"], fmt(row["mean_readiness"]), fmt(row["mean_lint"]), fmt(row["mean_green"]), fmt(row["mean_visibility"]), fmt(row["mean_diameter_cm_proxy"], 2), fmt(row["mean_volume_cm3_proxy"], 1)]
+        for row in candidate_summary
+    ], [0.55, 0.8, 0.85, 0.75, 0.75, 0.75, 1.0, 1.05])
+    table(doc, "Table 5 Phase contrast in proxy morphology and visibility.", ["Metric", "Pre mean", "Post mean", "Post - pre", "Relative change"], [
+        [row["metric"], fmt(row["pre_mean"]), fmt(row["post_mean"]), fmt(row["post_minus_pre"]), pct(row["relative_change_pct"])]
+        for row in contrast
+    ], [1.65, 0.9, 0.9, 0.9, 1.0])
+    figure(doc, 1, fdir / "readiness_distribution.png", "Distribution of measurement-readiness scores for pre- and post-defoliation candidates. The current proxy favors candidates that are bright, compact, visible, and low in green canopy contamination.")
+    figure(doc, 2, fdir / "proxy_trait_boxplots.png", "Proxy trait distributions for visibility, diameter, and ellipsoid volume. These plots should be retained as exploratory results until physical trait measurements are collected.")
+
+    doc.add_heading("6.3 Confidence intervals and phase interpretation", level=2)
+    paragraph(doc, "The candidate-level confidence intervals indicate that the readiness score is tightly estimated at the sampled-candidate level, whereas proxy volume has wide intervals because ellipsoid volume scales cubically with mask size and is sensitive to adherent or merged lint clusters. This is scientifically important: the pipeline can rank candidates reliably, but volume must be validated before being used as a yield surrogate.")
+    table(doc, "Table 6 Ninety-five percent confidence intervals for selected proxy traits.", ["Phase", "Metric", "CI low", "CI high"], [
+        [row["phase"], row["metric"], fmt(row["ci95_low"], 4), fmt(row["ci95_high"], 4)]
+        for row in ci
+    ], [0.65, 1.85, 1.1, 1.1])
+
+    doc.add_heading("6.4 Ablation of measurement-readiness terms", level=2)
+    paragraph(doc, "The ablation study removes one term at a time from the candidate ranking score and compares the resulting ranking with the full score. Spearman correlation measures whether global ranking order is preserved, while top-five overlap asks whether the same highest-priority candidates would be selected for local 2.5D reconstruction.")
+    table(doc, "Table 7 Candidate-ranking ablation. Higher Spearman and top-five overlap indicate closer agreement with the full score.", ["Variant", "Mean score", "Spearman", "Top-5 overlap"], [
+        [row["variant"], fmt(row["mean_score"]), fmt(row["spearman_with_full"]), fmt(row["top5_overlap_with_full"])]
+        for row in ablation
+    ], [1.65, 1.0, 1.0, 1.1])
+    figure(doc, 3, fdir / "readiness_ablation.png", "Ablation behavior of the candidate-ranking score. Lint fraction and visibility have the strongest practical effect on which candidates are selected for local review.")
+
+    doc.add_heading("6.5 Plot-grid mapping", level=2)
+    paragraph(doc, "The plot-grid experiment assigns candidates to an image-coordinate grid that mirrors the row-column reasoning used in field phenotyping. This is not yet a georeferenced plot map; it is a spatial accounting layer that makes dense cotton imagery easier to audit and prepares the output for orthomosaic/GCP-based mapping.")
+    post_cells = sum(1 for row in grid if row["phase"] == "post")
+    pre_cells = sum(1 for row in grid if row["phase"] == "pre")
+    table(doc, "Table 8 Image-coordinate plot-grid summary.", ["Phase", "Occupied cells", "Grid definition", "Reported cell traits"], [
+        ["pre", str(pre_cells), "4 rows by 43 columns", "count, mean readiness, mean volume proxy"],
+        ["post", str(post_cells), "4 rows by 43 columns", "count, mean readiness, mean volume proxy"],
+    ], [0.7, 1.0, 1.45, 2.4])
+    figure(doc, 4, fdir / "plot_grid_candidate_heatmaps.png", "Image-coordinate grid maps for candidate density and proxy traits. This figure is intended to become a metric plot map once orthomosaic coordinates and field boundaries are added.")
+
+    doc.add_heading("6.6 Proxy volume mutation analysis", level=2)
+    paragraph(doc, "The volume-mutation plot follows the cotton point-cloud literature by sorting proxy volumes and inspecting large changes in the tail of the distribution. The current version uses a p99 cap before estimating the mutation threshold to reduce domination by extreme merged components. This produces a conservative diagnostic for adherent or merged cotton regions rather than a final biological threshold.")
+    table(doc, "Table 9 P99-capped proxy volume mutation analysis.", ["Phase", "Median vol.", "P95 vol.", "P99 vol.", "Capped mean", "Threshold D", "First mutation idx."], [
+        [row["phase"], fmt(row["median_volume_proxy"], 1), fmt(row["p95_volume_proxy"], 1), fmt(row["p99_volume_proxy"], 1), fmt(row["p99_capped_mean_volume_proxy"], 1), fmt(row["threshold_D_p99_capped"], 2), row["first_mutation_index_p99_capped"]]
+        for row in volume_mutation
+    ], [0.55, 0.9, 0.9, 0.9, 1.0, 0.85, 1.05])
+    figure(doc, 5, fdir / "volume_mutation_proxy.png", "Sorted proxy-volume curves and first mutation positions after p99 capping. The analysis is inspired by cotton boll point-cloud volume diagnostics but remains proxy-based in the current UAV MVP.")
+
+    doc.add_heading("6.7 Local 2.5D target selection", level=2)
+    paragraph(doc, "The local reconstruction module selects the highest-ranked candidates for visual inspection and exports crop-level PLY files. These outputs are useful for demonstrating mask-to-3D review and for selecting images that deserve full calibrated reconstruction. They should not be presented as final 3D cotton boll geometry until multi-view or scale-calibrated evidence is available.")
+    table(doc, "Table 10 Highest-ranked local 2.5D reconstruction candidates.", ["Local rank", "Phase", "Candidate", "Ready score", "Height mean", "Height SD", "Lint mean"], [
+        [row["local_rank"], row["phase"], row["candidate_id"], fmt(row["measurement_ready_score"], 4), fmt(row["height_mean"], 4), fmt(row["height_std"], 4), fmt(row["lint_mean"], 4)]
+        for row in local_2p5d[:8]
+    ], [0.8, 0.55, 0.75, 0.9, 0.85, 0.75, 0.75])
+    figure(doc, 6, fdir / "local_2p5d_quality_scatter.png", "Relationship between measurement-readiness score and local 2.5D statistics for selected candidates. The selected candidates are inspection targets for the next calibrated reconstruction pass.")
+
+    doc.add_heading("6.8 Next validation required before final accuracy claims", level=2)
+    bullets(doc, [
+        "Manual count labels on a stratified subset of pre- and post-defoliation images for precision, recall, F1, MAE, and RMSE.",
+        "Expert or SAM-assisted masks on visible bolls for mask IoU, boundary F1, and mask-area error.",
+        "Physical boll diameter and length measurements, or scale-calibrated orthomosaic/GCP metadata, for trait MAE and relative volume error.",
+        "A calibrated SfM/MVS, DUSt3R/MASt3R/VGGT, or Gaussian Splatting pass on selected high-visibility crops for Chamfer distance, reprojection consistency, point density, and view rendering quality.",
+        "A separate agronomist-in-the-loop evaluation if an LLM reporting layer is included, with schema validity, expert agreement, hallucination rate, latency, and recommendation consistency.",
+    ])
 
 
 def bullets(doc: Document, items: list[str]) -> None:
@@ -241,11 +374,16 @@ def algorithm(doc: Document, number: int, title: str, lines: list[tuple[str, str
 
 def equations(doc: Document) -> None:
     eqs = [
-        "L_i = l_i s,     W_i = w_i s",
-        "D_i = 1/2 (w_i^box + h_i^box) s",
-        "V_i = 4π/3 · (L_i/2)(W_i/2)^2",
-        "ν_i = A_i^contour / A_i^box",
-        "q_i = λ_1 r_i^lint + λ_2 ν_i + λ_3 d_i + λ_4 r_i^size + λ_5 b_i + λ_6(1 - r_i^green)",
+        "V_i^vis = A_i^mask / A_i^box",
+        "L_i = s a_i,     W_i = s b_i",
+        "D_i = 1/2 (L_i + W_i)",
+        "U_i = 4π/3 · (L_i/2)(W_i/2)(W_i/2)",
+        "R_i = max(0, 1 - (ρ_i - 1)/3.5),     ρ_i = max(w_i,h_i)/min(w_i,h_i)",
+        "S_i = min(sqrt(A_i^mask)/20, 1)",
+        "M_i = 0.32 l_i + 0.20 V_i^vis + 0.16 q_i^bright + 0.14 R_i + 0.12 S_i + 0.06(1 - g_i) + 0.08 1[p_i = post]",
+        "Δ_μ(x) = mean_post(x) - mean_pre(x)",
+        "Δ_%(x) = 100 · (mean_post(x) - mean_pre(x)) / max(|mean_pre(x)|, ε)",
+        "U_i^99 = min(U_i, percentile_99(U)),     D_thr = 5 mean(diff(sort(U^99)))",
         "C_rc = Σ_i 1[center_i ∈ G_rc]",
     ]
     for idx, eq in enumerate(eqs, start=1):
@@ -289,13 +427,13 @@ def build_doc() -> None:
     doc.add_heading("2.1 UAV and field-based cotton phenotyping", level=2)
     paragraph(doc, "UAV phenotyping has become central in precision agriculture because it offers field-scale coverage with repeatable image acquisition. In cotton, UAV and close-range imagery have been used for stand assessment, canopy characterization, boll detection, and yield-related traits. The closest field-scale works for this manuscript are the cotton boll point-cloud studies by Sun et al. (2020) and Xiao et al. (2024), which demonstrate that 3D reconstruction can support boll counting, spatial distribution, volume analysis, and yield estimation when capture geometry is sufficiently stable. The present paper should position its contribution around paired defoliation, mask-guided measurement readiness, and explicit proxy boundaries rather than claiming novelty for cotton 3D reconstruction itself.")
     doc.add_heading("2.2 Cotton boll detection and counting", level=2)
-    paragraph(doc, "Cotton boll counting has been studied with classical image processing, supervised object detectors, and fusion strategies. The current project inherits a phase-aware detector based on contrast enhancement, multi-scale top-hat morphology, thresholding, contour filtering, and color gates. This detector is useful because it produces candidate regions without dense manual annotation, but a detector box is not a physical measurement. The gap addressed here is the conversion of detection evidence into masks, proxy traits, and 3D review objects.")
+    paragraph(doc, "Cotton boll counting has been studied with classical image processing, supervised object detectors, weak supervision, region-based semantic segmentation, and density-map learning (Li et al., 2016; Adke et al., 2022; Tan et al., 2025). The current project inherits a phase-aware detector based on contrast enhancement, multi-scale top-hat morphology, thresholding, contour filtering, and color gates. This detector is useful because it produces candidate regions without dense manual annotation, but a detector box is not a physical measurement. The gap addressed here is the conversion of detection evidence into masks, proxy traits, and 3D review objects.")
     doc.add_heading("2.3 3D reconstruction and geometry", level=2)
     paragraph(doc, "Structure-from-motion and multi-view stereo remain standard tools for image-based 3D reconstruction (Schoenberger and Frahm, 2016; Schoenberger et al., 2016). Learned local features and matchers, including SuperPoint and SuperGlue, improve correspondence in many settings but still require texture and viewpoint consistency (DeTone et al., 2018; Sarlin et al., 2020). Newer geometry models such as DUSt3R, MASt3R, and VGGT reduce some of the engineering burden by predicting geometric relationships more directly, but their use in dense cotton scenes must be validated rather than assumed (Wang et al., 2024; Wang et al., 2025).")
     doc.add_heading("2.4 Segmentation foundation models", level=2)
     paragraph(doc, "Segment Anything introduced promptable segmentation at large scale and made point-, box-, and mask-conditioned extraction a practical design pattern for downstream systems (Kirillov et al., 2023). SAM 2 extended this idea to images and video, making temporal or sequential mask propagation more accessible (Ravi et al., 2024). In this paper, the term SAM-style refers to the prompt-first design: a detector box identifies a candidate, and a mask stage isolates lint-like pixels. The current implementation does not claim to run official SAM/SAM 2 unless those models are integrated and evaluated.")
     doc.add_heading("2.5 Neural rendering and Gaussian Splatting", level=2)
-    paragraph(doc, "NeRF and 3D Gaussian Splatting have changed how scenes are represented for novel-view synthesis (Mildenhall et al., 2020; Kerbl et al., 2023). Cotton3DGaussians is particularly relevant because it connects Gaussian scene representation with cotton boll phenotyping (Jiang et al., 2025). The distinction for this manuscript is scale and evidence: the present work starts from UAV field imagery and paired defoliation, and it treats mask-to-3D review as a measurement-support layer rather than a rendering-only objective.")
+    paragraph(doc, "NeRF and 3D Gaussian Splatting have changed how scenes are represented for novel-view synthesis (Mildenhall et al., 2020; Kerbl et al., 2023). Cotton3DGaussians is particularly relevant because it connects Gaussian scene representation with cotton boll phenotyping, including the mapping of segmentation masks into a multi-view 3DGS representation (Jiang et al., 2025). The distinction for this manuscript is scale and evidence: the present work starts from UAV field imagery and paired defoliation, and it treats mask-to-3D review as a measurement-support layer rather than a rendering-only objective.")
 
     table(doc, "Table 1 Closest-prior positioning for the current manuscript.", ["Topic", "Representative source", "What it contributes", "Remaining gap"], [
         ["SfM/MVS", "Schoenberger and Frahm (2016); Schoenberger et al. (2016)", "Classical camera pose and dense reconstruction", "Cotton lint can be low-texture and repetitive"],
@@ -328,7 +466,7 @@ def build_doc() -> None:
     paragraph(doc, "The MVP app estimates a morphology-aware depth proxy from row position, brightness, lint likelihood, canopy greenness, and local texture. The depth image is converted into a colored point cloud for interactive review. Separately, pixels belonging to measurement-ready boll masks are projected into the same coordinate frame and exported as a boll-mask point cloud. The resulting viewer resembles a segmentation-to-3D review loop: the original image shows the mask evidence, while the 3D view highlights the selected boll evidence inside the reconstructed scene.")
     paragraph(doc, "This representation is useful for quality control and method development, but it is not a substitute for calibrated 3D reconstruction. A metric version should use camera poses, SfM/MVS, Gaussian Splatting with validated scale, RGB-D data, or ground-control-based orthomosaic geometry. The manuscript should report the current 3D output as a proxy review space unless such calibration is completed.")
     doc.add_heading("4.5 Trait estimation", level=2)
-    paragraph(doc, "Let s denote the image scale in mm per pixel, l_i and w_i denote the major and minor axes of the extracted mask for candidate i, and w_i^box and h_i^box denote the detector-box width and height. The pipeline reports mask length L_i, mask width W_i, coarse detector diameter D_i, ellipsoid volume proxy V_i, visibility nu_i, extraction confidence q_i, and plot-cell count C_rc. Equations (1)-(6) define the planned trait computations.")
+    paragraph(doc, "Let s denote the image scale in cm per pixel, l_i and w_i denote the major and minor axes of the extracted mask for candidate i, and w_i^box and h_i^box denote the detector-box width and height. The pipeline reports mask length L_i, mask width W_i, coarse detector diameter D_i, ellipsoid volume proxy U_i, visibility V_i^vis, extraction confidence M_i, and plot-cell count C_rc. Equations (1)-(11) define the current trait computations and phase-comparison diagnostics.")
     equations(doc)
     paragraph(doc, "The ellipsoid volume proxy assumes that a boll can be approximated by one major axis and two equal minor axes. This is a pragmatic approximation for ranking and comparison, not a physical volume measurement. When physical measurements become available, the model should report mean absolute error, relative volume error, and correlation against measured boll dimensions.")
     doc.add_heading("4.6 Plot-level mapping", level=2)
@@ -344,7 +482,7 @@ def build_doc() -> None:
         ("B ← DetectBolls(I, p; Θ_d)", "raw candidate detection"),
         ("**for** each candidate b_i ∈ B **do**", ""),
         ("    M_i, m_i ← ExtractMask(I, b_i; Θ_m)", "Algorithm 2"),
-        ("    x_i ← EstimateTraits(b_i, M_i, s)", "Equations (1)-(6)"),
+        ("    x_i ← EstimateTraits(b_i, M_i, s)", "Equations (1)-(11)"),
         ("    q_i ← ScoreCandidate(x_i, M_i, b_i)", "measurement readiness"),
         ("    **if** q_i ≥ τ_q **then** R ← R ∪ {(b_i, M_i, x_i, q_i)}", "retain high-confidence candidate"),
         ("**end for**", ""),
@@ -371,7 +509,7 @@ def build_doc() -> None:
         ("    (x, y, z) ← BackProject(u, v, Z)", "proxy or calibrated geometry"),
         ("    Append (x, y, z, color_i) to P_boll", "highlighted boll cloud"),
         ("**end for**", ""),
-        ("Compute L_i, W_i, D_i, V_i, ν_i, q_i", "Equations (1)-(6)"),
+        ("Compute L_i, W_i, D_i, U_i, V_i^vis, M_i", "Equations (1)-(11)"),
         ("Export P_boll as boll_mask_point_cloud.ply", "3D review artifact"),
         ("**output** P_boll and trait vector x_i", ""),
     ])
@@ -382,11 +520,13 @@ def build_doc() -> None:
         ("    center_i ← centroid(M_i) or center(b_i)", "candidate location"),
         ("    Find cell G_rc such that center_i ∈ G_rc", "grid assignment"),
         ("    C_rc ← C_rc + 1", "cell count"),
-        ("    T_rc ← T_rc ∪ {L_i, W_i, D_i, V_i, q_i}", "cell traits"),
+        ("    T_rc ← T_rc ∪ {L_i, W_i, D_i, U_i, M_i}", "cell traits"),
         ("**end for**", ""),
         ("Compute mean traits, coverage, and uncertainty for each occupied G_rc", "cell summary"),
         ("**output** {C_rc, mean(T_rc), confidence_rc} for all occupied cells", ""),
     ])
+
+    add_experimental_sections(doc)
 
     doc.add_heading("References", level=1)
     for ref in REFERENCES:
