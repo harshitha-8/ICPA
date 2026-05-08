@@ -114,20 +114,25 @@ def plot_surface(ax: plt.Axes, rgb: np.ndarray, height: np.ndarray, title: str) 
     yy, xx = np.mgrid[0:h, 0:w]
     x = xx / max(w - 1, 1)
     y = 1.0 - yy / max(h - 1, 1)
-    z = height * 0.22
+    z = height * 0.12
+    texture = rgb.astype(np.float32) / 255.0
+    texture = np.clip(texture * 1.04 + 0.015, 0.0, 1.0)
     ax.plot_surface(
         x,
         y,
         z,
-        rstride=2,
-        cstride=2,
-        facecolors=rgb.astype(np.float32) / 255.0,
+        rstride=1,
+        cstride=1,
+        facecolors=texture,
         linewidth=0,
         antialiased=False,
         shade=False,
     )
-    ax.view_init(elev=44, azim=-58)
-    ax.set_box_aspect((1, 1, 0.22))
+    ax.view_init(elev=50, azim=-58)
+    ax.set_box_aspect((1, 1, 0.12))
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_zlim(0, 0.16)
     ax.set_axis_off()
     ax.set_title(title, fontsize=8, fontweight="bold", pad=1)
 
@@ -137,7 +142,7 @@ def build_single_view(rgb: np.ndarray, height: np.ndarray, output_path: Path, ti
     fig.patch.set_facecolor("white")
     ax = fig.add_subplot(1, 1, 1, projection="3d")
     plot_surface(ax, rgb, height, title)
-    ax.view_init(elev=42, azim=azim)
+    ax.view_init(elev=50, azim=azim)
     fig.tight_layout()
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output_path, bbox_inches="tight", pad_inches=0.05)
@@ -209,7 +214,7 @@ def build_gallery(results: list[dict[str, object]], output_path: Path) -> None:
 
 def write_summary(path: Path, rows: list[dict[str, str | int | float]]) -> None:
     with path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 

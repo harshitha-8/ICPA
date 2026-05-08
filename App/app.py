@@ -480,6 +480,7 @@ INDEX_HTML = r"""<!doctype html>
 let dataset = {pre: [], post: []};
 let localBoll = null;
 let bollPoints = [];
+let bollTexture = null;
 let bollRotation = {x: -0.68, y: 0.72};
 let dragState = null;
 
@@ -601,15 +602,18 @@ function buildInteractiveBoll(src) {
   const img = new Image();
   img.onload = () => {
     const sample = document.createElement("canvas");
-    const size = 130;
+    const size = 184;
     sample.width = size;
     sample.height = size;
     const sctx = sample.getContext("2d");
+    sctx.imageSmoothingQuality = "high";
     sctx.drawImage(img, 0, 0, size, size);
+    bollTexture = sample;
     const data = sctx.getImageData(0, 0, size, size).data;
     bollPoints = [];
-    for (let y = 0; y < size; y += 2) {
-      for (let x = 0; x < size; x += 2) {
+    const step = 3;
+    for (let y = 0; y < size - step; y += step) {
+      for (let x = 0; x < size - step; x += step) {
         const i = (y * size + x) * 4;
         const r = data[i], g = data[i + 1], b = data[i + 2];
         const maxc = Math.max(r, g, b) / 255;
@@ -626,8 +630,11 @@ function buildInteractiveBoll(src) {
           x: (x / (size - 1) - 0.5) * 2.0,
           y: (0.5 - y / (size - 1)) * 2.0,
           z,
+          sx: x,
+          sy: y,
+          sw: step,
           r, g, b,
-          radius: 1.45 + 2.0 * lint
+          lint
         });
       }
     }
@@ -662,8 +669,8 @@ function drawInteractiveBoll() {
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, w, h);
   const cx = w / 2;
-  const cy = h / 2 + 22;
-  const scale = Math.min(w, h) * 0.30;
+  const cy = h / 2 + 10;
+  const scale = Math.min(w, h) * 0.36;
   const sinY = Math.sin(bollRotation.y), cosY = Math.cos(bollRotation.y);
   const sinX = Math.sin(bollRotation.x), cosX = Math.cos(bollRotation.x);
   const projected = bollPoints.map(p => {
@@ -671,29 +678,33 @@ function drawInteractiveBoll() {
     const z1 = -p.x * sinY + p.z * cosY;
     const y1 = p.y * cosX - z1 * sinX;
     const z2 = p.y * sinX + z1 * cosX;
-    return {...p, px: cx + x1 * scale, py: cy - y1 * scale, depth: z2};
+    const perspective = 1.0 / (1.0 + 0.38 * z2);
+    return {...p, px: cx + x1 * scale * perspective, py: cy - y1 * scale * perspective, depth: z2, perspective};
   }).sort((a, b) => a.depth - b.depth);
-  ctx.shadowColor = "rgba(0,0,0,0.10)";
-  ctx.shadowBlur = 7;
-  ctx.shadowOffsetY = 5;
-  ctx.fillStyle = "rgba(42, 35, 28, 0.16)";
+  ctx.shadowColor = "rgba(0,0,0,0.08)";
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 8;
+  ctx.fillStyle = "rgba(73, 65, 52, 0.12)";
   ctx.beginPath();
-  ctx.ellipse(cx, cy + scale * 0.78, scale * 0.86, scale * 0.16, 0, 0, Math.PI * 2);
+  ctx.ellipse(cx, cy + scale * 0.70, scale * 0.78, scale * 0.12, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.shadowColor = "transparent";
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
   for (const p of projected) {
-    const shade = 0.78 + 0.34 * Math.max(0, p.depth + 0.2);
-    const sr = Math.round(Math.min(255, p.r * shade));
-    const sg = Math.round(Math.min(255, p.g * shade));
-    const sb = Math.round(Math.min(255, p.b * shade));
-    ctx.fillStyle = `rgb(${sr}, ${sg}, ${sb})`;
-    ctx.beginPath();
-    ctx.ellipse(p.px, p.py, p.radius, p.radius * 0.72, 0, 0, Math.PI * 2);
-    ctx.fill();
+    const shade = 0.92 + 0.16 * Math.max(0, p.depth + 0.15);
+    const tile = Math.max(2.2, scale * p.sw / 184 * 1.7 * p.perspective);
+    ctx.globalAlpha = 0.93 + 0.07 * p.lint;
+    ctx.drawImage(bollTexture, p.sx, p.sy, p.sw, p.sw, p.px - tile / 2, p.py - tile / 2, tile, tile);
+    if (shade < 0.99) {
+      ctx.fillStyle = `rgba(45, 38, 31, ${Math.min(0.12, 1.0 - shade)})`;
+      ctx.fillRect(p.px - tile / 2, p.py - tile / 2, tile, tile);
+    }
   }
+  ctx.globalAlpha = 1;
   ctx.fillStyle = "#65715f";
   ctx.font = "12px Inter, system-ui, sans-serif";
-  ctx.fillText("Drag to rotate selected cotton cluster | monocular 2.5D proxy", 14, h - 16);
+  ctx.fillText("Drag to rotate real UAV crop texture | monocular 2.5D proxy", 14, h - 16);
 }
 
 const canvas = document.getElementById("boll3dCanvas");
