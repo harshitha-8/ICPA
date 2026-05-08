@@ -9,6 +9,13 @@ point clouds, camera animations, and high-resolution snapshots from Python.
 The linked social example uses this kind of stack for 3D satellite timelapse:
 Sentinel-2 imagery draped over Copernicus DEM terrain with an orbiting camera.
 
+The GitHub README describes the open-source workflow as Python-first terrain and
+scene rendering with interactive viewers, offscreen snapshots, raster and vector
+overlays, labels, camera automation, LAZ/COPC/EPT point-cloud loading, COG
+access, CRS helpers, notebook widgets, and native/offscreen rendering APIs.
+That makes it closer to a scientific visualization backend than a learned 3D
+reconstruction method.
+
 ## Fit For This Project
 
 forge3d is useful for the cotton project as a **publication-quality renderer**
@@ -47,6 +54,16 @@ scientific pipeline, use it as a renderer for:
 The paper should phrase it as a visualization backend, not a phenotyping
 method.
 
+For the app, the best near-term use is a separate "field map renderer" export:
+take the orthomosaic-derived height proxy or a calibrated DEM, drape the real
+pre/post image as a raster overlay, add plot-grid vectors, label high-confidence
+boll anchors, and render a short orbiting-camera video. This would improve
+presentation quality while preserving the honest measurement boundary.
+
+Do not insert forge3d into the organ-level boll measurement step unless we also
+have calibrated 3D input. It can render boll anchors and point clouds, but it
+does not infer the missing geometry needed for diameter or volume.
+
 ## Project Placement
 
 Recommended stack:
@@ -69,5 +86,6 @@ not fake reconstruction.
 
 ## Sources
 
+- forge3d GitHub README: https://github.com/milos-agathon/forge3d
+- forge3d documentation: https://milos-agathon.github.io/forge3d/
 - forge3d PyPI: https://pypi.org/project/forge3d/
-- forge3d GitHub from PyPI project links: https://github.com/milos-agathon/forge3d
