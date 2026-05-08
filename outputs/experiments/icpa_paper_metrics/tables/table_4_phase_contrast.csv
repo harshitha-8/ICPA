@@ -1,0 +1,7 @@
+metric,pre_mean,post_mean,post_minus_pre,relative_change_pct
+measurement_ready_score,0.58407,0.63571,0.05163,8.83977
+lint_fraction,0.52495,0.49091,-0.03405,-6.4862
+green_fraction,0.07538,0.05806,-0.01732,-22.97592
+visibility,0.50858,0.45915,-0.04943,-9.7185
+diameter_cm_proxy,15.18641,21.13498,5.94858,39.17042
+ellipsoid_volume_cm3_proxy,10726.13225,16105.32019,5379.18794,50.1503

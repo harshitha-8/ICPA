@@ -1,0 +1,19 @@
+{
+  "artifact_type": "icpa paper experiment package",
+  "scientific_boundary": "Proxy evaluation package; no manual ground-truth accuracy claims.",
+  "gsd_cm_per_px": 0.25,
+  "grid_rows": 4,
+  "grid_cols": 43,
+  "inputs": {
+    "phase_summary": "outputs/counts/icml_dataset_full/phase_summary.csv",
+    "folder_summary": "outputs/counts/icml_dataset_full/folder_summary.csv",
+    "image_candidate_summary": "outputs/metrics/measurement_ready_bolls/image_candidate_summary.csv",
+    "candidates": "outputs/metrics/measurement_ready_bolls/measurement_ready_candidates.csv",
+    "local_2p5d_summary": "outputs/metrics/local_boll_2p5d_reconstruction/local_boll_2p5d_summary.csv"
+  },
+  "outputs": {
+    "tables": "outputs/experiments/icpa_paper_metrics/tables",
+    "figures": "outputs/experiments/icpa_paper_metrics/figures",
+    "report": "outputs/experiments/icpa_paper_metrics/experiment_report.md"
+  }
+}

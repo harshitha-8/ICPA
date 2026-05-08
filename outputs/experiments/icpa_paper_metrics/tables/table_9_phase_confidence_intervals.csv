@@ -1,0 +1,9 @@
+phase,metric,ci95_low,ci95_high
+post,measurement_ready_score,0.635,0.63641
+post,visibility,0.45755,0.46075
+post,diameter_cm_proxy,20.82223,21.44773
+post,ellipsoid_volume_cm3_proxy,10198.1434,22012.49698
+pre,measurement_ready_score,0.58313,0.58502
+pre,visibility,0.50653,0.51063
+pre,diameter_cm_proxy,14.88162,15.49119
+pre,ellipsoid_volume_cm3_proxy,8466.35363,12985.91087

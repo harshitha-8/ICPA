@@ -1,0 +1,3 @@
+phase,candidates,raw_mean_volume_proxy,median_volume_proxy,p95_volume_proxy,p99_volume_proxy,p99_capped_mean_volume_proxy,threshold_D_p99_capped,first_mutation_index_p99_capped
+pre,8000,10726.13225,592.55247,29632.04549,193723.1974,6368.69472,121.02899,6481
+post,8000,16105.32019,2222.09307,37177.63239,145359.78684,8016.81025,90.71099,2212
