@@ -1,20 +1,14 @@
 #!/usr/bin/env python3
-"""Generate a paper-ready architecture overview for the ICPA cotton project.
-
-The figure is intentionally honest about the current system: calibrated 3D
-metrology is shown as the validation path, while the implemented MVP is shown
-as a mask-guided 2.5D/proxy review pipeline.
-"""
+"""Generate a crisp CVPR/NeurIPS-style architecture figure for the ICPA paper."""
 
 from __future__ import annotations
 
 from pathlib import Path
-import textwrap
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Rectangle
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Rectangle, Circle
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 from PIL import Image, ImageEnhance, ImageOps
 
@@ -23,212 +17,191 @@ REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "paper" / "figures"
 OUT.mkdir(parents=True, exist_ok=True)
 
-
-PALETTE = {
-    "ink": "#1d1f23",
-    "muted": "#5f6670",
-    "line": "#2f3b46",
-    "input": "#eef7f1",
-    "detect": "#fff2cc",
-    "mask": "#f3e8ff",
-    "geom": "#e8f1ff",
-    "trait": "#e8fbf8",
+COLORS = {
+    "ink": "#15181d",
+    "muted": "#5c6470",
+    "line": "#2c3440",
+    "data": "#f0f7f1",
+    "detect": "#fff4cf",
+    "mask": "#f1e7ff",
+    "geo": "#e9f2ff",
+    "trait": "#e7fbf6",
     "eval": "#fff0f0",
-    "paper": "#ffffff",
-    "accent": "#1f77b4",
-    "post": "#2a9d8f",
-    "pre": "#8ab17d",
+    "llm": "#f3f5ff",
     "warn": "#c65f3a",
 }
 
 
-def crop_center(path: Path, size: tuple[int, int]) -> Image.Image:
-    im = Image.open(path).convert("RGB")
-    im.thumbnail((1600, 1600), Image.Resampling.LANCZOS)
-    return ImageOps.fit(im, size, method=Image.Resampling.LANCZOS, centering=(0.5, 0.5))
-
-
-def load_panel(path: Path, size: tuple[int, int], boost: float = 1.0) -> Image.Image:
+def im(path: Path, size: tuple[int, int], contrast: float = 1.04) -> Image.Image:
     if not path.exists():
-        im = Image.new("RGB", size, "#f4f4f4")
-        return im
-    im = crop_center(path, size)
-    if boost != 1.0:
-        im = ImageEnhance.Contrast(im).enhance(boost)
-        im = ImageEnhance.Sharpness(im).enhance(1.15)
-    return im
+        return Image.new("RGB", size, "#f3f4f6")
+    img = Image.open(path).convert("RGB")
+    img = ImageOps.fit(img, size, Image.Resampling.LANCZOS)
+    img = ImageEnhance.Contrast(img).enhance(contrast)
+    img = ImageEnhance.Sharpness(img).enhance(1.12)
+    return img
 
 
-def add_image(ax, path: Path, xy: tuple[float, float], zoom: float, size: tuple[int, int], label: str | None = None) -> None:
-    im = load_panel(path, size, boost=1.05)
-    oi = OffsetImage(im, zoom=zoom)
-    ab = AnnotationBbox(oi, xy, frameon=True, bboxprops={"edgecolor": "#d0d4d8", "linewidth": 0.8})
+def place_img(ax, path: Path, xy: tuple[float, float], size=(240, 170), zoom=0.22, ec="#cfd5dd") -> None:
+    artist = OffsetImage(im(path, size), zoom=zoom)
+    ab = AnnotationBbox(artist, xy, frameon=True, bboxprops={"edgecolor": ec, "linewidth": 0.85, "facecolor": "white"})
     ax.add_artist(ab)
-    if label:
-        ax.text(xy[0], xy[1] - 0.062, label, ha="center", va="top", fontsize=8.5, color=PALETTE["muted"])
 
 
-def box(ax, xy, wh, title: str, body: str, fc: str, ec: str = "#293241", lw: float = 1.15) -> None:
+def panel(ax, xy, wh, title: str, color: str, subtitle: str | None = None, title_size: float = 9.6) -> None:
     x, y = xy
     w, h = wh
-    patch = FancyBboxPatch(
-        (x, y),
-        w,
-        h,
-        boxstyle="round,pad=0.012,rounding_size=0.018",
-        linewidth=lw,
-        edgecolor=ec,
-        facecolor=fc,
-        mutation_aspect=1.0,
-        zorder=2,
-    )
-    ax.add_patch(patch)
-    ax.text(x + 0.012, y + h - 0.026, title, ha="left", va="top", fontsize=10.5, weight="bold", color=PALETTE["ink"])
-    wrapped = "\n".join("\n".join(textwrap.wrap(part, width=36)) for part in body.split("\n"))
-    ax.text(x + 0.012, y + h - 0.065, wrapped, ha="left", va="top", fontsize=8.1, color=PALETTE["ink"], linespacing=1.08)
-
-
-def arrow(ax, start, end, color: str = "#34495e", style: str = "solid", rad: float = 0.0) -> None:
     ax.add_patch(
-        FancyArrowPatch(
-            start,
-            end,
-            arrowstyle="-|>",
-            mutation_scale=13,
-            linewidth=1.4,
-            linestyle=style,
-            color=color,
-            connectionstyle=f"arc3,rad={rad}",
-            zorder=3,
+        FancyBboxPatch(
+            (x, y),
+            w,
+            h,
+            boxstyle="round,pad=0.010,rounding_size=0.014",
+            fc=color,
+            ec=COLORS["line"],
+            lw=1.25,
+            zorder=1,
         )
     )
+    ax.text(x + 0.014, y + h - 0.030, title, fontsize=title_size, weight="bold", va="top", color=COLORS["ink"], zorder=5, linespacing=1.0)
+    if subtitle:
+        ax.text(x + 0.014, y + 0.024, subtitle, fontsize=7.1, va="bottom", color=COLORS["muted"], zorder=5)
 
 
-def mini_mask(ax, x: float, y: float) -> None:
-    ax.add_patch(Rectangle((x, y), 0.105, 0.080, facecolor="#313131", edgecolor="#1a1a1a", lw=0.9))
-    blobs = [
-        (0.020, 0.046, 0.017, 0.014),
-        (0.044, 0.053, 0.018, 0.015),
-        (0.070, 0.038, 0.020, 0.016),
-        (0.034, 0.026, 0.014, 0.012),
-    ]
+def arrow(ax, a, b, label: str | None = None, dashed: bool = False) -> None:
+    ax.add_patch(
+        FancyArrowPatch(
+            a,
+            b,
+            arrowstyle="-|>",
+            mutation_scale=13,
+            lw=1.35,
+            color=COLORS["line"],
+            linestyle="--" if dashed else "-",
+            zorder=10,
+        )
+    )
+    if label:
+        mx, my = (a[0] + b[0]) / 2, (a[1] + b[1]) / 2
+        ax.text(mx, my + 0.025, label, fontsize=7.6, ha="center", color=COLORS["muted"])
+
+
+def step(ax, x: float, y: float, n: int, text: str) -> None:
+    ax.add_patch(Circle((x, y), 0.014, fc=COLORS["ink"], ec="white", lw=0.8, zorder=20))
+    ax.text(x, y - 0.001, str(n), fontsize=7.8, color="white", weight="bold", ha="center", va="center", zorder=21)
+    ax.text(x + 0.019, y, text, fontsize=8.1, color=COLORS["ink"], va="center")
+
+
+def mask_icon(ax, x: float, y: float, w: float, h: float) -> None:
+    ax.add_patch(Rectangle((x, y), w, h, fc="#272727", ec="#111111", lw=0.75, zorder=3))
+    blobs = [(0.18, 0.55, 0.18, 0.16), (0.42, 0.65, 0.22, 0.18), (0.68, 0.50, 0.20, 0.17), (0.36, 0.30, 0.16, 0.15)]
     for bx, by, bw, bh in blobs:
-        ax.add_patch(FancyBboxPatch((x + bx, y + by), bw, bh, boxstyle="round,pad=0.003,rounding_size=0.014", fc="#f8fbff", ec="#c2c9d0", lw=0.4))
-    ax.text(x + 0.052, y - 0.010, "lint mask", ha="center", va="top", fontsize=7.5, color=PALETTE["muted"])
+        ax.add_patch(FancyBboxPatch((x + bx * w, y + by * h), bw * w, bh * h, boxstyle="round,pad=0.004,rounding_size=0.016", fc="#f7fbff", ec="#c7cdd4", lw=0.45, zorder=4))
+    ax.plot([x + 0.31 * w, x + 0.31 * w], [y + 0.25 * h, y + 0.50 * h], color="white", lw=0.7, zorder=5)
+    ax.plot([x + 0.29 * w, x + 0.33 * w], [y + 0.25 * h, y + 0.25 * h], color="white", lw=0.7, zorder=5)
 
 
-def mini_point_cloud(ax, x: float, y: float) -> None:
-    ax.add_patch(Rectangle((x, y), 0.118, 0.082, facecolor="#f8fafc", edgecolor="#d0d4d8", lw=0.8))
-    pts = [
-        (0.016, 0.030, "#735f45"),
-        (0.030, 0.050, "#ffffff"),
-        (0.045, 0.046, "#dfe8ec"),
-        (0.058, 0.032, "#3f6d39"),
-        (0.072, 0.056, "#ffffff"),
-        (0.088, 0.035, "#b9c8c8"),
-        (0.100, 0.046, "#6c6559"),
-    ]
+def pointcloud_icon(ax, x: float, y: float, w: float, h: float) -> None:
+    ax.add_patch(Rectangle((x, y), w, h, fc="#fbfcfd", ec="#cfd5dd", lw=0.75, zorder=3))
+    ax.plot([x + 0.12 * w, x + 0.88 * w], [y + 0.28 * h, y + 0.34 * h], color="#8e98a3", lw=0.9, zorder=4)
+    pts = [(0.15, 0.38, "#735f45"), (0.28, 0.62, "#f8fbff"), (0.42, 0.55, "#dde9ec"), (0.53, 0.40, "#3b703c"), (0.66, 0.68, "#f8fbff"), (0.80, 0.48, "#b8c7c8"), (0.90, 0.60, "#686159")]
     for px, py, c in pts:
-        ax.scatter([x + px], [y + py], s=28, c=c, edgecolors="#46515b", linewidths=0.35, zorder=5)
-    ax.plot([x + 0.015, x + 0.104], [y + 0.020, y + 0.025], color="#9aa2aa", lw=0.9)
-    ax.text(x + 0.059, y - 0.010, "mask-to-3D review", ha="center", va="top", fontsize=7.5, color=PALETTE["muted"])
+        ax.scatter([x + px * w], [y + py * h], s=24, c=c, edgecolors="#47515c", linewidths=0.35, zorder=6)
+
+
+def mini_table(ax, x: float, y: float, w: float, h: float) -> None:
+    ax.add_patch(Rectangle((x, y), w, h, fc="white", ec="#c8ced6", lw=0.75, zorder=3))
+    cols = ["count", "vis.", "diam.", "vol."]
+    vals = ["3106", ".64", "211", "16.1"]
+    for i, col in enumerate(cols):
+        cx = x + (i + 0.5) * w / 4
+        ax.text(cx, y + 0.66 * h, col, fontsize=5.8, ha="center", color=COLORS["muted"], zorder=5)
+        ax.text(cx, y + 0.34 * h, vals[i], fontsize=7.4, weight="bold", ha="center", color=COLORS["ink"], zorder=5)
+        if i:
+            ax.plot([x + i * w / 4, x + i * w / 4], [y + 0.16 * h, y + 0.86 * h], color="#d5d9df", lw=0.6, zorder=4)
+
+
+def metric_strip(ax, x: float, y: float, w: float, h: float) -> None:
+    names = ["Detect", "Mask", "3D", "Trait", "LLM"]
+    metrics = ["P/R/F1", "IoU", "reproj.", "MAE", "schema"]
+    colors = [COLORS["detect"], COLORS["mask"], COLORS["geo"], COLORS["trait"], COLORS["llm"]]
+    for i, (name, metric, color) in enumerate(zip(names, metrics, colors)):
+        xi = x + i * w / 5
+        ax.add_patch(Rectangle((xi, y), w / 5 - 0.004, h, fc=color, ec="#c7ced7", lw=0.7, zorder=2))
+        ax.text(xi + w / 10, y + 0.61 * h, name, fontsize=7.3, weight="bold", ha="center", color=COLORS["ink"])
+        ax.text(xi + w / 10, y + 0.28 * h, metric, fontsize=7.0, ha="center", color=COLORS["muted"])
 
 
 def main() -> None:
-    fig, ax = plt.subplots(figsize=(15.2, 8.2), dpi=160)
+    fig, ax = plt.subplots(figsize=(11.4, 5.7), dpi=240)
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis("off")
 
-    ax.text(0.015, 0.965, "Mask-Guided 3D Cotton Boll Phenotyping", fontsize=17, weight="bold", color=PALETTE["ink"])
-    ax.text(
-        0.015,
-        0.928,
-        "Pre/post defoliation is modeled as a visibility intervention; calibrated 3D metrology remains the validation path.",
-        fontsize=10.3,
-        color=PALETTE["muted"],
-    )
+    ax.text(0.018, 0.958, "Mask-Guided 3D Cotton Boll Phenotyping", fontsize=13.5, weight="bold", color=COLORS["ink"])
+    ax.text(0.018, 0.920, "A compact pipeline for pre/post-defoliation UAV imagery, proxy 3D review, and measurement-ready trait evaluation.", fontsize=8.9, color=COLORS["muted"])
 
-    # Panel rails
-    ax.text(0.018, 0.872, "A  UAV evidence", fontsize=11, weight="bold")
-    ax.text(0.300, 0.872, "B  Perception", fontsize=11, weight="bold")
-    ax.text(0.534, 0.872, "C  Geometry + traits", fontsize=11, weight="bold")
-    ax.text(0.792, 0.872, "D  Evaluation + reporting", fontsize=11, weight="bold")
-    ax.plot([0.015, 0.985], [0.852, 0.852], color="#222222", lw=1.1)
+    # Main panels.
+    y, h = 0.545, 0.265
+    xs = [0.035, 0.225, 0.405, 0.585, 0.765]
+    ws = [0.145, 0.135, 0.135, 0.135, 0.165]
+    titles = ["UAV phase pair", "Candidate\nlocalization", "Prompted lint\nmask", "Mask-to-3D\nreview", "Trait record"]
+    fills = [COLORS["data"], COLORS["detect"], COLORS["mask"], COLORS["geo"], COLORS["trait"]]
+    subtitles = ["pre vs post", "bright lint proposals", "box-prompted extraction", "proxy now; metric later", "per boll + plot cell"]
+    for x, w, title, fill, sub in zip(xs, ws, titles, fills, subtitles):
+        panel(ax, (x, y), (w, h), title, fill, sub)
 
     pre = REPO / "outputs/metrics/measurement_ready_bolls/top_crops/0001_pre_DJI_20250929095941_0370_D_cand371.jpg"
     post = REPO / "outputs/metrics/measurement_ready_bolls/top_crops/0002_post_DJI_20250929124623_0166_D_cand333.jpg"
-    crop1 = REPO / "outputs/metrics/measurement_ready_bolls/top_crops/0002_post_DJI_20250929124623_0166_D_cand333.jpg"
-    crop2 = REPO / "outputs/metrics/measurement_ready_bolls/top_crops/0001_pre_DJI_20250929095941_0370_D_cand371.jpg"
-    grid_fig = REPO / "outputs/experiments/icpa_paper_metrics/figures/plot_grid_candidate_heatmaps.png"
-    p25d_fig = REPO / "outputs/figures/uav_orthomap_3d/pre_post_uav_2p5d_orthomap.png"
+    p25d = REPO / "outputs/figures/uav_orthomap_3d/pre_post_uav_2p5d_orthomap.png"
+    grid = REPO / "outputs/experiments/icpa_paper_metrics/figures/plot_grid_candidate_heatmaps.png"
+    vol = REPO / "outputs/experiments/icpa_paper_metrics/figures/volume_mutation_proxy.png"
 
-    add_image(ax, pre, (0.075, 0.755), 0.115, (360, 245), "pre-defoliation")
-    add_image(ax, post, (0.205, 0.755), 0.115, (360, 245), "post-defoliation")
-    ax.text(0.140, 0.655, "phase-aware UAV frames", fontsize=8.5, ha="center", color=PALETTE["muted"])
+    place_img(ax, pre, (0.078, 0.658), (150, 115), 0.20)
+    place_img(ax, post, (0.137, 0.658), (150, 115), 0.20)
+    ax.add_patch(Rectangle((0.256, 0.595), 0.060, 0.062, fill=False, ec="#f4d03f", lw=1.1, zorder=5))
+    place_img(ax, post, (0.292, 0.640), (150, 115), 0.225)
+    ax.text(0.253, 0.706, "ranked crop", fontsize=7.0, color=COLORS["muted"])
+    mask_icon(ax, 0.432, 0.625, 0.080, 0.084)
+    pointcloud_icon(ax, 0.612, 0.625, 0.088, 0.084)
+    mini_table(ax, 0.790, 0.628, 0.108, 0.080)
 
-    box(ax, (0.305, 0.690), (0.145, 0.128), "Candidate detector", "CLAHE + top-hat filters\nOtsu + contour/color gates", PALETTE["detect"])
-    box(ax, (0.470, 0.690), (0.145, 0.128), "SAM-style masks", "box prompts isolate lint\nSAM/SAM2 can replace this slot", PALETTE["mask"])
-    box(ax, (0.635, 0.690), (0.145, 0.128), "Proxy 3D review", "mask pixels enter 2.5D scene\ncalibrated SfM/3DGS is metric path", PALETTE["geom"])
-    box(ax, (0.800, 0.690), (0.165, 0.128), "Structured outputs", "count + visibility\nproxy diameter/volume\nplot-cell summaries", PALETTE["trait"])
+    for i in range(4):
+        arrow(ax, (xs[i] + ws[i] + 0.008, y + 0.145), (xs[i + 1] - 0.010, y + 0.145), label=str(i + 1))
 
-    arrow(ax, (0.255, 0.755), (0.305, 0.760))
-    arrow(ax, (0.450, 0.760), (0.470, 0.760))
-    arrow(ax, (0.615, 0.760), (0.635, 0.760))
-    arrow(ax, (0.780, 0.760), (0.800, 0.760))
+    # Lower evidence row.
+    ax.text(0.035, 0.445, "Evidence used in the paper", fontsize=10.5, weight="bold", color=COLORS["ink"])
+    ax.plot([0.035, 0.952], [0.429, 0.429], color="#232323", lw=0.85)
+    place_img(ax, p25d, (0.170, 0.300), (520, 300), 0.185)
+    place_img(ax, grid, (0.430, 0.300), (560, 310), 0.164)
+    place_img(ax, vol, (0.675, 0.300), (420, 280), 0.150)
+    ax.text(0.170, 0.190, "(a) UAV orthomap to 2.5D review", fontsize=8.0, ha="center", color=COLORS["muted"])
+    ax.text(0.430, 0.190, "(b) row/column aggregation", fontsize=8.0, ha="center", color=COLORS["muted"])
+    ax.text(0.675, 0.190, "(c) proxy volume mutation", fontsize=8.0, ha="center", color=COLORS["muted"])
 
-    # Real crop strip and mask/3D icons
-    add_image(ax, crop1, (0.360, 0.575), 0.115, (170, 170), "ranked post crop")
-    add_image(ax, crop2, (0.480, 0.575), 0.115, (170, 170), "ranked pre crop")
-    mini_mask(ax, 0.555, 0.535)
-    mini_point_cloud(ax, 0.675, 0.535)
-    arrow(ax, (0.505, 0.575), (0.555, 0.575))
-    arrow(ax, (0.660, 0.575), (0.675, 0.575))
+    panel(ax, (0.785, 0.238), (0.178, 0.120), "Evaluation", COLORS["eval"], None, title_size=8.8)
+    ax.text(0.802, 0.294, "P/R/F1  |  IoU  |  MAE", fontsize=7.0, color=COLORS["ink"], weight="bold", va="center")
+    ax.text(0.802, 0.270, "reprojection + completeness", fontsize=6.6, color=COLORS["muted"], va="center")
+    ax.text(0.802, 0.248, "schema + expert agreement", fontsize=6.6, color=COLORS["muted"], va="center")
+    arrow(ax, (0.740, 0.300), (0.785, 0.304), label="5")
 
-    # Middle architecture formula block
-    ax.add_patch(FancyBboxPatch((0.030, 0.430), 0.930, 0.070, boxstyle="round,pad=0.012,rounding_size=0.012", fc="#fbfbfb", ec="#cfd5dc", lw=0.9))
-    ax.text(0.050, 0.474, "Measurement record", fontsize=10.5, weight="bold", color=PALETTE["ink"])
-    ax.text(0.220, 0.474, "r_i = {box, mask, visibility, length, width, diameter, volume, readiness, plot cell}", fontsize=11.2, color=PALETTE["ink"])
-    ax.text(
-        0.220,
-        0.444,
-        "where dimensions and volume are reported as proxy traits until scale, pose, or physical measurements are validated.",
-        fontsize=9.1,
-        color=PALETTE["muted"],
-    )
+    # Boundary strip.
+    ax.add_patch(FancyBboxPatch((0.035, 0.070), 0.920, 0.070, boxstyle="round,pad=0.008,rounding_size=0.010", fc="#fffdf8", ec=COLORS["warn"], lw=0.9, linestyle="--"))
+    ax.text(0.052, 0.110, "Claim boundary", fontsize=9.2, weight="bold", color=COLORS["warn"], va="center")
+    ax.text(0.178, 0.110, "Current system produces measurement-ready masks and proxy 2.5D review. Calibrated 3D boll metrology requires GSD/GCP/camera pose, multi-view geometry, RGB-D, or physical measurements.", fontsize=6.7, color=COLORS["ink"], va="center")
 
-    # Bottom panels: plot mapping, local 3D, evaluation.
-    add_image(ax, p25d_fig, (0.180, 0.235), 0.165, (520, 300), "UAV orthomap → 2.5D review")
-    add_image(ax, grid_fig, (0.485, 0.235), 0.150, (560, 310), "row/column plot-grid aggregation")
+    # Tiny notation strip.
+    step(ax, 0.050, 0.842, 1, "phase")
+    step(ax, 0.145, 0.842, 2, "detect")
+    step(ax, 0.250, 0.842, 3, "mask")
+    step(ax, 0.348, 0.842, 4, "project")
+    step(ax, 0.458, 0.842, 5, "evaluate")
+    ax.text(0.585, 0.842, "record: {box, mask, visibility, diameter, volume, readiness, plot cell}", fontsize=8.2, color=COLORS["muted"], va="center")
 
-    box(ax, (0.710, 0.250), (0.265, 0.155), "Evaluation protocol", "Count: P/R/F1, MAE, RMSE\nMask: IoU, boundary F1\n3D: reproj. + completeness\nTraits: size/volume error\nDecision: schema + expert agreement", PALETTE["eval"])
-    box(ax, (0.710, 0.078), (0.265, 0.132), "Agronomist-in-the-loop", "Consumes measured traits only.\nDoes not perform reconstruction.\nCompare open-source LLMs for faithful summaries.", "#f6f7ff")
-    arrow(ax, (0.606, 0.235), (0.720, 0.310))
-    arrow(ax, (0.842, 0.250), (0.842, 0.210))
-
-    # Calibration boundary.
-    ax.add_patch(FancyBboxPatch((0.030, 0.046), 0.630, 0.066, boxstyle="round,pad=0.010,rounding_size=0.012", fc="#fffdf7", ec=PALETTE["warn"], lw=1.0, linestyle="--"))
-    ax.text(0.045, 0.090, "Claim boundary", fontsize=10.3, weight="bold", color=PALETTE["warn"])
-    ax.text(
-        0.170,
-        0.096,
-        "Current MVP: proxy mask-to-3D review.\nMetric 3D requires GSD/GCP/camera pose, multi-view reconstruction, RGB-D, or physical boll measurements.",
-        fontsize=8.2,
-        color=PALETTE["ink"],
-        va="top",
-    )
-
-    # Tiny legend.
-    legend = [("input", PALETTE["input"]), ("detector", PALETTE["detect"]), ("mask", PALETTE["mask"]), ("geometry", PALETTE["geom"]), ("trait/eval", PALETTE["trait"])]
-    lx = 0.720
-    for i, (name, color) in enumerate(legend):
-        ax.add_patch(Rectangle((lx + 0.048 * i, 0.034), 0.014, 0.014, fc=color, ec="#9aa2aa", lw=0.4))
-        ax.text(lx + 0.017 + 0.048 * i, 0.041, name, fontsize=7.2, va="center", color=PALETTE["muted"])
-
-    for ext in ["png", "pdf", "svg"]:
-        path = OUT / f"icpa_cotton_architecture_overview.{ext}"
-        fig.savefig(path, bbox_inches="tight", pad_inches=0.08, facecolor="white")
-        print(path)
+    for ext in ("png", "pdf", "svg"):
+        out = OUT / f"icpa_cotton_architecture_overview.{ext}"
+        fig.savefig(out, bbox_inches="tight", pad_inches=0.05, facecolor="white")
+        print(out)
 
 
 if __name__ == "__main__":
