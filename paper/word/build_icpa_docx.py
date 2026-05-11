@@ -20,6 +20,7 @@ DOCX_OUT = BASE / "icpa_2026_mask_guided_cotton_until_algorithms.docx"
 MD_OUT = BASE / "icpa_2026_mask_guided_cotton_until_algorithms.md"
 TITLE = "Mask-Guided 3D Cotton Boll Reconstruction for Pre- and Post-Defoliation Phenotyping"
 EXPERIMENT_DIR = REPO_ROOT / "outputs" / "experiments" / "icpa_paper_metrics"
+ARCHITECTURE_FIGURE = REPO_ROOT / "paper" / "figures" / "icpa_cotton_architecture_overview.png"
 
 
 REFERENCES = [
@@ -168,8 +169,8 @@ def add_experimental_sections(doc: Document) -> None:
         [display_metric_name(row["metric"]), display_metric(row, "pre_mean"), display_metric(row, "post_mean"), display_metric(row, "post_minus_pre"), pct(row["relative_change_pct"])]
         for row in contrast
     ], [1.65, 0.9, 0.9, 0.9, 1.0])
-    figure(doc, 1, fdir / "readiness_distribution.png", "Measurement-readiness distribution across pre- and post-defoliation imagery. The histogram shows how the proposed ranking score separates candidates that are compact, visible, bright, and low in green-canopy contamination. It is used to select local reconstruction targets rather than to claim instance-level accuracy.")
-    figure(doc, 2, fdir / "proxy_trait_boxplots.png", "Proxy trait distributions for visibility, diameter, and ellipsoid volume. The spread in the volume panel is expected because volume scales cubically with mask dimensions; therefore, these exploratory values require physical validation before being interpreted as true boll volume.")
+    figure(doc, 2, fdir / "readiness_distribution.png", "Measurement-readiness distribution across pre- and post-defoliation imagery. The histogram shows how the proposed ranking score separates candidates that are compact, visible, bright, and low in green-canopy contamination. It is used to select local reconstruction targets rather than to claim instance-level accuracy.")
+    figure(doc, 3, fdir / "proxy_trait_boxplots.png", "Proxy trait distributions for visibility, diameter, and ellipsoid volume. The spread in the volume panel is expected because volume scales cubically with mask dimensions; therefore, these exploratory values require physical validation before being interpreted as true boll volume.")
 
     doc.add_heading("6.3 Confidence intervals and phase interpretation", level=2)
     paragraph(doc, "The candidate-level confidence intervals indicate that the readiness score is tightly estimated at the sampled-candidate level, whereas proxy volume has wide intervals because ellipsoid volume scales cubically with mask size and is sensitive to adherent or merged lint clusters. This is scientifically important: the pipeline can rank candidates reliably, but volume must be validated before being used as a yield surrogate.")
@@ -184,7 +185,7 @@ def add_experimental_sections(doc: Document) -> None:
         [row["variant"], fmt(row["mean_score"]), fmt(row["spearman_with_full"]), fmt(row["top5_overlap_with_full"])]
         for row in ablation
     ], [1.65, 1.0, 1.0, 1.1])
-    figure(doc, 3, fdir / "readiness_ablation.png", "Ablation of the measurement-readiness score. Removing lint fraction or visibility most strongly changes candidate selection, supporting the method design: the system should prioritize bolls that are not merely bright, but also compact, separable, and plausibly measurable.")
+    figure(doc, 4, fdir / "readiness_ablation.png", "Ablation of the measurement-readiness score. Removing lint fraction or visibility most strongly changes candidate selection, supporting the method design: the system should prioritize bolls that are not merely bright, but also compact, separable, and plausibly measurable.")
 
     doc.add_heading("6.5 Plot-grid mapping", level=2)
     paragraph(doc, "The plot-grid experiment assigns candidates to an image-coordinate grid that mirrors the row-column reasoning used in field phenotyping. This is not yet a georeferenced plot map; it is a spatial accounting layer that makes dense cotton imagery easier to audit and prepares the output for orthomosaic/GCP-based mapping.")
@@ -194,7 +195,7 @@ def add_experimental_sections(doc: Document) -> None:
         ["pre", str(pre_cells), "4 rows by 43 columns", "count, mean readiness, mean volume proxy"],
         ["post", str(post_cells), "4 rows by 43 columns", "count, mean readiness, mean volume proxy"],
     ], [0.7, 1.0, 1.45, 2.4])
-    figure(doc, 4, fdir / "plot_grid_candidate_heatmaps.png", "Image-coordinate plot-grid maps for candidate density and proxy traits. The grid turns dense UAV detections into row-column summaries that can later be registered to field plots when orthomosaic coordinates and plot boundaries are available.")
+    figure(doc, 5, fdir / "plot_grid_candidate_heatmaps.png", "Image-coordinate plot-grid maps for candidate density and proxy traits. The grid turns dense UAV detections into row-column summaries that can later be registered to field plots when orthomosaic coordinates and plot boundaries are available.")
 
     doc.add_heading("6.6 Proxy volume mutation analysis", level=2)
     paragraph(doc, "The volume-mutation plot follows the cotton point-cloud literature by sorting proxy volumes and inspecting large changes in the tail of the distribution. The current version uses a p99 cap before estimating the mutation threshold to reduce domination by extreme merged components. This produces a conservative diagnostic for adherent or merged cotton regions rather than a final biological threshold.")
@@ -202,7 +203,7 @@ def add_experimental_sections(doc: Document) -> None:
         [row["phase"], fmt(row["median_volume_proxy"], 1), fmt(row["p95_volume_proxy"], 1), fmt(row["p99_volume_proxy"], 1), fmt(row["p99_capped_mean_volume_proxy"], 1), fmt(row["threshold_D_p99_capped"], 2), row["first_mutation_index_p99_capped"]]
         for row in volume_mutation
     ], [0.55, 0.9, 0.9, 0.9, 1.0, 0.85, 1.05])
-    figure(doc, 5, fdir / "volume_mutation_proxy.png", "Sorted proxy-volume curves and first mutation positions after p99 capping. This diagnostic follows the logic of cotton point-cloud volume studies: unusually large jumps often indicate merged or adherent boll regions that should be inspected before they enter yield-related analysis.")
+    figure(doc, 6, fdir / "volume_mutation_proxy.png", "Sorted proxy-volume curves and first mutation positions after p99 capping. This diagnostic follows the logic of cotton point-cloud volume studies: unusually large jumps often indicate merged or adherent boll regions that should be inspected before they enter yield-related analysis.")
 
     doc.add_heading("6.7 Local 2.5D target selection", level=2)
     paragraph(doc, "The local reconstruction module selects the highest-ranked candidates for visual inspection and exports crop-level PLY files. These outputs are useful for demonstrating mask-to-3D review and for selecting images that deserve full calibrated reconstruction. They should not be presented as final 3D cotton boll geometry until multi-view or scale-calibrated evidence is available.")
@@ -210,7 +211,7 @@ def add_experimental_sections(doc: Document) -> None:
         [row["local_rank"], row["phase"], row["candidate_id"], fmt(row["measurement_ready_score"], 4), fmt(row["height_mean"], 4), fmt(row["height_std"], 4), fmt(row["lint_mean"], 4)]
         for row in local_2p5d[:8]
     ], [0.8, 0.55, 0.75, 0.9, 0.85, 0.75, 0.75])
-    figure(doc, 6, fdir / "local_2p5d_quality_scatter.png", "Relationship between measurement-readiness score and local 2.5D statistics for selected candidates. High-ranked crops are not treated as final 3D geometry; they define where calibrated reconstruction, manual inspection, or multi-view follow-up should be concentrated.")
+    figure(doc, 7, fdir / "local_2p5d_quality_scatter.png", "Relationship between measurement-readiness score and local 2.5D statistics for selected candidates. High-ranked crops are not treated as final 3D geometry; they define where calibrated reconstruction, manual inspection, or multi-view follow-up should be concentrated.")
 
     doc.add_heading("6.8 Next validation required before final accuracy claims", level=2)
     bullets(doc, [
@@ -497,6 +498,7 @@ def build_doc() -> None:
     doc.add_heading("4 Method", level=1)
     doc.add_heading("4.1 Overview", level=2)
     paragraph(doc, "The proposed pipeline proceeds from a UAV frame to a structured phenotyping record. First, the image phase is taken from the dataset folder or inferred from canopy greenness. Second, candidate bolls are detected using a phase-aware computer vision detector. Third, each candidate is refined with a SAM-style lint mask. Fourth, a morphology-aware depth proxy or a calibrated reconstruction module maps image evidence into a 3D review space. Fifth, mask shape and projected 3D points are used to compute proxy traits. Finally, measurement-ready candidates are summarized at image and plot-cell levels.")
+    figure(doc, 1, ARCHITECTURE_FIGURE, "Overview of the proposed mask-guided cotton boll phenotyping framework. The architecture separates UAV evidence, candidate detection, SAM-style mask extraction, proxy 3D review, structured trait outputs, and downstream evaluation/reporting. The dashed claim boundary is intentionally included to distinguish the current proxy MVP from future calibrated 3D metrology.")
     doc.add_heading("4.2 Cotton boll candidate detection", level=2)
     paragraph(doc, "The detector is intentionally simple and reproducible. The image is resized to a stable working scale, converted through contrast-limited adaptive histogram equalization, and processed with small and large top-hat filters to emphasize bright cotton lint. Otsu thresholding produces initial components. Contours are filtered by area, aspect ratio, saturation, value, and luminance. A greenness heuristic distinguishes pre- and post-defoliation when phase labels are not supplied. The detector returns raw candidate boxes, an adjusted count, and an annotated image for audit.")
     doc.add_heading("4.3 SAM-style boll mask extraction", level=2)
