@@ -18,6 +18,7 @@ BASE = Path(__file__).resolve().parent
 REPO_ROOT = BASE.parents[1]
 DOCX_OUT = BASE / "icpa_2026_mask_guided_cotton_until_algorithms.docx"
 MD_OUT = BASE / "icpa_2026_mask_guided_cotton_until_algorithms.md"
+TEMPLATE_DOCX = BASE / "17th_ICPA_Paper_Template_2026.docx"
 TITLE = "Mask-Guided 3D Cotton Boll Reconstruction for Pre- and Post-Defoliation Phenotyping"
 EXPERIMENT_DIR = REPO_ROOT / "outputs" / "experiments" / "icpa_paper_metrics"
 ARCHITECTURE_FIGURE = REPO_ROOT / "paper" / "figures" / "icpa_cotton_architecture_overview.png"
@@ -46,31 +47,70 @@ REFERENCES = [
 
 def configure(doc: Document) -> None:
     section = doc.sections[0]
-    section.top_margin = Inches(0.75)
-    section.bottom_margin = Inches(0.75)
-    section.left_margin = Inches(0.75)
-    section.right_margin = Inches(0.75)
+    # Official 17th ICPA 2026 Word template: US Letter, 1.0 in side margins,
+    # approximately 0.5 in top/bottom margins.
+    section.page_width = Inches(8.5)
+    section.page_height = Inches(11)
+    section.top_margin = Inches(0.5)
+    section.bottom_margin = Inches(0.56)
+    section.left_margin = Inches(1.0)
+    section.right_margin = Inches(1.0)
+    if not section.header.paragraphs:
+        section.header.add_paragraph()
+    if not section.footer.paragraphs:
+        section.footer.add_paragraph()
     section.header.paragraphs[0].text = ""
     section.footer.paragraphs[0].text = ""
 
     styles = doc.styles
     normal = styles["Normal"]
-    normal.font.name = "Times New Roman"
-    normal.font.size = Pt(10.5)
+    normal.font.name = "Arial"
+    normal.font.size = Pt(11)
     normal.paragraph_format.line_spacing = 1.0
-    normal.paragraph_format.space_after = Pt(4)
+    normal.paragraph_format.space_before = Pt(6)
+    normal.paragraph_format.space_after = Pt(0)
+    normal.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
-    for style_name, size in [("Title", 15), ("Heading 1", 12), ("Heading 2", 11), ("Heading 3", 10.5)]:
+    style_specs = {
+        "Title": ("Arial", 16, True, False, None, 18),
+        "Heading 1": ("Arial", 14, True, False, 18, 0),
+        "Heading 2": ("Arial", 11, True, False, 12, 0),
+        "Heading 3": ("Arial", 11, False, True, 6, 0),
+        "Caption": ("Arial", 8, True, False, 0, 0),
+        "List Bullet": ("Arial", 11, None, None, 0, 0),
+        "List Number": ("Arial", 11, None, None, 0, 0),
+    }
+    for style_name, (font_name, size, bold, italic, before, after) in style_specs.items():
+        if style_name not in styles:
+            continue
         style = styles[style_name]
-        style.font.name = "Times New Roman"
+        style.font.name = font_name
         style.font.size = Pt(size)
-        style.font.bold = True
+        if bold is not None:
+            style.font.bold = bold
+        if italic is not None:
+            style.font.italic = italic
         style.font.color.rgb = RGBColor(0, 0, 0)
+        if before is not None:
+            style.paragraph_format.space_before = Pt(before)
+        if after is not None:
+            style.paragraph_format.space_after = Pt(after)
+
+
+def template_document() -> Document:
+    """Start from the official ICPA DOCX when available and clear its sample body."""
+    doc = Document(TEMPLATE_DOCX) if TEMPLATE_DOCX.exists() else Document()
+    body = doc._body._element
+    for child in list(body):
+        if child.tag == qn("w:sectPr"):
+            continue
+        body.remove(child)
+    return doc
 
 
 def paragraph(doc: Document, text: str = "", style: str | None = None, italic: bool = False) -> None:
     p = doc.add_paragraph(style=style)
-    p.paragraph_format.space_after = Pt(4)
+    p.paragraph_format.space_after = Pt(0)
     run = p.add_run(text)
     run.italic = italic
 
@@ -88,8 +128,9 @@ def figure(doc: Document, number: int, path: Path, caption: str, width_inches: f
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run()
     run.add_picture(str(path), width=Inches(width_inches))
-    cap = doc.add_paragraph()
-    cap.paragraph_format.space_after = Pt(6)
+    cap_style = "Figure Caption" if "Figure Caption" in doc.styles else "Caption"
+    cap = doc.add_paragraph(style=cap_style)
+    cap.paragraph_format.space_after = Pt(0)
     r = cap.add_run(f"Figure {number} ")
     r.bold = True
     cap.add_run(caption)
@@ -245,14 +286,14 @@ def add_discussion_and_conclusion(doc: Document) -> None:
 def bullets(doc: Document, items: list[str]) -> None:
     for item in items:
         p = doc.add_paragraph(style="List Bullet")
-        p.paragraph_format.space_after = Pt(2)
+        p.paragraph_format.space_after = Pt(0)
         p.add_run(item)
 
 
 def number_steps(doc: Document, items: list[str]) -> None:
     for item in items:
         p = doc.add_paragraph(style="List Number")
-        p.paragraph_format.space_after = Pt(2)
+        p.paragraph_format.space_after = Pt(0)
         p.add_run(item)
 
 
@@ -269,7 +310,8 @@ def cell_text(cell, text: str, bold: bool = False) -> None:
     p.paragraph_format.space_after = Pt(0)
     run = p.add_run(text)
     run.bold = bold
-    run.font.size = Pt(8.6)
+    run.font.name = "Arial"
+    run.font.size = Pt(8)
     cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
 
 
@@ -321,7 +363,7 @@ def widths(table, vals: list[float]) -> None:
 
 
 def table(doc: Document, caption: str, headers: list[str], rows: list[list[str]], col_widths: list[float]) -> None:
-    p = doc.add_paragraph()
+    p = doc.add_paragraph(style="Table Caption" if "Table Caption" in doc.styles else None)
     p.paragraph_format.space_before = Pt(5)
     p.paragraph_format.space_after = Pt(2)
     label, rest = caption.split(" ", 1)
@@ -349,7 +391,7 @@ def set_algorithm_line(cell, text: str) -> None:
         if token == "":
             continue
         run = p.add_run(token)
-        run.font.name = "Times New Roman"
+        run.font.name = "Arial"
         run.font.size = Pt(10)
         if text.split("**").index(token) % 2 == 1:
             run.bold = True
@@ -359,7 +401,7 @@ def algorithm(doc: Document, number: int, title: str, lines: list[tuple[str, str
     table_obj = doc.add_table(rows=1, cols=2)
     table_obj.alignment = WD_TABLE_ALIGNMENT.LEFT
     table_obj.autofit = False
-    widths(table_obj, [0.42, 5.55])
+    widths(table_obj, [0.42, 5.25])
     table_obj.style = "Table Grid"
 
     title_cells = table_obj.rows[0].cells
@@ -370,8 +412,11 @@ def algorithm(doc: Document, number: int, title: str, lines: list[tuple[str, str
     p.paragraph_format.space_after = Pt(1)
     r = p.add_run(f"Algorithm {number} ")
     r.bold = True
+    r.font.name = "Arial"
     r.font.size = Pt(11)
-    p.add_run(title).font.size = Pt(11)
+    title_run = p.add_run(title)
+    title_run.font.name = "Arial"
+    title_run.font.size = Pt(11)
     set_cell_borders(title_cell, top=12, bottom=8, left=None, right=None)
 
     for idx, (stmt, comment) in enumerate(lines, start=1):
@@ -384,7 +429,7 @@ def algorithm(doc: Document, number: int, title: str, lines: list[tuple[str, str
         lp.paragraph_format.space_after = Pt(0)
         lr = lp.add_run(f"{idx}:")
         lr.font.size = Pt(10)
-        lr.font.name = "Times New Roman"
+        lr.font.name = "Arial"
 
         cells[1].text = ""
         rp = cells[1].paragraphs[0]
@@ -395,14 +440,14 @@ def algorithm(doc: Document, number: int, title: str, lines: list[tuple[str, str
                 continue
             run = rp.add_run(part)
             run.font.size = Pt(10)
-            run.font.name = "Times New Roman"
+            run.font.name = "Arial"
             run.bold = part_idx % 2 == 1
         if comment:
             spacer = rp.add_run("\t▷ ")
             spacer.font.size = Pt(10)
             cr = rp.add_run(comment)
             cr.font.size = Pt(10)
-            cr.font.name = "Times New Roman"
+            cr.font.name = "Arial"
 
     bottom = table_obj.add_row().cells
     bottom[0].merge(bottom[1])
@@ -432,24 +477,29 @@ def equations(doc: Document) -> None:
         p.paragraph_format.space_after = Pt(2)
         run = p.add_run(f"({idx})   {eq}")
         run.font.name = "Times New Roman"
-        run.font.size = Pt(10.5)
+        run.font.size = Pt(10)
 
 
 def build_doc() -> None:
-    doc = Document()
+    doc = template_document()
     configure(doc)
 
     title = doc.add_paragraph(style="Title")
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     title.add_run(TITLE)
-    paragraph(doc, "Author names and affiliations to be inserted after co-author confirmation.")
-    doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
-    paragraph(doc, "Corresponding author: to be inserted.")
-    doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
-    paragraph(doc, "Keywords: cotton phenotyping; UAV imagery; 3D reconstruction; promptable segmentation; defoliation; precision agriculture")
+    paragraph(doc, "Author names and affiliations to be inserted after co-author confirmation.", style="Author(s)")
+    paragraph(doc, "Corresponding author: to be inserted.", style="Author(s)")
+    paragraph(doc, "A paper from the Proceedings of the", style="Conf Name")
+    paragraph(doc, "17th International Conference on Precision Agriculture and 11th Brazilian Congress on Precision and Digital Agriculture", style="Conf Name")
+    paragraph(doc, "13-15 July 2026", style="Conf Date")
+    paragraph(doc, "Porto Alegre, Brazil", style="Conf Date")
 
-    doc.add_heading("Abstract", level=1)
-    paragraph(doc, "Cotton boll phenotyping from unmanned aerial vehicle (UAV) imagery is often reduced to two-dimensional counting, even though agronomic interpretation depends on visibility, occlusion, and organ-scale morphology. This manuscript develops a mask-guided framework for pre- and post-defoliation cotton imagery in which defoliation is treated as a controlled visibility intervention rather than a simple data split. The proposed pipeline detects candidate bolls, refines them with prompt-style lint masks inspired by recent segmentation foundation models, projects mask-selected pixels into a 3D review space, and estimates count, visibility, mask length, mask width, diameter, and ellipsoid volume proxies at image and plot-cell levels. The present draft deliberately distinguishes proxy measurements from calibrated metrology: length, diameter, and volume estimates are reported as provisional unless supported by ground sampling distance, camera calibration, ground control points, or direct physical measurements. The paper is positioned as a practical bridge between field-scale cotton boll counting and calibrated organ-scale 3D phenotyping. The planned evaluation will compare detection, segmentation, mask-to-3D projection, trait estimation, and plot mapping under pre- and post-defoliation conditions, with optional decision-support reporting evaluated separately for faithfulness and schema validity. No unverified accuracy claims are made in this manuscript stage.")
+    abstract = doc.add_paragraph(style="Abstract")
+    abstract.add_run("Abstract. ").bold = True
+    abstract.add_run("Cotton boll phenotyping from unmanned aerial vehicle (UAV) imagery is often reduced to two-dimensional counting, even though agronomic interpretation depends on visibility, occlusion, and organ-scale morphology. This manuscript develops a mask-guided framework for pre- and post-defoliation cotton imagery in which defoliation is treated as a controlled visibility intervention rather than a simple data split. The proposed pipeline detects candidate bolls, refines them with prompt-style lint masks inspired by recent segmentation foundation models, projects mask-selected pixels into a 3D review space, and estimates count, visibility, mask length, mask width, diameter, and ellipsoid volume proxies at image and plot-cell levels. The present draft deliberately distinguishes proxy measurements from calibrated metrology: length, diameter, and volume estimates are reported as provisional unless supported by ground sampling distance, camera calibration, ground control points, or direct physical measurements. The paper is positioned as a practical bridge between field-scale cotton boll counting and calibrated organ-scale 3D phenotyping. The planned evaluation will compare detection, segmentation, mask-to-3D projection, trait estimation, and plot mapping under pre- and post-defoliation conditions, with optional decision-support reporting evaluated separately for faithfulness and schema validity. No unverified accuracy claims are made in this manuscript stage.")
+    keywords = doc.add_paragraph(style="Keywords")
+    keywords.add_run("Keywords. ").bold = True
+    keywords.add_run("cotton phenotyping; UAV imagery; 3D reconstruction; promptable segmentation; defoliation; precision agriculture")
 
     doc.add_heading("1 Introduction", level=1)
     paragraph(doc, "Cotton yield assessment and harvest management depend on the development, exposure, and spatial distribution of bolls. UAV imagery has made it possible to observe large field areas at high temporal frequency, but most image-based boll analyses remain closer to counting than to measurement. A field can contain thousands of bright lint structures in a single frame, and those structures vary in visibility because foliage, branches, shadows, soil, and neighboring bolls obscure the organ boundary. A count can therefore be useful and still incomplete: it says little about which bolls were measurable, which were partially occluded, and whether organ-scale traits were stable enough to support agronomic decisions.")
@@ -577,8 +627,9 @@ def build_doc() -> None:
     doc.save(DOCX_OUT)
     MD_OUT.write_text(
         f"# {TITLE}\n\nThis Word-first draft has been completed through Algorithm 4. "
-        "It removes running page furniture and internal-only notes, uses author-year citations, "
-        "and preserves the ICPA accuracy boundary that all uncalibrated dimensions are proxy measurements.\n",
+        "It is generated from the official 17th ICPA 2026 Word template, removes running page furniture "
+        "and internal-only notes, uses author-year citations, and preserves the ICPA accuracy boundary "
+        "that all uncalibrated dimensions are proxy measurements.\n",
         encoding="utf-8",
     )
 
