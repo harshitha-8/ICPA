@@ -132,8 +132,22 @@ def add_box(
         zorder=4,
     )
     ax.add_patch(patch)
-    ax.text(x + w / 2, y + h - 0.020, title, ha="center", va="top", fontsize=7.8, fontweight="bold", color=INK, zorder=5)
-    ax.text(x + w / 2, y + h - 0.052, body, ha="center", va="top", fontsize=5.8, color=INK, linespacing=1.16, zorder=5)
+    title_lines = title.count("\n") + 1
+    title_font = 7.8 if title_lines == 1 else 7.1
+    body_y = y + h - (0.052 if title_lines == 1 else 0.066)
+    ax.text(
+        x + w / 2,
+        y + h - 0.020,
+        title,
+        ha="center",
+        va="top",
+        fontsize=title_font,
+        fontweight="bold",
+        color=INK,
+        linespacing=0.95,
+        zorder=5,
+    )
+    ax.text(x + w / 2, body_y, body, ha="center", va="top", fontsize=5.8, color=INK, linespacing=1.16, zorder=5)
 
 
 def arrow(
@@ -146,12 +160,13 @@ def arrow(
     rad: float = 0.0,
     lw: float = 1.45,
     zorder: float = 6.0,
+    mutation_scale: float = 13.0,
 ) -> None:
     patch = FancyArrowPatch(
         start,
         end,
         arrowstyle="-|>",
-        mutation_scale=13.0,
+        mutation_scale=mutation_scale,
         linewidth=lw,
         color=color,
         linestyle="--" if dashed else "-",
@@ -163,7 +178,7 @@ def arrow(
     ax.add_patch(patch)
 
 
-def visible_gap_arrow(
+def boundary_arrow(
     ax,
     start: tuple[float, float],
     end: tuple[float, float],
@@ -171,24 +186,10 @@ def visible_gap_arrow(
     dashed: bool = False,
     color: str = LINE,
     lw: float = 1.45,
-    inset: float = 0.0025,
+    mutation_scale: float = 10.5,
 ) -> None:
-    """Draw a connector entirely in the whitespace between two boxes.
-
-    The tiny inset keeps the arrowhead visible in the gap while still reading
-    as a boundary-to-boundary connection in the exported paper figure.
-    """
-    sx, sy = start
-    ex, ey = end
-    if abs(sy - ey) <= abs(sx - ex):
-        direction = 1 if ex >= sx else -1
-        sx += direction * inset
-        ex -= direction * inset
-    else:
-        direction = 1 if ey >= sy else -1
-        sy += direction * inset
-        ey -= direction * inset
-    arrow(ax, (sx, sy), (ex, ey), dashed=dashed, color=color, lw=lw, zorder=6.0)
+    """Draw a connector whose endpoints are the exact object boundaries."""
+    arrow(ax, start, end, dashed=dashed, color=color, lw=lw, zorder=6.0, mutation_scale=mutation_scale)
 
 
 def add_arrow_legend(ax, xy: tuple[float, float]) -> None:
@@ -234,99 +235,115 @@ def build_diagram(args: argparse.Namespace) -> Path:
     pre_map = load_image(args.pre_map, crop=(0.02, 0.10, 0.98, 0.86))
     post_map = load_image(args.post_map, crop=(0.02, 0.10, 0.98, 0.86))
 
-    fig, ax = plt.subplots(figsize=(17.0, 7.6), dpi=args.dpi)
+    fig, ax = plt.subplots(figsize=(17.0, 7.9), dpi=args.dpi)
     fig.patch.set_facecolor("white")
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis("off")
 
+    ax.text(
+        0.500,
+        0.982,
+        "Mask-Guided Cotton Boll Phenotyping Architecture",
+        ha="center",
+        va="top",
+        fontsize=18.0,
+        fontweight="bold",
+        color=INK,
+    )
+    ax.text(
+        0.500,
+        0.946,
+        "Pre/post-defoliation UAV imagery \u2192 detector-prompted lint masks \u2192 proxy 2.5D review \u2192 conservative trait summaries",
+        ha="center",
+        va="top",
+        fontsize=10.8,
+        color=MUTED,
+    )
+
     # Input evidence.
-    ax.text(0.035, 0.932, "Inputs: aerial visibility intervention", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
-    add_image(ax, pre_rgb, (0.040, 0.698), (0.165, 0.190), "Pre-defoliation RGB")
-    add_image(ax, post_rgb, (0.040, 0.428), (0.165, 0.190), "Post-defoliation RGB")
+    ax.text(0.035, 0.890, "A. Pre/post UAV imagery", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
+    add_image(ax, pre_rgb, (0.040, 0.654), (0.165, 0.190), "Pre-defoliation RGB")
+    add_image(ax, post_rgb, (0.040, 0.384), (0.165, 0.190), "Post-defoliation RGB")
 
     # Top implemented pipeline.
-    ax.text(0.240, 0.932, "Implemented proxy pipeline", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
-    y_top = 0.785
+    ax.text(0.240, 0.890, "B. Implemented proxy pipeline", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
+    y_top = 0.745
     bw = 0.097
     bh = 0.122
     gap = 0.021
     xs = [0.240 + i * (bw + gap) for i in range(6)]
     titles = [
         "1. Phase resolver",
-        "2. Candidate detection",
-        "3. Lint segmentation",
-        "4. Readiness score",
-        "5. Proxy 2.5D map",
-        "6. Trait summary",
+        "2. Candidate detector",
+        "3. Prompted lint-mask\nextraction",
+        "4. Readiness scorer",
+        "5. Proxy 2.5D review",
+        "6. Trait and plot\naggregation",
     ]
     bodies = [
-        "Folder label or ExG\ngreenness assigns\npre/post phase.",
-        "CLAHE, top-hat,\nOtsu components,\nand color gates.",
-        "Detector-guided\nlint mask; suppress\ncanopy/residue.",
-        "Rank candidates by\nlint, visibility,\nshape, size, phase.",
-        "Map retained pixels\nto image-derived\nvisibility surface.",
-        "Count, visibility,\nL/W/D, volume proxy,\nconfidence, grid cell.",
+        "Folder label or canopy\ngreenness assigns\npre/post phase",
+        "CLAHE, top-hat response,\nconnected components,\nand color gates",
+        "Detector boxes guide\nlint segmentation and\ngreen-canopy suppression",
+        "Ranks candidates by lint fraction,\nvisibility, brightness, shape,\nsize, green penalty, and phase",
+        "Maps retained pixels\nto image-derived\nvisibility-height surface",
+        "Reports count, visibility,\nmask axes, diameter proxy,\nvolume proxy, confidence,\nand plot-cell summaries",
     ]
     colors = [(BLUE, SOFT_BLUE), (GREEN, SOFT_GREEN), (VIOLET, SOFT_VIOLET), (ORANGE, SOFT_ORANGE), (BLUE, SOFT_BLUE), (GREEN, SOFT_GREEN)]
     for x, title, body, (edge, fill) in zip(xs, titles, bodies, colors):
         add_box(ax, (x, y_top), (bw, bh), title, body, edge, fill)
     for i in range(5):
-        visible_gap_arrow(ax, (xs[i] + bw, y_top + bh / 2), (xs[i + 1], y_top + bh / 2), inset=0.006)
+        boundary_arrow(ax, (xs[i] + bw, y_top + bh / 2), (xs[i + 1], y_top + bh / 2))
 
-    # Clean input arrows to phase resolver.
-    junction = (0.225, y_top + bh / 2)
-    arrow(ax, (0.205, 0.793), junction, color=LINE)
-    arrow(ax, (0.205, 0.523), junction, color=LINE)
-    visible_gap_arrow(ax, junction, (xs[0], y_top + bh / 2), color=LINE)
+    # Single clean input arrow from the image group boundary to the phase resolver.
+    input_group_right = 0.205
+    boundary_arrow(ax, (input_group_right, y_top + bh / 2), (xs[0], y_top + bh / 2))
 
     # Visual/proxy outputs.
-    record_x, record_y, record_w, record_h = 0.792, 0.455, 0.165, 0.126
+    ax.text(0.240, 0.596, "C. Proxy review and phenotyping outputs", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
+    record_x, record_y, record_w, record_h = 0.792, 0.408, 0.165, 0.154
     add_box(
         ax,
         (record_x, record_y),
         (record_w, record_h),
         "Structured phenotyping record",
-        "Candidate table: mask, visibility,\naxes, diameter proxy, volume proxy,\nreadiness, phase, plot cell.",
+        "Candidate traits: visibility,\nmask axes, diameter proxy,\nellipsoid volume proxy,\nreadiness score, and phase.\nPlot traits: cell count and\nmean proxy traits over the\nimage-coordinate grid.",
         GRAY_BORDER,
         SOFT_GRAY,
     )
-    add_image(ax, pre_map, (0.460, 0.445), (0.148, 0.175), "Pre-defoliation proxy 2.5D", label_location="bottom")
-    add_image(ax, post_map, (0.622, 0.445), (0.148, 0.175), "Post-defoliation proxy 2.5D", label_location="bottom")
+    pre_map_xy = (0.460, 0.402)
+    post_map_xy = (0.622, 0.402)
+    map_size = (0.148, 0.175)
+    add_image(ax, pre_map, pre_map_xy, map_size, "Pre-defoliation proxy 2.5D", label_location="bottom")
+    add_image(ax, post_map, post_map_xy, map_size, "Post-defoliation proxy 2.5D", label_location="bottom")
 
-    # Evidence arrows use a small bus above the visual panels so labels and
-    # map views stay unobstructed in the final paper figure.
     proxy_center = (xs[4] + bw / 2, y_top)
-    pre_map_center_x = 0.460 + 0.148 / 2
-    post_map_center_x = 0.622 + 0.148 / 2
-    map_top_y = 0.445 + 0.175
-    bus_y = 0.665
-    ax.plot([proxy_center[0], proxy_center[0]], [proxy_center[1], bus_y], color=LINE, linewidth=1.45, zorder=3.2)
-    ax.plot([pre_map_center_x, proxy_center[0]], [bus_y, bus_y], color=LINE, linewidth=1.45, zorder=3.2)
-    arrow(ax, (pre_map_center_x, bus_y), (pre_map_center_x, map_top_y), color=LINE)
-    arrow(ax, (post_map_center_x, bus_y), (post_map_center_x, map_top_y), color=LINE)
+    pre_map_center_x = pre_map_xy[0] + map_size[0] / 2
+    post_map_center_x = post_map_xy[0] + map_size[0] / 2
+    map_top_y = pre_map_xy[1] + map_size[1]
+    boundary_arrow(ax, proxy_center, (pre_map_center_x, map_top_y))
+    boundary_arrow(ax, proxy_center, (post_map_center_x, map_top_y))
     record_center_x = record_x + record_w / 2
     trait_center_x = xs[5] + bw / 2
-    trait_to_record_x = (trait_center_x + record_center_x) / 2
-    visible_gap_arrow(ax, (trait_to_record_x, y_top), (trait_to_record_x, record_y + record_h), color=LINE)
+    boundary_arrow(ax, (trait_center_x, y_top), (record_center_x, record_y + record_h), color=LINE)
 
     # Calibration branch.
-    add_arrow_legend(ax, (0.782, 0.292))
+    add_arrow_legend(ax, (0.782, 0.253))
 
-    ax.text(0.240, 0.355, "Calibration-dependent branch", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
+    ax.text(0.240, 0.328, "D. Calibration-dependent validation branch", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
     add_box(
         ax,
-        (0.240, 0.168),
+        (0.240, 0.136),
         (0.220, 0.130),
         "Optional calibrated geometry",
-        "Activate only with scale,\ncamera intrinsics, pose,\nGCP/RTK, RGB-D, SfM/MVS,\nor validated 3DGS evidence.",
+        "Use only with scale,\ncamera intrinsics, pose,\nGCP/RTK, RGB-D, SfM/MVS,\nDUSt3R/MASt3R/VGGT,\nor validated 3DGS evidence.",
         GOLD,
         SOFT_GOLD,
         dashed=True,
     )
     add_box(
         ax,
-        (0.500, 0.168),
+        (0.500, 0.136),
         (0.180, 0.130),
         "Metric trait validation",
         "Report trait MAE/RMSE,\nmask IoU, reprojection\nconsistency, Chamfer distance,\nand plot-cell agreement.",
@@ -334,7 +351,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
         SOFT_GOLD,
         dashed=True,
     )
-    visible_gap_arrow(ax, (0.460, 0.233), (0.500, 0.233), dashed=True, color=LINE)
+    boundary_arrow(ax, (0.460, 0.201), (0.500, 0.201), dashed=True, color=LINE)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     png = args.out_dir / "mask_guided_cotton_architecture_cvpr_hd.png"
