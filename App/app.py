@@ -132,39 +132,56 @@ INDEX_HTML = r"""<!doctype html>
   <style>
     :root {
       color-scheme: light;
-      --bg: #f6f8f4;
+      --bg: #f4f6f1;
       --panel: #ffffff;
-      --ink: #182116;
-      --muted: #65715f;
-      --line: #dfe7dc;
-      --accent: #2f7d4f;
-      --accent-dark: #225f3c;
-      --soft: #eef5ec;
-      --warn: #8a5a18;
+      --ink: #172016;
+      --muted: #626d5c;
+      --line: #d8e0d2;
+      --accent: #276b46;
+      --accent-dark: #184b32;
+      --accent-soft: #e8f2e9;
+      --gold: #b88a2a;
+      --soft: #eef4eb;
+      --warn: #7d5b18;
       --danger: #a43d3d;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at top left, rgba(39, 107, 70, 0.10), transparent 32rem),
+        linear-gradient(180deg, #fbfcf8 0%, var(--bg) 42%, #eef3eb 100%);
       color: var(--ink);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    main { max-width: 1440px; margin: 0 auto; padding: 18px; }
+    main { max-width: 1440px; margin: 0 auto; padding: 20px; }
     header {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 16px;
-      align-items: end;
+      align-items: center;
       border-bottom: 1px solid var(--line);
-      padding: 8px 0 16px;
-      margin-bottom: 14px;
+      padding: 18px 18px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(237,246,235,0.86));
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(30, 51, 34, 0.07);
     }
-    h1 { margin: 0 0 6px; font-size: 25px; line-height: 1.15; letter-spacing: 0; }
+    h1 { margin: 0 0 6px; font-size: 32px; line-height: 1.05; letter-spacing: 0; }
     h2 { margin: 0 0 10px; font-size: 17px; letter-spacing: 0; }
     p { margin: 0; color: var(--muted); line-height: 1.45; }
-    .byline { color: var(--muted); font-size: 13px; text-align: right; }
-    .status { margin-top: 4px; color: var(--muted); font-size: 12px; }
+    .subtitle { max-width: 860px; font-size: 14px; }
+    .byline {
+      color: var(--accent-dark);
+      font-size: 13px;
+      text-align: right;
+      border: 1px solid rgba(39, 107, 70, 0.18);
+      background: #fff;
+      border-radius: 999px;
+      padding: 9px 13px;
+      white-space: nowrap;
+    }
     .layout {
       display: grid;
       grid-template-columns: 320px minmax(0, 1fr);
@@ -174,8 +191,9 @@ INDEX_HTML = r"""<!doctype html>
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 14px;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 8px 22px rgba(30, 51, 34, 0.05);
     }
     .controls { position: sticky; top: 14px; }
     label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 6px; }
@@ -189,13 +207,18 @@ INDEX_HTML = r"""<!doctype html>
       color: var(--ink);
       font-size: 14px;
     }
+    select:focus, input:focus {
+      outline: 2px solid rgba(39, 107, 70, 0.20);
+      border-color: rgba(39, 107, 70, 0.55);
+    }
     button {
       border: 0;
       border-radius: 6px;
-      background: var(--accent);
+      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
       color: #fff;
       font-weight: 700;
       cursor: pointer;
+      box-shadow: 0 6px 14px rgba(39, 107, 70, 0.20);
     }
     #runButton { width: 100%; min-height: 42px; margin-top: 14px; }
     button:disabled { opacity: 0.6; cursor: progress; }
@@ -210,8 +233,9 @@ INDEX_HTML = r"""<!doctype html>
       background: #fff;
       color: var(--accent-dark);
       border: 1px solid var(--line);
+      box-shadow: none;
     }
-    .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .tab.active { background: var(--accent-dark); color: #fff; border-color: var(--accent-dark); }
     .page { display: none; }
     .page.active { display: block; }
     .metrics {
@@ -224,10 +248,10 @@ INDEX_HTML = r"""<!doctype html>
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 10px;
-      background: #fbfcfa;
+      background: linear-gradient(180deg, #ffffff, #f8fbf6);
       min-height: 74px;
     }
-    .metric strong { display: block; font-size: 21px; line-height: 1.15; }
+    .metric strong { display: block; font-size: 22px; line-height: 1.15; color: var(--accent-dark); }
     .metric span { color: var(--muted); font-size: 12px; }
     .image-grid {
       display: grid;
@@ -281,10 +305,10 @@ INDEX_HTML = r"""<!doctype html>
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th, td { border-bottom: 1px solid var(--line); padding: 8px; text-align: right; white-space: nowrap; }
     th:first-child, td:first-child { text-align: left; }
-    th { position: sticky; top: 0; background: #f7faf6; color: var(--muted); }
+    th { position: sticky; top: 0; background: var(--accent-soft); color: var(--accent-dark); }
     .note {
       border: 1px solid #ead8ad;
-      background: #fff9e9;
+      background: #fff9e8;
       color: var(--warn);
       border-radius: 8px;
       padding: 12px;
@@ -373,12 +397,11 @@ INDEX_HTML = r"""<!doctype html>
 <main>
   <header>
     <div>
-      <h1>ICPA Cotton Phenotyping Workspace</h1>
-      <p>Pre/post-defoliation scouting, boll counting, plot-grid mapping, and proxy trait review.</p>
+      <h1>ICPA</h1>
+      <p class="subtitle">Cotton 3D phenotyping workspace for pre/post-defoliation scouting, boll counting, plot-grid mapping, and proxy trait review.</p>
     </div>
     <div class="byline">
       <strong>Created by Harshitha Manjunatha</strong>
-      <div class="status" id="datasetStatus">Loading dataset index...</div>
     </div>
   </header>
 
@@ -506,7 +529,6 @@ const runButton = document.getElementById("runButton");
 async function loadDataset() {
   const res = await fetch("/api/images");
   dataset = await res.json();
-  document.getElementById("datasetStatus").textContent = `${dataset.pre.length} pre frames, ${dataset.post.length} post frames indexed`;
   updateChoices();
   loadLocalBoll();
 }
