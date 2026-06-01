@@ -1,0 +1,94 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+
+\node[font=\sffamily\bfseries\large, text=icpaInk] at (8.0,6.45)
+  {Mask-Guided Cotton Boll Phenotyping};
+\node[font=\sffamily\tiny, text=icpaMuted] at (8.0,6.10)
+  {solid = implemented MVP/proxy pipeline \quad dashed = optional, calibration-dependent, or future module};
+
+% Main implemented pipeline.
+\node[icpaBlock, fill=icpaSoftBlue, minimum width=2.05cm] (input) at (0.95,4.85)
+  {\textbf{UAV RGB}\\pre / post\\defoliation};
+
+\node[icpaSmall, fill=white, minimum width=1.55cm] (phase) at (0.95,3.62)
+  {Phase\\resolver\\folder / ExG};
+\draw[icpaArrow] (input) -- (phase);
+
+\node[icpaBlock, fill=icpaSoftGold, minimum width=2.38cm] (detect) at (3.18,4.85)
+  {\textbf{Boll Candidate}\\\textbf{Detector}\\CLAHE, top-hat,\\Otsu, HSV gates};
+\draw[icpaArrow] (input.east) -- (detect.west);
+\draw[icpaArrow] (phase.east) -- ++(0.55,0) |- (detect.south);
+
+\node[icpaBlock, fill=icpaSoftViolet, minimum width=2.28cm] (mask) at (5.78,4.85)
+  {\textbf{Prompted Lint}\\\textbf{Mask}\\box prompt +\\dominant lint blob};
+\draw[icpaArrow] (detect.east) -- (mask.west);
+
+\node[icpaSmall, fill=white, minimum width=1.72cm] (sam) at (5.78,3.62)
+  {Official\\SAM / SAM2\\optional};
+\draw[icpaDashed] (sam.north) -- (mask.south);
+
+\node[icpaBlock, fill=icpaSoftGreen, minimum width=2.45cm] (quality) at (8.43,4.85)
+  {\textbf{Measurement}\\\textbf{Readiness}\\lint, visibility,\\brightness, shape};
+\draw[icpaArrow] (mask.east) -- (quality.west);
+
+\node[icpaBlock, fill=icpaSoftGreen, minimum width=2.42cm] (depth) at (11.10,4.85)
+  {\textbf{Morphology}\\\textbf{Depth Proxy}\\monocular 2.5D\\review space};
+\draw[icpaArrow] (quality.east) -- (depth.west);
+
+\node[icpaSmall, fill=white, minimum width=2.38cm] (calib) at (11.10,3.54)
+  {Calibrated geometry\\SfM/MVS, VGGT,\\MASt3R, 3DGS};
+\draw[icpaDashed] (calib.north) -- (depth.south);
+
+\node[icpaBlock, fill=icpaSoftBlue, minimum width=2.35cm] (traits) at (13.74,4.85)
+  {\textbf{Trait Record}\\count, visibility,\\$L$, $W$, $D$,\\volume, confidence};
+\draw[icpaArrow] (depth.east) -- (traits.west);
+
+\node[icpaBlock, fill=icpaSoftGray, minimum width=2.20cm] (grid) at (16.16,4.85)
+  {\textbf{Plot-Cell}\\\textbf{Aggregation}\\4 $\times$ 43 grid\\cell summaries};
+\draw[icpaArrow] (traits.east) -- (grid.west);
+
+% Evaluation and signals.
+\node[icpaLoss, minimum width=3.05cm] (signals) at (4.50,1.82)
+  {\textbf{Current signals}\\
+   $q_i$: lint fraction, visibility,\\
+   brightness, size prior,\\
+   shape, green penalty, phase};
+
+\node[icpaBlock, fill=icpaSoftRose, minimum width=2.72cm] (eval) at (8.18,1.82)
+  {\textbf{Evaluation}\\detection, mask,\\proxy trait, grid,\\robustness};
+
+\node[icpaLoss, minimum width=3.22cm] (futureloss) at (12.08,1.82)
+  {\textbf{Validation / future losses}\\
+   count MAE/RMSE/F1; mask IoU;\\
+   length/volume error; Chamfer;\\
+   reprojection consistency};
+
+\draw[icpaArrow] (quality.south) -- ++(0,-0.70) -| (signals.north);
+\draw[icpaArrow] (signals.east) -- (eval.west);
+\draw[icpaDashed] (calib.south) -- ++(0,-0.55) -| (futureloss.north);
+\draw[icpaDashed] (futureloss.west) -- (eval.east);
+
+\node[icpaBlock, fill=white, minimum width=2.52cm] (llm) at (15.85,1.82)
+  {\textbf{Optional Report}\\structured agronomic\\summary / JSON};
+\draw[icpaDashed] (grid.south) -- ++(0,-0.66) -| (llm.north);
+\draw[icpaDashed] (eval.east) -- (llm.west);
+
+% Grouping and notes.
+\node[icpaGroup, fit=(detect)(mask)(quality)(depth), inner sep=7pt,
+      label={[icpaLabel]above:Core visual phenotyping pipeline}] {};
+\node[icpaGroup, fit=(traits)(grid)(llm), inner sep=7pt,
+      label={[icpaLabel]above:Outputs and decision layer}] {};
+
+\node[icpaSmall, fill=white, minimum width=5.20cm] (abl) at (6.85,0.62)
+  {Ablations: detector only $\rightarrow$ +mask $\rightarrow$ +depth proxy;\\
+   readiness terms: lint / visibility / brightness / shape / green penalty / phase};
+\draw[icpaArrow] (eval.south) -- (abl.north);
+
+\draw[dashed, line width=0.55pt, draw=icpaFuture] (9.78,3.02) rectangle (12.42,4.12);
+\node[icpaLabel] at (11.10,3.02)
+  {metric 3D only after scale and calibration};
+
+\node[font=\sffamily\tiny, text=icpaMuted, align=left] at (2.60,0.05)
+  {[UNKNOWN] camera intrinsics, GSD/GCPs, camera poses, and physical boll measurements are not confirmed.\\
+   Current diameter and volume are proxy traits unless calibrated scale and validation are added.};
+
+\end{tikzpicture}

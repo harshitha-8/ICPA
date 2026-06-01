@@ -1,0 +1,27 @@
+% Add this once in the paper preamble:
+% \usepackage{graphicx}
+% \usepackage{tikz}
+% \usetikzlibrary{arrows.meta,positioning,fit,calc,decorations.pathreplacing}
+% \input{paper/tikz/icpa_architecture_preamble}
+
+\begin{figure*}[t]
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \input{paper/tikz/icpa_mask_guided_architecture_body}
+  }
+  \caption{\textbf{Mask-guided cotton boll phenotyping architecture.}
+  UAV RGB frames acquired before and after defoliation are processed by a
+  phase-aware detector that localizes bright lint candidates using illumination
+  normalization, morphology, thresholding, and color gates. Candidate boxes
+  prompt a SAM-style lint mask extractor, after which a measurement-readiness
+  score combines lint fraction, visibility, brightness, shape, size, greenness,
+  and phase cues. The current implementation projects selected evidence into a
+  morphology-aware 2.5D review space and estimates proxy traits including count,
+  length, width, diameter, volume, and confidence. Plot-cell aggregation
+  summarizes records over the field grid. Solid arrows denote the implemented
+  proxy pipeline; dashed arrows denote optional or calibration-dependent modules
+  such as official SAM/SAM2, DINO-style features, SfM/MVS, DUSt3R/MASt3R/VGGT,
+  and Gaussian Splatting. Metric 3D traits require camera calibration, scale
+  information, and physical validation.}
+  \label{fig:mask-guided-cotton-architecture}
+\end{figure*}

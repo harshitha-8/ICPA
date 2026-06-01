@@ -1,0 +1,62 @@
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,decorations.pathreplacing}
+
+\definecolor{icpaInk}{HTML}{1A1A1A}
+\definecolor{icpaMuted}{HTML}{606A5B}
+\definecolor{icpaLine}{HTML}{3F4A3A}
+\definecolor{icpaSoftGray}{HTML}{F4F5F2}
+\definecolor{icpaSoftGreen}{HTML}{E8F2E9}
+\definecolor{icpaSoftBlue}{HTML}{EAF0F8}
+\definecolor{icpaSoftGold}{HTML}{FFF6DD}
+\definecolor{icpaSoftRose}{HTML}{FBEAEA}
+\definecolor{icpaSoftViolet}{HTML}{F1ECF7}
+\definecolor{icpaFuture}{HTML}{777777}
+
+\tikzset{
+  icpaBlock/.style={
+    draw=icpaLine,
+    rounded corners=2.2pt,
+    line width=0.55pt,
+    align=center,
+    minimum height=9.4mm,
+    inner sep=3.0pt,
+    text=icpaInk,
+    font=\sffamily\scriptsize
+  },
+  icpaSmall/.style={
+    icpaBlock,
+    minimum height=7.2mm,
+    font=\sffamily\tiny
+  },
+  icpaGroup/.style={
+    draw=icpaLine,
+    rounded corners=3pt,
+    line width=0.45pt,
+    inner sep=4pt
+  },
+  icpaArrow/.style={
+    -{Latex[length=2.0mm,width=1.25mm]},
+    line width=0.55pt,
+    draw=icpaLine
+  },
+  icpaDashed/.style={
+    icpaArrow,
+    dashed,
+    draw=icpaFuture
+  },
+  icpaLabel/.style={
+    font=\sffamily\tiny,
+    text=icpaMuted,
+    align=center
+  },
+  icpaLoss/.style={
+    draw=icpaLine,
+    rounded corners=1.8pt,
+    line width=0.45pt,
+    fill=white,
+    align=left,
+    font=\sffamily\tiny,
+    inner sep=3pt,
+    text=icpaInk
+  }
+}
