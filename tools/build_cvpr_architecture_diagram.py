@@ -171,13 +171,13 @@ def visible_gap_arrow(
     dashed: bool = False,
     color: str = LINE,
     lw: float = 1.45,
+    inset: float = 0.0025,
 ) -> None:
     """Draw a connector entirely in the whitespace between two boxes.
 
     The tiny inset keeps the arrowhead visible in the gap while still reading
     as a boundary-to-boundary connection in the exported paper figure.
     """
-    inset = 0.0025
     sx, sy = start
     ex, ey = end
     if abs(sy - ey) <= abs(sx - ex):
@@ -272,7 +272,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
     for x, title, body, (edge, fill) in zip(xs, titles, bodies, colors):
         add_box(ax, (x, y_top), (bw, bh), title, body, edge, fill)
     for i in range(5):
-        visible_gap_arrow(ax, (xs[i] + bw, y_top + bh / 2), (xs[i + 1], y_top + bh / 2))
+        visible_gap_arrow(ax, (xs[i] + bw, y_top + bh / 2), (xs[i + 1], y_top + bh / 2), inset=0.006)
 
     # Clean input arrows to phase resolver.
     junction = (0.225, y_top + bh / 2)
