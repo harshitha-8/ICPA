@@ -145,7 +145,7 @@ def arrow(
     color: str = LINE,
     rad: float = 0.0,
     lw: float = 1.45,
-    zorder: float = 3.2,
+    zorder: float = 6.0,
 ) -> None:
     patch = FancyArrowPatch(
         start,
@@ -163,6 +163,34 @@ def arrow(
     ax.add_patch(patch)
 
 
+def visible_gap_arrow(
+    ax,
+    start: tuple[float, float],
+    end: tuple[float, float],
+    *,
+    dashed: bool = False,
+    color: str = LINE,
+    lw: float = 1.45,
+) -> None:
+    """Draw a connector entirely in the whitespace between two boxes.
+
+    The tiny inset keeps the arrowhead visible in the gap while still reading
+    as a boundary-to-boundary connection in the exported paper figure.
+    """
+    inset = 0.0025
+    sx, sy = start
+    ex, ey = end
+    if abs(sy - ey) <= abs(sx - ex):
+        direction = 1 if ex >= sx else -1
+        sx += direction * inset
+        ex -= direction * inset
+    else:
+        direction = 1 if ey >= sy else -1
+        sy += direction * inset
+        ey -= direction * inset
+    arrow(ax, (sx, sy), (ex, ey), dashed=dashed, color=color, lw=lw, zorder=6.0)
+
+
 def add_arrow_legend(ax, xy: tuple[float, float]) -> None:
     x, y = xy
     w, h = 0.198, 0.088
@@ -178,9 +206,9 @@ def add_arrow_legend(ax, xy: tuple[float, float]) -> None:
     )
     ax.add_patch(patch)
     ax.text(x + 0.012, y + h - 0.018, "Arrow convention", ha="left", va="top", fontsize=7.3, fontweight="bold", color=INK, zorder=5)
-    arrow(ax, (x + 0.016, y + 0.043), (x + 0.063, y + 0.043), color=LINE, lw=1.25, zorder=5)
+    arrow(ax, (x + 0.016, y + 0.043), (x + 0.063, y + 0.043), color=LINE, lw=1.25, zorder=6)
     ax.text(x + 0.073, y + 0.043, "implemented proxy path", ha="left", va="center", fontsize=6.2, color=MUTED, zorder=5)
-    arrow(ax, (x + 0.016, y + 0.020), (x + 0.063, y + 0.020), dashed=True, color=LINE, lw=1.25, zorder=5)
+    arrow(ax, (x + 0.016, y + 0.020), (x + 0.063, y + 0.020), dashed=True, color=LINE, lw=1.25, zorder=6)
     ax.text(x + 0.073, y + 0.020, "calibration-only validation", ha="left", va="center", fontsize=6.2, color=MUTED, zorder=5)
 
 
@@ -244,13 +272,13 @@ def build_diagram(args: argparse.Namespace) -> Path:
     for x, title, body, (edge, fill) in zip(xs, titles, bodies, colors):
         add_box(ax, (x, y_top), (bw, bh), title, body, edge, fill)
     for i in range(5):
-        arrow(ax, (xs[i] + bw, y_top + bh / 2), (xs[i + 1], y_top + bh / 2))
+        visible_gap_arrow(ax, (xs[i] + bw, y_top + bh / 2), (xs[i + 1], y_top + bh / 2))
 
     # Clean input arrows to phase resolver.
     junction = (0.225, y_top + bh / 2)
     arrow(ax, (0.205, 0.793), junction, color=LINE)
     arrow(ax, (0.205, 0.523), junction, color=LINE)
-    arrow(ax, junction, (xs[0], y_top + bh / 2), color=LINE)
+    visible_gap_arrow(ax, junction, (xs[0], y_top + bh / 2), color=LINE)
 
     # Visual/proxy outputs.
     record_x, record_y, record_w, record_h = 0.792, 0.455, 0.165, 0.126
@@ -277,7 +305,10 @@ def build_diagram(args: argparse.Namespace) -> Path:
     ax.plot([pre_map_center_x, proxy_center[0]], [bus_y, bus_y], color=LINE, linewidth=1.45, zorder=3.2)
     arrow(ax, (pre_map_center_x, bus_y), (pre_map_center_x, map_top_y), color=LINE)
     arrow(ax, (post_map_center_x, bus_y), (post_map_center_x, map_top_y), color=LINE)
-    arrow(ax, (xs[5] + bw / 2, y_top), (record_x + record_w / 2, record_y + record_h), color=LINE)
+    record_center_x = record_x + record_w / 2
+    trait_center_x = xs[5] + bw / 2
+    trait_to_record_x = (trait_center_x + record_center_x) / 2
+    visible_gap_arrow(ax, (trait_to_record_x, y_top), (trait_to_record_x, record_y + record_h), color=LINE)
 
     # Calibration branch.
     add_arrow_legend(ax, (0.782, 0.292))
@@ -303,7 +334,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
         SOFT_GOLD,
         dashed=True,
     )
-    arrow(ax, (0.460, 0.233), (0.500, 0.233), dashed=True, color=LINE)
+    visible_gap_arrow(ax, (0.460, 0.233), (0.500, 0.233), dashed=True, color=LINE)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     png = args.out_dir / "mask_guided_cotton_architecture_cvpr_hd.png"
