@@ -132,11 +132,21 @@ def add_box(
         zorder=4,
     )
     ax.add_patch(patch)
-    ax.text(x + 0.010, y + h - 0.020, title, ha="left", va="top", fontsize=8.0, fontweight="bold", color=INK, zorder=5)
-    ax.text(x + 0.010, y + h - 0.052, body, ha="left", va="top", fontsize=6.0, color=INK, linespacing=1.16, zorder=5)
+    ax.text(x + w / 2, y + h - 0.020, title, ha="center", va="top", fontsize=7.8, fontweight="bold", color=INK, zorder=5)
+    ax.text(x + w / 2, y + h - 0.052, body, ha="center", va="top", fontsize=5.8, color=INK, linespacing=1.16, zorder=5)
 
 
-def arrow(ax, start, end, *, dashed: bool = False, color: str = LINE, rad: float = 0.0, lw: float = 1.45) -> None:
+def arrow(
+    ax,
+    start,
+    end,
+    *,
+    dashed: bool = False,
+    color: str = LINE,
+    rad: float = 0.0,
+    lw: float = 1.45,
+    zorder: float = 3.2,
+) -> None:
     patch = FancyArrowPatch(
         start,
         end,
@@ -148,7 +158,7 @@ def arrow(ax, start, end, *, dashed: bool = False, color: str = LINE, rad: float
         connectionstyle=f"arc3,rad={rad}",
         shrinkA=0,
         shrinkB=0,
-        zorder=6,
+        zorder=zorder,
     )
     ax.add_patch(patch)
 
@@ -168,9 +178,9 @@ def add_arrow_legend(ax, xy: tuple[float, float]) -> None:
     )
     ax.add_patch(patch)
     ax.text(x + 0.012, y + h - 0.018, "Arrow convention", ha="left", va="top", fontsize=7.3, fontweight="bold", color=INK, zorder=5)
-    arrow(ax, (x + 0.016, y + 0.043), (x + 0.063, y + 0.043), color=LINE, lw=1.25)
+    arrow(ax, (x + 0.016, y + 0.043), (x + 0.063, y + 0.043), color=LINE, lw=1.25, zorder=5)
     ax.text(x + 0.073, y + 0.043, "implemented proxy path", ha="left", va="center", fontsize=6.2, color=MUTED, zorder=5)
-    arrow(ax, (x + 0.016, y + 0.020), (x + 0.063, y + 0.020), dashed=True, color=LINE, lw=1.25)
+    arrow(ax, (x + 0.016, y + 0.020), (x + 0.063, y + 0.020), dashed=True, color=LINE, lw=1.25, zorder=5)
     ax.text(x + 0.073, y + 0.020, "calibration-only validation", ha="left", va="center", fontsize=6.2, color=MUTED, zorder=5)
 
 
@@ -184,7 +194,7 @@ def poly_arrow(ax, points: list[tuple[float, float]], *, dashed: bool = False, c
             color=color,
             linewidth=lw,
             linestyle="--" if dashed else "-",
-            zorder=6,
+            zorder=3.2,
         )
     arrow(ax, points[-2], points[-1], dashed=dashed, color=color, lw=lw)
 
@@ -196,35 +206,24 @@ def build_diagram(args: argparse.Namespace) -> Path:
     pre_map = load_image(args.pre_map, crop=(0.02, 0.10, 0.98, 0.86))
     post_map = load_image(args.post_map, crop=(0.02, 0.10, 0.98, 0.86))
 
-    fig, ax = plt.subplots(figsize=(17.0, 8.6), dpi=args.dpi)
+    fig, ax = plt.subplots(figsize=(17.0, 7.6), dpi=args.dpi)
     fig.patch.set_facecolor("white")
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis("off")
 
-    ax.text(0.5, 0.965, "Mask-Guided Cotton Boll Phenotyping Architecture", ha="center", va="center", fontsize=21, fontweight="bold", color=INK)
-    ax.text(
-        0.5,
-        0.925,
-        "Pre/post-defoliation UAV imagery → detector-guided lint segmentation → morphology 2.5D review → conservative trait summaries",
-        ha="center",
-        va="center",
-        fontsize=10.5,
-        color=MUTED,
-    )
-
     # Input evidence.
-    ax.text(0.035, 0.862, "Inputs: aerial visibility intervention", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
-    add_image(ax, pre_rgb, (0.040, 0.642), (0.165, 0.190), "Pre-defoliation RGB")
-    add_image(ax, post_rgb, (0.040, 0.386), (0.165, 0.190), "Post-defoliation RGB")
+    ax.text(0.035, 0.932, "Inputs: aerial visibility intervention", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
+    add_image(ax, pre_rgb, (0.040, 0.698), (0.165, 0.190), "Pre-defoliation RGB")
+    add_image(ax, post_rgb, (0.040, 0.428), (0.165, 0.190), "Post-defoliation RGB")
 
     # Top implemented pipeline.
-    ax.text(0.250, 0.862, "Implemented proxy pipeline", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
-    y_top = 0.715
-    bw = 0.092
+    ax.text(0.240, 0.932, "Implemented proxy pipeline", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
+    y_top = 0.785
+    bw = 0.097
     bh = 0.122
-    gap = 0.024
-    xs = [0.250 + i * (bw + gap) for i in range(6)]
+    gap = 0.021
+    xs = [0.240 + i * (bw + gap) for i in range(6)]
     titles = [
         "1. Phase resolver",
         "2. Candidate detection",
@@ -249,12 +248,12 @@ def build_diagram(args: argparse.Namespace) -> Path:
 
     # Clean input arrows to phase resolver.
     junction = (0.225, y_top + bh / 2)
-    arrow(ax, (0.205, 0.737), junction, color=LINE)
-    arrow(ax, (0.205, 0.481), junction, color=LINE)
+    arrow(ax, (0.205, 0.793), junction, color=LINE)
+    arrow(ax, (0.205, 0.523), junction, color=LINE)
     arrow(ax, junction, (xs[0], y_top + bh / 2), color=LINE)
 
     # Visual/proxy outputs.
-    record_x, record_y, record_w, record_h = 0.792, 0.414, 0.165, 0.126
+    record_x, record_y, record_w, record_h = 0.792, 0.455, 0.165, 0.126
     add_box(
         ax,
         (record_x, record_y),
@@ -264,39 +263,39 @@ def build_diagram(args: argparse.Namespace) -> Path:
         GRAY_BORDER,
         SOFT_GRAY,
     )
-    add_image(ax, pre_map, (0.470, 0.398), (0.145, 0.175), "Pre-defoliation proxy 2.5D", label_location="bottom")
-    add_image(ax, post_map, (0.625, 0.398), (0.145, 0.175), "Post-defoliation proxy 2.5D", label_location="bottom")
+    add_image(ax, pre_map, (0.460, 0.445), (0.148, 0.175), "Pre-defoliation proxy 2.5D", label_location="bottom")
+    add_image(ax, post_map, (0.622, 0.445), (0.148, 0.175), "Post-defoliation proxy 2.5D", label_location="bottom")
 
     # Evidence arrows use a small bus above the visual panels so labels and
     # map views stay unobstructed in the final paper figure.
     proxy_center = (xs[4] + bw / 2, y_top)
-    pre_map_center_x = 0.470 + 0.145 / 2
-    post_map_center_x = 0.625 + 0.145 / 2
-    map_top_y = 0.398 + 0.175
-    bus_y = 0.612
-    ax.plot([proxy_center[0], proxy_center[0]], [proxy_center[1], bus_y], color=LINE, linewidth=1.45, zorder=6)
-    ax.plot([pre_map_center_x, proxy_center[0]], [bus_y, bus_y], color=LINE, linewidth=1.45, zorder=6)
+    pre_map_center_x = 0.460 + 0.148 / 2
+    post_map_center_x = 0.622 + 0.148 / 2
+    map_top_y = 0.445 + 0.175
+    bus_y = 0.665
+    ax.plot([proxy_center[0], proxy_center[0]], [proxy_center[1], bus_y], color=LINE, linewidth=1.45, zorder=3.2)
+    ax.plot([pre_map_center_x, proxy_center[0]], [bus_y, bus_y], color=LINE, linewidth=1.45, zorder=3.2)
     arrow(ax, (pre_map_center_x, bus_y), (pre_map_center_x, map_top_y), color=LINE)
     arrow(ax, (post_map_center_x, bus_y), (post_map_center_x, map_top_y), color=LINE)
     arrow(ax, (xs[5] + bw / 2, y_top), (record_x + record_w / 2, record_y + record_h), color=LINE)
 
     # Calibration branch.
-    add_arrow_legend(ax, (0.782, 0.275))
+    add_arrow_legend(ax, (0.782, 0.292))
 
-    ax.text(0.250, 0.302, "Calibration-dependent branch", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
+    ax.text(0.240, 0.355, "Calibration-dependent branch", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
     add_box(
         ax,
-        (0.250, 0.140),
+        (0.240, 0.168),
         (0.220, 0.130),
         "Optional calibrated geometry",
-        "Only used when scale, camera intrinsics,\npose, GCP/RTK, RGB-D, SfM/MVS,\nDUSt3R/MASt3R/VGGT, or validated\n3DGS evidence is available.",
+        "Activate only with scale,\ncamera intrinsics, pose,\nGCP/RTK, RGB-D, SfM/MVS,\nor validated 3DGS evidence.",
         GOLD,
         SOFT_GOLD,
         dashed=True,
     )
     add_box(
         ax,
-        (0.505, 0.140),
+        (0.500, 0.168),
         (0.180, 0.130),
         "Metric trait validation",
         "Report trait MAE/RMSE,\nmask IoU, reprojection\nconsistency, Chamfer distance,\nand plot-cell agreement.",
@@ -304,7 +303,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
         SOFT_GOLD,
         dashed=True,
     )
-    arrow(ax, (0.470, 0.205), (0.505, 0.205), dashed=True, color=LINE)
+    arrow(ax, (0.460, 0.233), (0.500, 0.233), dashed=True, color=LINE)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     png = args.out_dir / "mask_guided_cotton_architecture_cvpr_hd.png"
