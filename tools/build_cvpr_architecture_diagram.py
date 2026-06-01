@@ -192,6 +192,26 @@ def boundary_arrow(
     arrow(ax, start, end, dashed=dashed, color=color, lw=lw, zorder=6.0, mutation_scale=mutation_scale)
 
 
+def boundary_segment(
+    ax,
+    start: tuple[float, float],
+    end: tuple[float, float],
+    *,
+    dashed: bool = False,
+    color: str = LINE,
+    lw: float = 1.45,
+    zorder: float = 5.8,
+) -> None:
+    ax.plot(
+        [start[0], end[0]],
+        [start[1], end[1]],
+        color=color,
+        linewidth=lw,
+        linestyle="--" if dashed else "-",
+        zorder=zorder,
+    )
+
+
 def add_arrow_legend(ax, xy: tuple[float, float]) -> None:
     x, y = xy
     w, h = 0.198, 0.088
@@ -235,48 +255,42 @@ def build_diagram(args: argparse.Namespace) -> Path:
     pre_map = load_image(args.pre_map, crop=(0.02, 0.10, 0.98, 0.86))
     post_map = load_image(args.post_map, crop=(0.02, 0.10, 0.98, 0.86))
 
-    fig, ax = plt.subplots(figsize=(17.0, 7.9), dpi=args.dpi)
+    fig, ax = plt.subplots(figsize=(17.0, 7.35), dpi=args.dpi)
     fig.patch.set_facecolor("white")
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis("off")
 
-    ax.text(
-        0.500,
-        0.982,
-        "Mask-Guided Cotton Boll Phenotyping Architecture",
-        ha="center",
-        va="top",
-        fontsize=18.0,
-        fontweight="bold",
-        color=INK,
-    )
-    ax.text(
-        0.500,
-        0.946,
-        "Pre/post-defoliation UAV imagery \u2192 detector-prompted lint masks \u2192 proxy 2.5D review \u2192 conservative trait summaries",
-        ha="center",
-        va="top",
-        fontsize=10.8,
-        color=MUTED,
-    )
-
     # Input evidence.
-    ax.text(0.035, 0.890, "A. Pre/post UAV imagery", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
-    add_image(ax, pre_rgb, (0.040, 0.654), (0.165, 0.190), "Pre-defoliation RGB")
-    add_image(ax, post_rgb, (0.040, 0.384), (0.165, 0.190), "Post-defoliation RGB")
+    ax.text(0.035, 0.925, "A. Pre/post UAV imagery", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
+    pre_xy = (0.040, 0.680)
+    post_xy = (0.040, 0.410)
+    image_size = (0.165, 0.190)
+    add_image(ax, pre_rgb, pre_xy, image_size, "Pre-defoliation RGB")
+    add_image(ax, post_rgb, post_xy, image_size, "Post-defoliation RGB")
 
     # Top implemented pipeline.
-    ax.text(0.240, 0.890, "B. Implemented proxy pipeline", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
-    y_top = 0.745
+    y_top = 0.770
     bw = 0.097
     bh = 0.122
     gap = 0.021
     xs = [0.240 + i * (bw + gap) for i in range(6)]
+    pipeline_left = xs[0]
+    pipeline_right = xs[-1] + bw
+    ax.text(
+        (pipeline_left + pipeline_right) / 2,
+        0.925,
+        "B. Implemented pipeline",
+        ha="center",
+        va="bottom",
+        fontsize=11.2,
+        fontweight="bold",
+        color=INK,
+    )
     titles = [
         "1. Phase resolver",
         "2. Candidate detector",
-        "3. Prompted lint-mask\nextraction",
+        "3. Lint-mask extraction",
         "4. Readiness scorer",
         "5. Proxy 2.5D review",
         "6. Trait and plot\naggregation",
@@ -295,13 +309,19 @@ def build_diagram(args: argparse.Namespace) -> Path:
     for i in range(5):
         boundary_arrow(ax, (xs[i] + bw, y_top + bh / 2), (xs[i + 1], y_top + bh / 2))
 
-    # Single clean input arrow from the image group boundary to the phase resolver.
-    input_group_right = 0.205
-    boundary_arrow(ax, (input_group_right, y_top + bh / 2), (xs[0], y_top + bh / 2))
+    # Two image arrows merge before entering the phase resolver.
+    input_right = pre_xy[0] + image_size[0]
+    pre_mid_y = pre_xy[1] + image_size[1] / 2
+    post_mid_y = post_xy[1] + image_size[1] / 2
+    phase_mid_y = y_top + bh / 2
+    merge_x = 0.222
+    boundary_arrow(ax, (input_right, pre_mid_y), (merge_x, phase_mid_y), mutation_scale=10.5)
+    boundary_arrow(ax, (input_right, post_mid_y), (merge_x, phase_mid_y), mutation_scale=10.5)
+    boundary_arrow(ax, (merge_x, phase_mid_y), (xs[0], phase_mid_y), mutation_scale=10.5)
 
     # Visual/proxy outputs.
-    ax.text(0.240, 0.596, "C. Proxy review and phenotyping outputs", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
-    record_x, record_y, record_w, record_h = 0.792, 0.408, 0.165, 0.154
+    ax.text(0.240, 0.610, "C. Proxy review and phenotyping outputs", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
+    record_x, record_y, record_w, record_h = 0.792, 0.422, 0.165, 0.154
     add_box(
         ax,
         (record_x, record_y),
@@ -311,8 +331,8 @@ def build_diagram(args: argparse.Namespace) -> Path:
         GRAY_BORDER,
         SOFT_GRAY,
     )
-    pre_map_xy = (0.460, 0.402)
-    post_map_xy = (0.622, 0.402)
+    pre_map_xy = (0.460, 0.416)
+    post_map_xy = (0.622, 0.416)
     map_size = (0.148, 0.175)
     add_image(ax, pre_map, pre_map_xy, map_size, "Pre-defoliation proxy 2.5D", label_location="bottom")
     add_image(ax, post_map, post_map_xy, map_size, "Post-defoliation proxy 2.5D", label_location="bottom")
@@ -321,19 +341,22 @@ def build_diagram(args: argparse.Namespace) -> Path:
     pre_map_center_x = pre_map_xy[0] + map_size[0] / 2
     post_map_center_x = post_map_xy[0] + map_size[0] / 2
     map_top_y = pre_map_xy[1] + map_size[1]
-    boundary_arrow(ax, proxy_center, (pre_map_center_x, map_top_y))
-    boundary_arrow(ax, proxy_center, (post_map_center_x, map_top_y))
+    split_y = 0.642
+    boundary_segment(ax, proxy_center, (proxy_center[0], split_y))
+    boundary_segment(ax, (pre_map_center_x, split_y), (post_map_center_x, split_y))
+    boundary_arrow(ax, (pre_map_center_x, split_y), (pre_map_center_x, map_top_y), mutation_scale=10.5)
+    boundary_arrow(ax, (post_map_center_x, split_y), (post_map_center_x, map_top_y), mutation_scale=10.5)
     record_center_x = record_x + record_w / 2
     trait_center_x = xs[5] + bw / 2
-    boundary_arrow(ax, (trait_center_x, y_top), (record_center_x, record_y + record_h), color=LINE)
+    boundary_arrow(ax, (trait_center_x, y_top), (record_center_x, record_y + record_h), color=LINE, mutation_scale=10.5)
 
     # Calibration branch.
-    add_arrow_legend(ax, (0.782, 0.253))
+    add_arrow_legend(ax, (0.782, 0.255))
 
-    ax.text(0.240, 0.328, "D. Calibration-dependent validation branch", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
+    ax.text(0.240, 0.330, "D. Calibration-dependent validation branch", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
     add_box(
         ax,
-        (0.240, 0.136),
+        (0.240, 0.140),
         (0.220, 0.130),
         "Optional calibrated geometry",
         "Use only with scale,\ncamera intrinsics, pose,\nGCP/RTK, RGB-D, SfM/MVS,\nDUSt3R/MASt3R/VGGT,\nor validated 3DGS evidence.",
@@ -343,7 +366,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
     )
     add_box(
         ax,
-        (0.500, 0.136),
+        (0.500, 0.140),
         (0.180, 0.130),
         "Metric trait validation",
         "Report trait MAE/RMSE,\nmask IoU, reprojection\nconsistency, Chamfer distance,\nand plot-cell agreement.",
@@ -351,7 +374,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
         SOFT_GOLD,
         dashed=True,
     )
-    boundary_arrow(ax, (0.460, 0.201), (0.500, 0.201), dashed=True, color=LINE)
+    boundary_arrow(ax, (0.460, 0.205), (0.500, 0.205), dashed=True, color=LINE, mutation_scale=10.5)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     png = args.out_dir / "mask_guided_cotton_architecture_cvpr_hd.png"
