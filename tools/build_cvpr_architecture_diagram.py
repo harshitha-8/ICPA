@@ -132,8 +132,8 @@ def add_box(
         zorder=4,
     )
     ax.add_patch(patch)
-    ax.text(x + 0.012, y + h - 0.022, title, ha="left", va="top", fontsize=8.9, fontweight="bold", color=INK, zorder=5)
-    ax.text(x + 0.012, y + h - 0.055, body, ha="left", va="top", fontsize=6.5, color=INK, linespacing=1.18, zorder=5)
+    ax.text(x + 0.010, y + h - 0.020, title, ha="left", va="top", fontsize=8.0, fontweight="bold", color=INK, zorder=5)
+    ax.text(x + 0.010, y + h - 0.052, body, ha="left", va="top", fontsize=6.0, color=INK, linespacing=1.16, zorder=5)
 
 
 def arrow(ax, start, end, *, dashed: bool = False, color: str = LINE, rad: float = 0.0, lw: float = 1.45) -> None:
@@ -206,7 +206,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
     ax.text(
         0.5,
         0.925,
-        "Pre/post-defoliation UAV imagery → detector-prompted lint masks → morphology 2.5D review → conservative trait summaries",
+        "Pre/post-defoliation UAV imagery → detector-guided lint segmentation → morphology 2.5D review → conservative trait summaries",
         ha="center",
         va="center",
         fontsize=10.5,
@@ -227,16 +227,16 @@ def build_diagram(args: argparse.Namespace) -> Path:
     xs = [0.250 + i * (bw + gap) for i in range(6)]
     titles = [
         "1. Phase resolver",
-        "2. Candidate detector",
-        "3. Prompted lint mask",
+        "2. Candidate detection",
+        "3. Lint segmentation",
         "4. Readiness score",
-        "5. Proxy 2.5D review",
-        "6. Trait + plot output",
+        "5. Proxy 2.5D map",
+        "6. Trait summary",
     ]
     bodies = [
         "Folder label or ExG\ngreenness assigns\npre/post phase.",
         "CLAHE, top-hat,\nOtsu components,\nand color gates.",
-        "Box-prompted lint\nmask; suppress green\ncanopy/residue.",
+        "Detector-guided\nlint mask; suppress\ncanopy/residue.",
         "Rank candidates by\nlint, visibility,\nshape, size, phase.",
         "Map retained pixels\nto image-derived\nvisibility surface.",
         "Count, visibility,\nL/W/D, volume proxy,\nconfidence, grid cell.",
@@ -253,9 +253,8 @@ def build_diagram(args: argparse.Namespace) -> Path:
     arrow(ax, (0.205, 0.481), junction, color=LINE)
     arrow(ax, junction, (xs[0], y_top + bh / 2), color=LINE)
 
-    # Evidence and outputs row.
-    ax.text(0.250, 0.610, "Evidence and outputs", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
-    record_x, record_y, record_w, record_h = 0.782, 0.414, 0.168, 0.126
+    # Visual/proxy outputs.
+    record_x, record_y, record_w, record_h = 0.792, 0.414, 0.165, 0.126
     add_box(
         ax,
         (record_x, record_y),
@@ -266,13 +265,13 @@ def build_diagram(args: argparse.Namespace) -> Path:
         SOFT_GRAY,
     )
     add_image(ax, pre_map, (0.470, 0.398), (0.145, 0.175), "Pre-defoliation proxy 2.5D", label_location="bottom")
-    add_image(ax, post_map, (0.638, 0.398), (0.145, 0.175), "Post-defoliation proxy 2.5D", label_location="bottom")
+    add_image(ax, post_map, (0.625, 0.398), (0.145, 0.175), "Post-defoliation proxy 2.5D", label_location="bottom")
 
     # Evidence arrows use a small bus above the visual panels so labels and
     # map views stay unobstructed in the final paper figure.
     proxy_center = (xs[4] + bw / 2, y_top)
     pre_map_center_x = 0.470 + 0.145 / 2
-    post_map_center_x = 0.638 + 0.145 / 2
+    post_map_center_x = 0.625 + 0.145 / 2
     map_top_y = 0.398 + 0.175
     bus_y = 0.612
     ax.plot([proxy_center[0], proxy_center[0]], [proxy_center[1], bus_y], color=LINE, linewidth=1.45, zorder=6)
@@ -306,10 +305,6 @@ def build_diagram(args: argparse.Namespace) -> Path:
         dashed=True,
     )
     arrow(ax, (0.470, 0.205), (0.505, 0.205), dashed=True, color=LINE)
-
-    # Boundary note.
-    ax.plot([0.045, 0.865], [0.082, 0.082], color="#d7dde5", linewidth=1.0)
-    ax.text(0.045, 0.048, "Scientific boundary: 2.5D maps are image-derived aerial visibility surfaces; metric boll geometry requires calibrated scale/camera validation.", fontsize=8.7, color=MUTED, ha="left")
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     png = args.out_dir / "mask_guided_cotton_architecture_cvpr_hd.png"
