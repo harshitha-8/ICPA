@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+import re
 from pathlib import Path
 
 from docx import Document
@@ -18,30 +19,30 @@ BASE = Path(__file__).resolve().parent
 REPO_ROOT = BASE.parents[1]
 DOCX_OUT = BASE / "icpa_2026_mask_guided_cotton_until_algorithms.docx"
 MD_OUT = BASE / "icpa_2026_mask_guided_cotton_until_algorithms.md"
-TEMPLATE_DOCX = BASE / "17th_ICPA_Paper_Template_2026.docx"
+TEMPLATE_DOCX = BASE / "ICPA_Paper_Template_2026.docx"
 TITLE = "Mask-Guided 3D Cotton Boll Reconstruction for Pre- and Post-Defoliation Phenotyping"
 EXPERIMENT_DIR = REPO_ROOT / "outputs" / "experiments" / "icpa_paper_metrics"
 ARCHITECTURE_FIGURE = REPO_ROOT / "paper" / "figures" / "icpa_cotton_architecture_overview.png"
 
 
 REFERENCES = [
-    "Adke, S., Li, C., Rasheed, K. M., and Maier, F. W. 2022. Supervised and weakly supervised deep learning for segmentation and counting of cotton bolls using proximal imagery. Sensors 22(10):3688.",
-    "DeTone, D., Malisiewicz, T., and Rabinovich, A. 2018. SuperPoint: Self-supervised interest point detection and description. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops.",
-    "Jiang, L., Sun, J., Chee, P. W., Li, C., and Fu, L. 2025. Cotton3DGaussians: Multiview 3D Gaussian Splatting for boll mapping and plant architecture analysis. Computers and Electronics in Agriculture 234:110293.",
-    "Kerbl, B., Kopanas, G., Leimkuehler, T., and Drettakis, G. 2023. 3D Gaussian Splatting for real-time radiance field rendering. ACM Transactions on Graphics 42(4):1-14.",
-    "Kirillov, A., Mintun, E., Ravi, N., Mao, H., Rolland, C., Gustafson, L., et al. 2023. Segment Anything. Proceedings of the IEEE/CVF International Conference on Computer Vision.",
-    "Li, Y., Cao, Z., Lu, H., Xiao, Y., Zhu, Y., and Cremers, A. B. 2016. In-field cotton detection via region-based semantic image segmentation. Computers and Electronics in Agriculture 127:475-486.",
-    "Mildenhall, B., Srinivasan, P. P., Tancik, M., Barron, J. T., Ramamoorthi, R., and Ng, R. 2020. NeRF: Representing scenes as neural radiance fields for view synthesis. Proceedings of the European Conference on Computer Vision.",
-    "Ravi, N., Gabeur, V., Hu, Y.-T., Hu, R., Ryali, C., Ma, T., et al. 2024. SAM 2: Segment Anything in Images and Videos. arXiv:2408.00714.",
-    "Sarlin, P.-E., DeTone, D., Malisiewicz, T., and Rabinovich, A. 2020. SuperGlue: Learning feature matching with graph neural networks. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.",
-    "Schoenberger, J. L., and Frahm, J.-M. 2016. Structure-from-Motion revisited. Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition.",
-    "Schoenberger, J. L., Zheng, E., Frahm, J.-M., and Pollefeys, M. 2016. Pixelwise view selection for unstructured multi-view stereo. Proceedings of the European Conference on Computer Vision.",
-    "Sun, S., Li, C., Paterson, A. H., Jiang, Y., Xu, R., Robertson, J. S., et al. 2020. Three-dimensional photogrammetric mapping of cotton bolls in situ based on point cloud segmentation and clustering. ISPRS Journal of Photogrammetry and Remote Sensing 160:195-207.",
-    "Tan, C., Sun, J., Song, H., and Li, C. 2025. A customized density map model and Segment Anything model for cotton boll number, size, and yield prediction in aerial images. Computers and Electronics in Agriculture 232:110065.",
-    "Wang, S., Leroy, V., Cabon, Y., Chidlovskii, B., and Revaud, J. 2024. DUSt3R: Geometric 3D vision made easy. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.",
-    "Wang, S., Leroy, V., Cabon, Y., Chidlovskii, B., and Revaud, J. 2024. MASt3R: Grounding image matching in 3D with mast3r. Proceedings of the European Conference on Computer Vision.",
-    "Wang, J., Chen, M., Karaev, N., Vedaldi, A., Rupprecht, C., and Novotny, D. 2025. VGGT: Visual Geometry Grounded Transformer. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.",
-    "Xiao, S., Fei, S., Ye, Y., Xu, D., Xie, Z., Bi, K., et al. 2024. 3D reconstruction and characterization of cotton bolls in situ based on UAV technology. ISPRS Journal of Photogrammetry and Remote Sensing 209:101-116.",
+    "Adke, S., Li, C., Rasheed, K. M., and Maier, F. W. (2022). Supervised and weakly supervised deep learning for segmentation and counting of cotton bolls using proximal imagery. Sensors, 22(10), 3688.",
+    "DeTone, D., Malisiewicz, T., and Rabinovich, A. (2018). SuperPoint: Self-supervised interest point detection and description. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops.",
+    "Jiang, L., Sun, J., Chee, P. W., Li, C., and Fu, L. (2025). Cotton3DGaussians: Multiview 3D Gaussian Splatting for boll mapping and plant architecture analysis. Computers and Electronics in Agriculture, 234, 110293.",
+    "Kerbl, B., Kopanas, G., Leimkuehler, T., and Drettakis, G. (2023). 3D Gaussian Splatting for real-time radiance field rendering. ACM Transactions on Graphics, 42(4), 1-14.",
+    "Kirillov, A., Mintun, E., Ravi, N., Mao, H., Rolland, C., Gustafson, L., et al. (2023). Segment Anything. Proceedings of the IEEE/CVF International Conference on Computer Vision.",
+    "Li, Y., Cao, Z., Lu, H., Xiao, Y., Zhu, Y., and Cremers, A. B. (2016). In-field cotton detection via region-based semantic image segmentation. Computers and Electronics in Agriculture, 127, 475-486.",
+    "Mildenhall, B., Srinivasan, P. P., Tancik, M., Barron, J. T., Ramamoorthi, R., and Ng, R. (2020). NeRF: Representing scenes as neural radiance fields for view synthesis. Proceedings of the European Conference on Computer Vision.",
+    "Ravi, N., Gabeur, V., Hu, Y.-T., Hu, R., Ryali, C., Ma, T., et al. (2024). SAM 2: Segment Anything in Images and Videos. arXiv:2408.00714.",
+    "Sarlin, P.-E., DeTone, D., Malisiewicz, T., and Rabinovich, A. (2020). SuperGlue: Learning feature matching with graph neural networks. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.",
+    "Schoenberger, J. L., and Frahm, J.-M. (2016). Structure-from-Motion revisited. Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition.",
+    "Schoenberger, J. L., Zheng, E., Frahm, J.-M., and Pollefeys, M. (2016). Pixelwise view selection for unstructured multi-view stereo. Proceedings of the European Conference on Computer Vision.",
+    "Sun, S., Li, C., Paterson, A. H., Jiang, Y., Xu, R., Robertson, J. S., et al. (2020). Three-dimensional photogrammetric mapping of cotton bolls in situ based on point cloud segmentation and clustering. ISPRS Journal of Photogrammetry and Remote Sensing, 160, 195-207.",
+    "Tan, C., Sun, J., Song, H., and Li, C. (2025). A customized density map model and Segment Anything model for cotton boll number, size, and yield prediction in aerial images. Computers and Electronics in Agriculture, 232, 110065.",
+    "Wang, J., Chen, M., Karaev, N., Vedaldi, A., Rupprecht, C., and Novotny, D. (2025). VGGT: Visual Geometry Grounded Transformer. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.",
+    "Wang, S., Leroy, V., Cabon, Y., Chidlovskii, B., and Revaud, J. (2024). DUSt3R: Geometric 3D vision made easy. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.",
+    "Wang, S., Leroy, V., Cabon, Y., Chidlovskii, B., and Revaud, J. (2024). MASt3R: Grounding image matching in 3D with mast3r. Proceedings of the European Conference on Computer Vision.",
+    "Xiao, S., Fei, S., Ye, Y., Xu, D., Xie, Z., Bi, K., et al. (2024). 3D reconstruction and characterization of cotton bolls in situ based on UAV technology. ISPRS Journal of Photogrammetry and Remote Sensing, 209, 101-116.",
 ]
 
 
@@ -55,12 +56,17 @@ def configure(doc: Document) -> None:
     section.bottom_margin = Inches(0.56)
     section.left_margin = Inches(1.0)
     section.right_margin = Inches(1.0)
-    if not section.header.paragraphs:
-        section.header.add_paragraph()
-    if not section.footer.paragraphs:
-        section.footer.add_paragraph()
-    section.header.paragraphs[0].text = ""
-    section.footer.paragraphs[0].text = ""
+    for story in [
+        section.header,
+        section.first_page_header,
+        section.even_page_header,
+        section.footer,
+        section.first_page_footer,
+        section.even_page_footer,
+    ]:
+        for child in list(story._element):
+            story._element.remove(child)
+        story.add_paragraph()
 
     styles = doc.styles
     normal = styles["Normal"]
@@ -131,7 +137,7 @@ def figure(doc: Document, number: int, path: Path, caption: str, width_inches: f
     cap_style = "Figure Caption" if "Figure Caption" in doc.styles else "Caption"
     cap = doc.add_paragraph(style=cap_style)
     cap.paragraph_format.space_after = Pt(0)
-    r = cap.add_run(f"Figure {number} ")
+    r = cap.add_run(f"Fig. {number} ")
     r.bold = True
     cap.add_run(caption)
 
@@ -268,7 +274,7 @@ def add_discussion_and_conclusion(doc: Document) -> None:
     doc.add_heading("7 Discussion", level=1)
     paragraph(doc, "The current results support the central argument of the paper: defoliation changes not only the number of visible bright lint regions, but also the measurement readiness of the detected candidates. Post-defoliation imagery shows a higher mean readiness score and lower green contamination, suggesting that defoliation can be treated as a visibility intervention for organ-scale phenotyping. This is a different claim from simply reporting a pre/post count difference. It connects the agronomic treatment to the statistical quality of the measurement evidence.")
     paragraph(doc, "The main technical contribution is the separation between detection, mask formation, and 3D review. A conventional counting pipeline would stop after candidate boxes. Here, each box is converted into a lint mask, scored for measurement readiness, projected into a reviewable 2.5D space, and aggregated into plot-grid summaries. This design makes failure visible. Merged bolls, overly large proxy volumes, low-visibility masks, and green-contaminated candidates can be isolated before they become yield claims.")
-    paragraph(doc, "The most important limitation is scale. A single orthomosaic or near-nadir UAV image cannot, by itself, guarantee calibrated organ-scale 3D geometry. True metric diameter and volume require ground sampling distance, camera intrinsics, ground control, multi-view pose, RGB-D sensing, or physical boll measurements. The current manuscript therefore uses proxy units and reports volume-mutation diagnostics as a quality-control tool. This conservative framing is essential because recent cotton 3D work shows that complete boll characterization improves when multi-view geometry is available (Sun et al., 2020; Xiao et al., 2024; Jiang et al., 2025).")
+    paragraph(doc, "The most important limitation is scale. A single orthomosaic or near-nadir UAV image cannot, by itself, guarantee calibrated organ-scale 3D geometry. True metric diameter and volume require ground sampling distance, camera intrinsics, ground control, multi-view pose, RGB-D sensing, or physical boll measurements. The current manuscript therefore uses proxy units and reports volume-mutation diagnostics as a quality-control tool. This conservative framing is essential because recent cotton 3D work shows that complete boll characterization improves when multi-view geometry is available (Sun et al. 2020; Xiao et al. 2024; Jiang et al. 2025).")
 
     doc.add_heading("8 Limitations", level=1)
     bullets(doc, [
@@ -366,10 +372,13 @@ def table(doc: Document, caption: str, headers: list[str], rows: list[list[str]]
     p = doc.add_paragraph(style="Table Caption" if "Table Caption" in doc.styles else None)
     p.paragraph_format.space_before = Pt(5)
     p.paragraph_format.space_after = Pt(2)
-    label, rest = caption.split(" ", 1)
-    run = p.add_run(label + " ")
-    run.bold = True
-    p.add_run(rest)
+    match = re.match(r"^(Table\s+\d+)\s+(.*)$", caption)
+    if match:
+        run = p.add_run(match.group(1) + ". ")
+        run.bold = True
+        p.add_run(match.group(2))
+    else:
+        p.add_run(caption)
     t = doc.add_table(rows=1, cols=len(headers))
     t.style = "Table Grid"
     widths(t, col_widths)
@@ -504,7 +513,7 @@ def build_doc() -> None:
     doc.add_heading("1 Introduction", level=1)
     paragraph(doc, "Cotton yield assessment and harvest management depend on the development, exposure, and spatial distribution of bolls. UAV imagery has made it possible to observe large field areas at high temporal frequency, but most image-based boll analyses remain closer to counting than to measurement. A field can contain thousands of bright lint structures in a single frame, and those structures vary in visibility because foliage, branches, shadows, soil, and neighboring bolls obscure the organ boundary. A count can therefore be useful and still incomplete: it says little about which bolls were measurable, which were partially occluded, and whether organ-scale traits were stable enough to support agronomic decisions.")
     paragraph(doc, "The pre- and post-defoliation setting provides an unusually informative view of this problem. Defoliation is not merely a change in image appearance; it is an agronomic intervention that removes part of the canopy and changes the visibility of the reproductive structures. In a pre-defoliation image, a boll may be detectable only as a small white region between leaves. In a post-defoliation image, the same region may become more separable from the canopy, allowing a better estimate of size and location. Treating these phases as a controlled visibility contrast makes the study more precise than a generic pre/post split.")
-    paragraph(doc, "The difficulty is that organ-scale 3D measurement is not automatically obtained from UAV imagery. Classical structure-from-motion pipelines such as COLMAP rely on stable local texture and sufficient view overlap, conditions that are not guaranteed for repeated white cotton lint (Schoenberger and Frahm, 2016; Schoenberger et al., 2016). Neural view synthesis and 3D Gaussian Splatting can produce visually compelling scene representations, but photorealistic rendering alone does not prove accurate boll length or volume (Mildenhall et al., 2020; Kerbl et al., 2023). Recent foundation models for segmentation and visual geometry, including Segment Anything, SAM 2, DUSt3R, MASt3R, and VGGT, suggest useful components for promptable masks and geometry-aware reconstruction, but they must be adapted carefully to agricultural imagery (Kirillov et al., 2023; Ravi et al., 2024; Wang et al., 2024; Wang et al., 2025).")
+    paragraph(doc, "The difficulty is that organ-scale 3D measurement is not automatically obtained from UAV imagery. Classical structure-from-motion pipelines such as COLMAP rely on stable local texture and sufficient view overlap, conditions that are not guaranteed for repeated white cotton lint (Schoenberger and Frahm 2016; Schoenberger et al. 2016). Neural view synthesis and 3D Gaussian Splatting can produce visually compelling scene representations, but photorealistic rendering alone does not prove accurate boll length or volume (Mildenhall et al. 2020; Kerbl et al. 2023). Recent foundation models for segmentation and visual geometry, including Segment Anything, SAM 2, DUSt3R, MASt3R, and VGGT, suggest useful components for promptable masks and geometry-aware reconstruction, but they must be adapted carefully to agricultural imagery (Kirillov et al. 2023; Ravi et al. 2024; Wang et al. 2024; Wang et al. 2025).")
     paragraph(doc, "This paper therefore frames the contribution as a measurement-ready pipeline rather than a solved metrology system. Candidate bolls are detected from UAV frames, refined into lint masks, projected into a proxy 3D review space, and aggregated into plot-level summaries. The system is designed to expose where measurements are reliable and where calibration or additional views are still required.")
     bullets(doc, [
         "A pre/post-defoliation formulation that treats defoliation as a visibility intervention for cotton boll phenotyping.",
@@ -517,13 +526,13 @@ def build_doc() -> None:
     doc.add_heading("2.1 UAV and field-based cotton phenotyping", level=2)
     paragraph(doc, "UAV phenotyping has become central in precision agriculture because it offers field-scale coverage with repeatable image acquisition. In cotton, UAV and close-range imagery have been used for stand assessment, canopy characterization, boll detection, and yield-related traits. The closest field-scale works for this manuscript are the cotton boll point-cloud studies by Sun et al. (2020) and Xiao et al. (2024), which demonstrate that 3D reconstruction can support boll counting, spatial distribution, volume analysis, and yield estimation when capture geometry is sufficiently stable. The present paper should position its contribution around paired defoliation, mask-guided measurement readiness, and explicit proxy boundaries rather than claiming novelty for cotton 3D reconstruction itself.")
     doc.add_heading("2.2 Cotton boll detection and counting", level=2)
-    paragraph(doc, "Cotton boll counting has been studied with classical image processing, supervised object detectors, weak supervision, region-based semantic segmentation, and density-map learning (Li et al., 2016; Adke et al., 2022; Tan et al., 2025). The current project inherits a phase-aware detector based on contrast enhancement, multi-scale top-hat morphology, thresholding, contour filtering, and color gates. This detector is useful because it produces candidate regions without dense manual annotation, but a detector box is not a physical measurement. The gap addressed here is the conversion of detection evidence into masks, proxy traits, and 3D review objects.")
+    paragraph(doc, "Cotton boll counting has been studied with classical image processing, supervised object detectors, weak supervision, region-based semantic segmentation, and density-map learning (Li et al. 2016; Adke et al. 2022; Tan et al. 2025). The current project inherits a phase-aware detector based on contrast enhancement, multi-scale top-hat morphology, thresholding, contour filtering, and color gates. This detector is useful because it produces candidate regions without dense manual annotation, but a detector box is not a physical measurement. The gap addressed here is the conversion of detection evidence into masks, proxy traits, and 3D review objects.")
     doc.add_heading("2.3 3D reconstruction and geometry", level=2)
-    paragraph(doc, "Structure-from-motion and multi-view stereo remain standard tools for image-based 3D reconstruction (Schoenberger and Frahm, 2016; Schoenberger et al., 2016). Learned local features and matchers, including SuperPoint and SuperGlue, improve correspondence in many settings but still require texture and viewpoint consistency (DeTone et al., 2018; Sarlin et al., 2020). Newer geometry models such as DUSt3R, MASt3R, and VGGT reduce some of the engineering burden by predicting geometric relationships more directly, but their use in dense cotton scenes must be validated rather than assumed (Wang et al., 2024; Wang et al., 2025).")
+    paragraph(doc, "Structure-from-motion and multi-view stereo remain standard tools for image-based 3D reconstruction (Schoenberger and Frahm 2016; Schoenberger et al. 2016). Learned local features and matchers, including SuperPoint and SuperGlue, improve correspondence in many settings but still require texture and viewpoint consistency (DeTone et al. 2018; Sarlin et al. 2020). Newer geometry models such as DUSt3R, MASt3R, and VGGT reduce some of the engineering burden by predicting geometric relationships more directly, but their use in dense cotton scenes must be validated rather than assumed (Wang et al. 2024; Wang et al. 2025).")
     doc.add_heading("2.4 Segmentation foundation models", level=2)
-    paragraph(doc, "Segment Anything introduced promptable segmentation at large scale and made point-, box-, and mask-conditioned extraction a practical design pattern for downstream systems (Kirillov et al., 2023). SAM 2 extended this idea to images and video, making temporal or sequential mask propagation more accessible (Ravi et al., 2024). In this paper, the term SAM-style refers to the prompt-first design: a detector box identifies a candidate, and a mask stage isolates lint-like pixels. The current implementation does not claim to run official SAM/SAM 2 unless those models are integrated and evaluated.")
+    paragraph(doc, "Segment Anything introduced promptable segmentation at large scale and made point-, box-, and mask-conditioned extraction a practical design pattern for downstream systems (Kirillov et al. 2023). SAM 2 extended this idea to images and video, making temporal or sequential mask propagation more accessible (Ravi et al. 2024). In this paper, the term SAM-style refers to the prompt-first design: a detector box identifies a candidate, and a mask stage isolates lint-like pixels. The current implementation does not claim to run official SAM/SAM 2 unless those models are integrated and evaluated.")
     doc.add_heading("2.5 Neural rendering and Gaussian Splatting", level=2)
-    paragraph(doc, "NeRF and 3D Gaussian Splatting have changed how scenes are represented for novel-view synthesis (Mildenhall et al., 2020; Kerbl et al., 2023). Cotton3DGaussians is particularly relevant because it connects Gaussian scene representation with cotton boll phenotyping, including the mapping of segmentation masks into a multi-view 3DGS representation (Jiang et al., 2025). The distinction for this manuscript is scale and evidence: the present work starts from UAV field imagery and paired defoliation, and it treats mask-to-3D review as a measurement-support layer rather than a rendering-only objective.")
+    paragraph(doc, "NeRF and 3D Gaussian Splatting have changed how scenes are represented for novel-view synthesis (Mildenhall et al. 2020; Kerbl et al. 2023). Cotton3DGaussians is particularly relevant because it connects Gaussian scene representation with cotton boll phenotyping, including the mapping of segmentation masks into a multi-view 3DGS representation (Jiang et al. 2025). The distinction for this manuscript is scale and evidence: the present work starts from UAV field imagery and paired defoliation, and it treats mask-to-3D review as a measurement-support layer rather than a rendering-only objective.")
 
     table(doc, "Table 1 Closest-prior positioning for the current manuscript.", ["Topic", "Representative source", "What it contributes", "Remaining gap"], [
         ["SfM/MVS", "Schoenberger and Frahm (2016); Schoenberger et al. (2016)", "Classical camera pose and dense reconstruction", "Cotton lint can be low-texture and repetitive"],

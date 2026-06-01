@@ -1,11 +1,11 @@
 # ICPA 2026 Template Compliance Audit
 
-Generated: 2026-05-25
+Generated: 2026-06-01
 
 ## Official Sources Checked
 
 - ICPA author instruction page: https://www.ispag.org/icpa/abstracts/instruction
-- Official template downloaded from the instruction page: `paper/word/17th_ICPA_Paper_Template_2026.docx`
+- Official template supplied by the user and matching the instruction-page template: `paper/word/ICPA_Paper_Template_2026.docx`
 
 ## Requirements Confirmed
 
@@ -15,6 +15,8 @@ Generated: 2026-05-25
 - Optional short papers are limited to 2 pages including all material except the cover page.
 - The paper must be camera-ready at submission.
 - The instruction page lists the deadline for complete papers as June 15, 2026.
+- The template's reference instructions state that references should include only cited published or accepted works, should not use footnotes/endnotes as substitutes, and should be alphabetized by first-author last name.
+- Numbered references are not required by the ICPA template; the template uses an author-year, alphabetized reference-list structure.
 
 ## Template Properties Extracted
 
@@ -31,6 +33,7 @@ Generated: 2026-05-25
 | Heading 2 | 11 pt, bold | 11 pt, bold |
 | Heading 3 | italic | italic |
 | Figure/Table captions | 8 pt template caption styles | 8 pt template caption styles |
+| Header/footer content | Template contains first-page conference art and footer disclaimer | Removed from generated manuscript per author request |
 
 ## Current Manuscript Inventory
 
@@ -40,13 +43,15 @@ Generated: 2026-05-25
 | Tables | 14 |
 | Embedded figures | 7 |
 | Paragraph-text word count | 4,319 |
-| References listed | 18 |
+| References listed | 17 |
 
 ## Actions Taken
 
 - Rebuilt the manuscript from the official ICPA Word template rather than a blank document.
 - Updated generator margins, page size, font family, heading hierarchy, and caption styling to match the official template.
-- Preserved blank header/footer content; no patent language or running page furniture is inserted by the generator.
+- Removed all normal, first-page, and even-page header/footer content from the generated manuscript; no conference banner, footer disclaimer, patent language, or running page furniture is inserted by the generator.
+- Updated table captions to the template form `Table N.` and figure captions to the template form `Fig. N`.
+- Kept references unnumbered, alphabetized, and author-year formatted because this is the structure specified by the ICPA template instructions.
 - Kept the manuscript in Word-first form at `paper/word/icpa_2026_mask_guided_cotton_until_algorithms.docx`.
 - Kept mathematical equations and algorithm blocks in the manuscript, with algorithms formatted as bordered, line-numbered tables.
 - Retained explicit language that current diameter, length, and volume are proxy traits until scale/calibration/physical measurements are validated.
