@@ -1,0 +1,16 @@
+{
+  "main_figure": "/Volumes/T9/ICPA/outputs/figures/clean_aerial_cotton_representation/aerial_cotton_representation_clean_hd.png",
+  "clean_2p5d_maps": {
+    "pre": "/Volumes/T9/ICPA/outputs/figures/clean_aerial_cotton_representation/pre-defoliation_aerial_2p5d_map_clean.png",
+    "post": "/Volumes/T9/ICPA/outputs/figures/clean_aerial_cotton_representation/post-defoliation_aerial_2p5d_map_clean.png"
+  },
+  "ply": {
+    "pre": "/Volumes/T9/ICPA/outputs/figures/clean_aerial_cotton_representation/pre-defoliation_uav_2p5d_orthomap.ply",
+    "post": "/Volumes/T9/ICPA/outputs/figures/clean_aerial_cotton_representation/post-defoliation_uav_2p5d_orthomap.ply"
+  },
+  "sources": {
+    "pre": "/Volumes/T9/ICML/Part_one_pre_def_rgb/DJI_20250929095743_0311_D.JPG",
+    "post": "/Volumes/T9/ICML/205_Post_Def_rgb/DJI_20250929124505_0127_D.JPG"
+  },
+  "scientific_boundary": "Aerial RGB plus morphology/semantic/2.5D proxy views; not calibrated metric 3D."
+}
