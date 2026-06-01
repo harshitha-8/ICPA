@@ -22,7 +22,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 
 
 def normalize(values: np.ndarray) -> np.ndarray:
@@ -152,8 +152,17 @@ def plot_surface(ax: plt.Axes, rgb: np.ndarray, height: np.ndarray, title: str, 
     ax.set_title(title, fontsize=8, fontweight="bold", pad=0)
 
 
-def build_single_view(rgb: np.ndarray, height: np.ndarray, output_path: Path, title: str, azim: float = -58.0) -> None:
-    fig = plt.figure(figsize=(8.0, 6.4), dpi=180)
+def build_single_view(
+    rgb: np.ndarray,
+    height: np.ndarray,
+    output_path: Path,
+    title: str,
+    azim: float = -58.0,
+    *,
+    figsize: tuple[float, float] = (8.0, 6.4),
+    dpi: int = 180,
+) -> None:
+    fig = plt.figure(figsize=figsize, dpi=dpi)
     fig.patch.set_facecolor("white")
     ax = fig.add_subplot(1, 1, 1, projection="3d")
     plot_surface(ax, rgb, height, title, azim)
@@ -177,6 +186,9 @@ def build_rotation_video(
     title: str,
     frames: int = 90,
     fps: int = 18,
+    *,
+    figsize: tuple[float, float] = (8.0, 6.4),
+    dpi: int = 180,
 ) -> bool:
     ffmpeg = shutil.which("ffmpeg")
     if ffmpeg is None:
@@ -188,7 +200,7 @@ def build_rotation_video(
     for idx in range(frames):
         azim = -70.0 + 360.0 * idx / frames
         frame_path = frame_dir / f"frame_{idx:04d}.png"
-        build_single_view(rgb, height, frame_path, title, azim=azim)
+        build_single_view(rgb, height, frame_path, title, azim=azim, figsize=figsize, dpi=dpi)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     cmd = [
         ffmpeg,
@@ -207,10 +219,16 @@ def build_rotation_video(
     return True
 
 
-def build_gallery(results: list[dict[str, object]], output_path: Path) -> None:
+def build_gallery(
+    results: list[dict[str, object]],
+    output_path: Path,
+    *,
+    figsize_per_panel: tuple[float, float] = (3.35, 3.05),
+    dpi: int = 180,
+) -> None:
     cols = 4
     rows = math.ceil(len(results) / cols)
-    fig = plt.figure(figsize=(cols * 3.35, rows * 3.05), dpi=180)
+    fig = plt.figure(figsize=(cols * figsize_per_panel[0], rows * figsize_per_panel[1]), dpi=dpi)
     fig.patch.set_facecolor("white")
     for idx, result in enumerate(results, start=1):
         ax = fig.add_subplot(rows, cols, idx, projection="3d")
@@ -232,6 +250,69 @@ def build_gallery(results: list[dict[str, object]], output_path: Path) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output_path, bbox_inches="tight", pad_inches=0.04)
     plt.close(fig)
+
+
+def build_interactive_tile_view(
+    rgb: np.ndarray,
+    height: np.ndarray,
+    output_path: Path,
+    *,
+    width: int = 3200,
+    height_px: int = 2100,
+    rotation_x: float = -0.52,
+    rotation_y: float = 0.36,
+) -> None:
+    """Export a high-resolution version of the browser's tiled 2.5D crop view."""
+    texture = Image.fromarray(rgb).convert("RGB")
+    h, w = height.shape
+    step = max(3, min(h, w) // 96)
+    sin_y, cos_y = math.sin(rotation_y), math.cos(rotation_y)
+    sin_x, cos_x = math.sin(rotation_x), math.cos(rotation_x)
+    cx = width / 2
+    cy = height_px / 2 + 80
+    scale = min(width, height_px) * 0.34
+    points: list[tuple[float, float, float, int, int, int, float]] = []
+    for y in range(0, h - step, step):
+        for x in range(0, w - step, step):
+            z = float(np.mean(height[y : y + step, x : x + step])) * 0.70
+            px = (x / max(w - 1, 1) - 0.5) * 2.0
+            py = (0.5 - y / max(h - 1, 1)) * 2.0
+            x1 = px * cos_y + z * sin_y
+            z1 = -px * sin_y + z * cos_y
+            y1 = py * cos_x - z1 * sin_x
+            z2 = py * sin_x + z1 * cos_x
+            persp = 1.0 / (1.0 + 0.34 * z2)
+            sx = cx + x1 * scale * persp
+            sy = cy - y1 * scale * persp
+            points.append((z2, sx, sy, x, y, step, persp))
+    points.sort(key=lambda p: p[0])
+    canvas = Image.new("RGB", (width, height_px), "white")
+    draw = ImageDraw.Draw(canvas, "RGBA")
+    shadow_y = cy + scale * 0.70
+    draw.ellipse(
+        (
+            cx - scale * 0.78,
+            shadow_y - scale * 0.11,
+            cx + scale * 0.78,
+            shadow_y + scale * 0.11,
+        ),
+        fill=(73, 65, 52, 28),
+    )
+    for depth, sx, sy, x, y, sw, persp in points:
+        tile = max(5, int(scale * sw / 184 * 1.68 * persp))
+        crop = texture.crop((x, y, min(x + sw, w), min(y + sw, h))).resize((tile, tile), Image.Resampling.LANCZOS)
+        if depth < -0.05:
+            overlay = Image.new("RGBA", crop.size, (45, 38, 31, min(32, int(42 * abs(depth)))))
+            crop = Image.alpha_composite(crop.convert("RGBA"), overlay).convert("RGB")
+        canvas.paste(crop, (int(sx - tile / 2), int(sy - tile / 2)))
+    draw = ImageDraw.Draw(canvas, "RGBA")
+    draw.text(
+        (42, height_px - 70),
+        "Real UAV crop texture | monocular 2.5D proxy view for reconstruction target review",
+        fill=(101, 113, 95, 255),
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    canvas.save(output_path, quality=96)
 
 
 def write_summary(path: Path, rows: list[dict[str, str | int | float]]) -> None:
@@ -285,13 +366,33 @@ def run(args: argparse.Namespace) -> None:
             }
         )
     gallery_path = args.out_dir / "local_boll_2p5d_gallery.png"
-    build_gallery(results, gallery_path)
+    build_gallery(
+        results,
+        gallery_path,
+        figsize_per_panel=(args.gallery_panel_width, args.gallery_panel_height),
+        dpi=args.gallery_dpi,
+    )
     best_view_path = args.out_dir / "best_local_boll_2p5d_view.png"
+    interactive_view_path = args.out_dir / "interactive_selected_crop_2p5d.png"
     video_path = args.out_dir / "best_local_boll_2p5d_rotation.mp4"
     video_created = False
     if best_result is not None:
         title = f"Best local cotton cluster | rank {best_result['rank']} | score {best_result['score']}"
-        build_single_view(best_result["rgb"], best_result["height"], best_view_path, title)  # type: ignore[arg-type]
+        build_single_view(  # type: ignore[arg-type]
+            best_result["rgb"],
+            best_result["height"],
+            best_view_path,
+            title,
+            figsize=(args.single_width, args.single_height),
+            dpi=args.single_dpi,
+        )
+        build_interactive_tile_view(  # type: ignore[arg-type]
+            best_result["rgb"],
+            best_result["height"],
+            interactive_view_path,
+            width=args.interactive_width,
+            height_px=args.interactive_height,
+        )
         if args.video:
             video_created = build_rotation_video(
                 best_result["rgb"],  # type: ignore[arg-type]
@@ -300,6 +401,8 @@ def run(args: argparse.Namespace) -> None:
                 title,
                 frames=args.video_frames,
                 fps=args.video_fps,
+                figsize=(args.single_width, args.single_height),
+                dpi=args.single_dpi,
             )
     write_summary(args.out_dir / "local_boll_2p5d_summary.csv", summary_rows)
     manifest = {
@@ -310,6 +413,7 @@ def run(args: argparse.Namespace) -> None:
         "candidates_csv": str(args.candidates_csv),
         "gallery": str(gallery_path),
         "best_view": str(best_view_path),
+        "interactive_view": str(interactive_view_path),
         "rotation_video": str(video_path) if video_created else "",
         "summary_csv": str(args.out_dir / "local_boll_2p5d_summary.csv"),
         "ply_dir": str(ply_dir),
@@ -329,6 +433,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--phase", choices=["pre", "post"], default="post")
     parser.add_argument("--limit", type=int, default=12)
     parser.add_argument("--crop-size", type=int, default=300)
+    parser.add_argument("--gallery-dpi", type=int, default=180)
+    parser.add_argument("--gallery-panel-width", type=float, default=3.35)
+    parser.add_argument("--gallery-panel-height", type=float, default=3.05)
+    parser.add_argument("--single-dpi", type=int, default=180)
+    parser.add_argument("--single-width", type=float, default=8.0)
+    parser.add_argument("--single-height", type=float, default=6.4)
+    parser.add_argument("--interactive-width", type=int, default=3200)
+    parser.add_argument("--interactive-height", type=int, default=2100)
     parser.add_argument("--video", action="store_true")
     parser.add_argument("--video-frames", type=int, default=72)
     parser.add_argument("--video-fps", type=int, default=18)
