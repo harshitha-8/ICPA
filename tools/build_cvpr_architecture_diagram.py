@@ -192,6 +192,29 @@ def boundary_arrow(
     arrow(ax, start, end, dashed=dashed, color=color, lw=lw, zorder=6.0, mutation_scale=mutation_scale)
 
 
+def outside_tip_arrow(
+    ax,
+    start: tuple[float, float],
+    end: tuple[float, float],
+    *,
+    dashed: bool = False,
+    color: str = LINE,
+    lw: float = 1.45,
+    mutation_scale: float = 10.5,
+    clearance: float = 0.0035,
+) -> None:
+    """Draw toward a boundary while keeping the arrowhead outside the target."""
+    sx, sy = start
+    ex, ey = end
+    dx = ex - sx
+    dy = ey - sy
+    if abs(dx) >= abs(dy):
+        ex -= clearance if dx > 0 else -clearance
+    else:
+        ey -= clearance if dy > 0 else -clearance
+    arrow(ax, (sx, sy), (ex, ey), dashed=dashed, color=color, lw=lw, zorder=6.0, mutation_scale=mutation_scale)
+
+
 def boundary_segment(
     ax,
     start: tuple[float, float],
@@ -307,7 +330,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
     for x, title, body, (edge, fill) in zip(xs, titles, bodies, colors):
         add_box(ax, (x, y_top), (bw, bh), title, body, edge, fill)
     for i in range(5):
-        boundary_arrow(ax, (xs[i] + bw, y_top + bh / 2), (xs[i + 1], y_top + bh / 2))
+        outside_tip_arrow(ax, (xs[i] + bw, y_top + bh / 2), (xs[i + 1], y_top + bh / 2))
 
     # Two image arrows merge before entering the phase resolver.
     input_right = pre_xy[0] + image_size[0]
@@ -317,7 +340,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
     merge_x = 0.222
     boundary_arrow(ax, (input_right, pre_mid_y), (merge_x, phase_mid_y), mutation_scale=10.5)
     boundary_arrow(ax, (input_right, post_mid_y), (merge_x, phase_mid_y), mutation_scale=10.5)
-    boundary_arrow(ax, (merge_x, phase_mid_y), (xs[0], phase_mid_y), mutation_scale=10.5)
+    outside_tip_arrow(ax, (merge_x, phase_mid_y), (xs[0], phase_mid_y), mutation_scale=10.5)
 
     # Visual/proxy outputs.
     ax.text(0.240, 0.610, "C. Proxy review and phenotyping outputs", ha="left", va="bottom", fontsize=11.2, fontweight="bold", color=INK)
@@ -343,12 +366,12 @@ def build_diagram(args: argparse.Namespace) -> Path:
     map_top_y = pre_map_xy[1] + map_size[1]
     split_y = 0.642
     boundary_segment(ax, proxy_center, (proxy_center[0], split_y))
-    boundary_segment(ax, (pre_map_center_x, split_y), (post_map_center_x, split_y))
-    boundary_arrow(ax, (pre_map_center_x, split_y), (pre_map_center_x, map_top_y), mutation_scale=10.5)
-    boundary_arrow(ax, (post_map_center_x, split_y), (post_map_center_x, map_top_y), mutation_scale=10.5)
+    boundary_segment(ax, (pre_map_center_x, split_y), (proxy_center[0], split_y))
+    outside_tip_arrow(ax, (pre_map_center_x, split_y), (pre_map_center_x, map_top_y), mutation_scale=10.5)
+    outside_tip_arrow(ax, (post_map_center_x, split_y), (post_map_center_x, map_top_y), mutation_scale=10.5)
     record_center_x = record_x + record_w / 2
     trait_center_x = xs[5] + bw / 2
-    boundary_arrow(ax, (trait_center_x, y_top), (record_center_x, record_y + record_h), color=LINE, mutation_scale=10.5)
+    outside_tip_arrow(ax, (trait_center_x, y_top), (record_center_x, record_y + record_h), color=LINE, mutation_scale=10.5)
 
     # Calibration branch.
     add_arrow_legend(ax, (0.782, 0.255))
@@ -374,7 +397,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
         SOFT_GOLD,
         dashed=True,
     )
-    boundary_arrow(ax, (0.460, 0.205), (0.500, 0.205), dashed=True, color=LINE, mutation_scale=10.5)
+    outside_tip_arrow(ax, (0.460, 0.205), (0.500, 0.205), dashed=True, color=LINE, mutation_scale=10.5)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     png = args.out_dir / "mask_guided_cotton_architecture_cvpr_hd.png"
