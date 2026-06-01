@@ -39,10 +39,10 @@ Generated: 2026-06-01
 
 | Item | Count |
 |---|---:|
-| Paragraphs | 144 |
+| Paragraphs | 140 |
 | Tables | 14 |
 | Embedded figures | 7 |
-| Paragraph-text word count | 4,319 |
+| Paragraph-text word count | 4,291 |
 | References listed | 17 |
 
 ## Actions Taken
@@ -50,17 +50,23 @@ Generated: 2026-06-01
 - Rebuilt the manuscript from the official ICPA Word template rather than a blank document.
 - Updated generator margins, page size, font family, heading hierarchy, and caption styling to match the official template.
 - Removed all normal, first-page, and even-page header/footer content from the generated manuscript; no conference banner, footer disclaimer, patent language, or running page furniture is inserted by the generator.
+- Removed the template's body-level conference proceeding/date lines from the manuscript title block.
+- Stripped WordprocessingML header/footer references and header/footer parts from the final DOCX package after generation.
 - Updated table captions to the template form `Table N.` and figure captions to the template form `Fig. N`.
 - Kept references unnumbered, alphabetized, and author-year formatted because this is the structure specified by the ICPA template instructions.
 - Kept the manuscript in Word-first form at `paper/word/icpa_2026_mask_guided_cotton_until_algorithms.docx`.
 - Kept mathematical equations and algorithm blocks in the manuscript, with algorithms formatted as bordered, line-numbered tables.
 - Retained explicit language that current diameter, length, and volume are proxy traits until scale/calibration/physical measurements are validated.
 
-## Remaining Check Needed In Microsoft Word
+## Render Verification
 
-LibreOffice is not installed in this environment, so automatic PDF rendering/page-count verification could not be completed here. A fallback HTML conversion was generated at:
+LibreOffice was installed and verified:
 
-`paper/word/_qa/icpa_2026_textutil_check/icpa_2026.html`
+- `soffice --version`: LibreOffice 26.2.3.2
+- Rendered PDF: `paper/word/_qa/icpa_2026_template_check/icpa_2026_mask_guided_cotton_until_algorithms.pdf`
+- Rendered pages: 14
+- Page size: US Letter
+- Text search of the rendered PDF found no instances of the removed proceedings header, ConBAP banner text, or first-page footer disclaimer.
 
 Before final ICPA submission, open the DOCX in Microsoft Word and confirm:
 

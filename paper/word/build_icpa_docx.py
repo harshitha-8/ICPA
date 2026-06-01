@@ -5,7 +5,11 @@ from __future__ import annotations
 
 import csv
 import re
+import shutil
+import tempfile
+import zipfile
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 from docx import Document
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
@@ -112,6 +116,55 @@ def template_document() -> Document:
             continue
         body.remove(child)
     return doc
+
+
+def strip_header_footer_parts(docx_path: Path) -> None:
+    """Remove template header/footer references and orphaned header/footer parts."""
+    ns = {
+        "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+        "rel": "http://schemas.openxmlformats.org/package/2006/relationships",
+    }
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        with zipfile.ZipFile(docx_path, "r") as zin:
+            zin.extractall(tmp_path)
+
+        document_xml = tmp_path / "word" / "document.xml"
+        rels_xml = tmp_path / "word" / "_rels" / "document.xml.rels"
+        doc_tree = ET.parse(document_xml)
+        doc_root = doc_tree.getroot()
+        for sect_pr in doc_root.findall(".//w:sectPr", ns):
+            for child in list(sect_pr):
+                if child.tag in {f"{{{ns['w']}}}headerReference", f"{{{ns['w']}}}footerReference", f"{{{ns['w']}}}titlePg"}:
+                    sect_pr.remove(child)
+        ET.register_namespace("w", ns["w"])
+        doc_tree.write(document_xml, encoding="UTF-8", xml_declaration=True)
+
+        if rels_xml.exists():
+            rel_tree = ET.parse(rels_xml)
+            rel_root = rel_tree.getroot()
+            for rel in list(rel_root):
+                rel_type = rel.attrib.get("Type", "")
+                target = rel.attrib.get("Target", "")
+                if rel_type.endswith("/header") or rel_type.endswith("/footer") or target.startswith(("header", "footer")):
+                    rel_root.remove(rel)
+            ET.register_namespace("", ns["rel"])
+            rel_tree.write(rels_xml, encoding="UTF-8", xml_declaration=True)
+
+        for pattern in ("header*.xml", "footer*.xml"):
+            for path in (tmp_path / "word").glob(pattern):
+                path.unlink(missing_ok=True)
+        rel_dir = tmp_path / "word" / "_rels"
+        for pattern in ("header*.xml.rels", "footer*.xml.rels"):
+            for path in rel_dir.glob(pattern):
+                path.unlink(missing_ok=True)
+
+        clean_path = docx_path.with_suffix(".cleaning.docx")
+        with zipfile.ZipFile(clean_path, "w", zipfile.ZIP_DEFLATED) as zout:
+            for path in tmp_path.rglob("*"):
+                if path.is_file():
+                    zout.write(path, path.relative_to(tmp_path))
+        shutil.move(clean_path, docx_path)
 
 
 def paragraph(doc: Document, text: str = "", style: str | None = None, italic: bool = False) -> None:
@@ -498,10 +551,6 @@ def build_doc() -> None:
     title.add_run(TITLE)
     paragraph(doc, "Author names and affiliations to be inserted after co-author confirmation.", style="Author(s)")
     paragraph(doc, "Corresponding author: to be inserted.", style="Author(s)")
-    paragraph(doc, "A paper from the Proceedings of the", style="Conf Name")
-    paragraph(doc, "17th International Conference on Precision Agriculture and 11th Brazilian Congress on Precision and Digital Agriculture", style="Conf Name")
-    paragraph(doc, "13-15 July 2026", style="Conf Date")
-    paragraph(doc, "Porto Alegre, Brazil", style="Conf Date")
 
     abstract = doc.add_paragraph(style="Abstract")
     abstract.add_run("Abstract. ").bold = True
@@ -634,6 +683,7 @@ def build_doc() -> None:
         paragraph(doc, ref)
 
     doc.save(DOCX_OUT)
+    strip_header_footer_parts(DOCX_OUT)
     MD_OUT.write_text(
         f"# {TITLE}\n\nThis Word-first draft has been completed through Algorithm 4. "
         "It is generated from the official 17th ICPA 2026 Word template, removes running page furniture "
