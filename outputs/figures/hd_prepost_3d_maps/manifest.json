@@ -1,0 +1,24 @@
+{
+  "scientific_boundary": "Real UAV RGB texture plus image-derived 2.5D visibility surface; not calibrated metric 3D.",
+  "main_panel": "/Volumes/T9/ICPA/outputs/figures/hd_prepost_3d_maps/pre_post_defoliation_hd_orthomap_panel.png",
+  "clean_3d_maps": {
+    "pre": "/Volumes/T9/ICPA/outputs/figures/hd_prepost_3d_maps/pre-defoliation_clean_2p5d_map_hd.png",
+    "post": "/Volumes/T9/ICPA/outputs/figures/hd_prepost_3d_maps/post-defoliation_clean_2p5d_map_hd.png"
+  },
+  "rgb": {
+    "pre": "/Volumes/T9/ICPA/outputs/figures/hd_prepost_3d_maps/pre-defoliation_rgb_hd.png",
+    "post": "/Volumes/T9/ICPA/outputs/figures/hd_prepost_3d_maps/post-defoliation_rgb_hd.png"
+  },
+  "height_proxy": {
+    "pre": "/Volumes/T9/ICPA/outputs/figures/hd_prepost_3d_maps/pre-defoliation_visibility_height_hd.png",
+    "post": "/Volumes/T9/ICPA/outputs/figures/hd_prepost_3d_maps/post-defoliation_visibility_height_hd.png"
+  },
+  "ply": {
+    "pre": "/Volumes/T9/ICPA/outputs/figures/hd_prepost_3d_maps/pre-defoliation_uav_2p5d_orthomap.ply",
+    "post": "/Volumes/T9/ICPA/outputs/figures/hd_prepost_3d_maps/post-defoliation_uav_2p5d_orthomap.ply"
+  },
+  "sources": {
+    "pre": "/Volumes/T9/ICML/Part_one_pre_def_rgb/DJI_20250929095743_0311_D.JPG",
+    "post": "/Volumes/T9/ICML/205_Post_Def_rgb/DJI_20250929124505_0127_D.JPG"
+  }
+}
