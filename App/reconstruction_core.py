@@ -13,6 +13,7 @@ from __future__ import annotations
 import base64
 import csv
 import io
+import re
 import sys
 from dataclasses import dataclass
 from datetime import datetime
@@ -80,6 +81,36 @@ def resolve_dataset_image(phase: str, label: str | None) -> Path:
         if item.label == label:
             return item.path
     raise FileNotFoundError(f"Could not resolve dataset image: {label}")
+
+
+def save_uploaded_image(filename: str | None, data_url: str) -> Path:
+    """Persist a browser-uploaded image and return its local path."""
+    if "," in data_url and data_url.startswith("data:"):
+        _, encoded = data_url.split(",", 1)
+    else:
+        encoded = data_url
+    try:
+        raw = base64.b64decode(encoded, validate=True)
+    except Exception as exc:
+        raise ValueError("Uploaded image was not valid base64 data.") from exc
+
+    safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", filename or "uploaded_cotton_image")
+    suffix = Path(safe_name).suffix.lower()
+    if suffix not in VALID_EXTENSIONS:
+        suffix = ".jpg"
+        safe_name = f"{Path(safe_name).stem}{suffix}"
+
+    upload_dir = OUTPUT_ROOT / "uploads"
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    upload_path = upload_dir / f"{stamp}_{safe_name}"
+    upload_path.write_bytes(raw)
+
+    probe = cv2.imread(str(upload_path))
+    if probe is None:
+        upload_path.unlink(missing_ok=True)
+        raise RuntimeError("Uploaded file could not be read as an image.")
+    return upload_path
 
 
 def load_rgb(path: Path, long_edge: int = 960) -> np.ndarray:
@@ -628,6 +659,39 @@ def reconstruct_dataset_image(
     gsd_cm_per_px: float,
 ) -> dict[str, Any]:
     image_path = resolve_dataset_image(phase, label)
+    return reconstruct_image_path(
+        image_path=image_path,
+        phase=phase,
+        max_points=max_points,
+        gsd_cm_per_px=gsd_cm_per_px,
+        source_label=label,
+    )
+
+
+def reconstruct_uploaded_image(
+    phase: str,
+    filename: str | None,
+    image_data: str,
+    max_points: int,
+    gsd_cm_per_px: float,
+) -> dict[str, Any]:
+    image_path = save_uploaded_image(filename, image_data)
+    return reconstruct_image_path(
+        image_path=image_path,
+        phase=phase,
+        max_points=max_points,
+        gsd_cm_per_px=gsd_cm_per_px,
+        source_label=filename or image_path.name,
+    )
+
+
+def reconstruct_image_path(
+    image_path: Path,
+    phase: str,
+    max_points: int,
+    gsd_cm_per_px: float,
+    source_label: str | None = None,
+) -> dict[str, Any]:
     original_bgr = cv2.imread(str(image_path))
     if original_bgr is None:
         raise RuntimeError(f"Could not read image: {image_path}")
@@ -667,6 +731,7 @@ def reconstruct_dataset_image(
     plot_map, plot_cells = create_plot_grid_map(original_rgb, robust_sorted)
     summary = {
         "image": str(image_path),
+        "source_label": source_label or image_path.name,
         "phase": resolved_phase,
         "adjusted_count": adjusted_count,
         "raw_candidates": len(candidates),

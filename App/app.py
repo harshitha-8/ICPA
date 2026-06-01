@@ -11,7 +11,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
-from reconstruction_core import dataset_payload, reconstruct_dataset_image
+from reconstruction_core import dataset_payload, reconstruct_dataset_image, reconstruct_uploaded_image
 
 APP_DIR = Path(__file__).resolve().parent
 REPO_ROOT = APP_DIR.parent
@@ -85,12 +85,21 @@ class CottonAppHandler(BaseHTTPRequestHandler):
         try:
             length = int(self.headers.get("Content-Length", "0"))
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
-            result = reconstruct_dataset_image(
-                phase=payload.get("phase", "pre"),
-                label=payload.get("label"),
-                max_points=int(payload.get("max_points", 12000)),
-                gsd_cm_per_px=float(payload.get("gsd_cm_per_px", 0.25)),
-            )
+            if payload.get("upload_image"):
+                result = reconstruct_uploaded_image(
+                    phase=payload.get("phase", "pre"),
+                    filename=payload.get("upload_name"),
+                    image_data=payload["upload_image"],
+                    max_points=int(payload.get("max_points", 12000)),
+                    gsd_cm_per_px=float(payload.get("gsd_cm_per_px", 0.25)),
+                )
+            else:
+                result = reconstruct_dataset_image(
+                    phase=payload.get("phase", "pre"),
+                    label=payload.get("label"),
+                    max_points=int(payload.get("max_points", 12000)),
+                    gsd_cm_per_px=float(payload.get("gsd_cm_per_px", 0.25)),
+                )
             self._send_json(result)
         except Exception as exc:
             self._send_json({"error": str(exc)}, status=500)
@@ -211,6 +220,17 @@ INDEX_HTML = r"""<!doctype html>
       outline: 2px solid rgba(39, 107, 70, 0.20);
       border-color: rgba(39, 107, 70, 0.55);
     }
+    input[type="file"] {
+      padding: 8px;
+      background: #fbfcfa;
+    }
+    .source-hint {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .source-hint strong { color: var(--accent-dark); }
     button {
       border: 0;
       border-radius: 6px;
@@ -416,6 +436,11 @@ INDEX_HTML = r"""<!doctype html>
 
       <label for="imageSelect">Dataset image</label>
       <select id="imageSelect"></select>
+      <div class="source-hint">Use the dataset image above, or upload an image from this computer.</div>
+
+      <label for="localImage">Upload local image</label>
+      <input id="localImage" type="file" accept="image/*" />
+      <div class="source-hint" id="uploadHint">No local image selected.</div>
 
       <label for="gsd">Proxy scale, cm per pixel</label>
       <input id="gsd" type="number" min="0.001" max="5" step="0.001" value="0.250" />
@@ -524,6 +549,8 @@ let dragState = null;
 
 const phase = document.getElementById("phase");
 const imageSelect = document.getElementById("imageSelect");
+const localImage = document.getElementById("localImage");
+const uploadHint = document.getElementById("uploadHint");
 const runButton = document.getElementById("runButton");
 
 async function loadDataset() {
@@ -552,6 +579,15 @@ function updateChoices() {
   }
 }
 
+function readLocalImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Could not read the selected local image."));
+    reader.readAsDataURL(file);
+  });
+}
+
 function showPage(pageId) {
   document.querySelectorAll(".page").forEach(page => page.classList.toggle("active", page.id === pageId));
   document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.dataset.page === pageId));
@@ -562,15 +598,22 @@ async function run() {
   runButton.textContent = "Running...";
   document.getElementById("error").textContent = "";
   try {
+    const selectedFile = localImage.files && localImage.files.length ? localImage.files[0] : null;
+    const payload = {
+      phase: phase.value,
+      label: imageSelect.value,
+      max_points: 8000,
+      gsd_cm_per_px: Number(document.getElementById("gsd").value)
+    };
+    if (selectedFile) {
+      payload.upload_name = selectedFile.name;
+      payload.upload_image = await readLocalImage(selectedFile);
+      payload.label = null;
+    }
     const res = await fetch("/api/reconstruct", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        phase: phase.value,
-        label: imageSelect.value,
-        max_points: 8000,
-        gsd_cm_per_px: Number(document.getElementById("gsd").value)
-      })
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
@@ -632,6 +675,16 @@ function renderPlotCells(rows) {
 
 document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => showPage(tab.dataset.page)));
 phase.addEventListener("change", updateChoices);
+localImage.addEventListener("change", () => {
+  const selectedFile = localImage.files && localImage.files.length ? localImage.files[0] : null;
+  if (selectedFile) {
+    imageSelect.disabled = true;
+    uploadHint.innerHTML = `<strong>Local upload selected:</strong> ${selectedFile.name}`;
+  } else {
+    imageSelect.disabled = false;
+    uploadHint.textContent = "No local image selected.";
+  }
+});
 runButton.addEventListener("click", run);
 loadDataset();
 
