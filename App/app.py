@@ -216,7 +216,7 @@ INDEX_HTML = r"""<!doctype html>
     .page.active { display: block; }
     .metrics {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
       margin-bottom: 12px;
     }
@@ -231,7 +231,7 @@ INDEX_HTML = r"""<!doctype html>
     .metric span { color: var(--muted); font-size: 12px; }
     .image-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
     }
     .two-col {
@@ -300,6 +300,23 @@ INDEX_HTML = r"""<!doctype html>
       overflow-wrap: anywhere;
       color: var(--muted);
       line-height: 1.45;
+    }
+    .download-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 16px;
+      border-radius: 6px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      margin-top: 10px;
+    }
+    .download-link[aria-disabled="true"] {
+      opacity: 0.55;
+      pointer-events: none;
     }
     .empty {
       border: 1px dashed var(--line);
@@ -400,14 +417,12 @@ INDEX_HTML = r"""<!doctype html>
         <div class="metrics">
           <div class="metric"><strong id="countMetric">-</strong><span>adjusted boll count</span></div>
           <div class="metric"><strong id="rawMetric">-</strong><span>raw candidates</span></div>
-          <div class="metric"><strong id="usableMetric">-</strong><span>measurement-ready candidates</span></div>
           <div class="metric"><strong id="diamMetric">-</strong><span>median mask length x width, cm</span></div>
           <div class="metric"><strong id="volMetric">-</strong><span>median ellipsoid volume proxy, cm3</span></div>
         </div>
         <div class="image-grid">
           <div><div class="figure-title">Input frame</div><img id="inputImage" alt="input frame" /></div>
           <div><div class="figure-title">Raw detector overlay</div><img id="overlayImage" alt="detector overlay" /></div>
-          <div><div class="figure-title">Measurement-ready extraction</div><img id="extractionImage" alt="extraction overlay" /></div>
         </div>
       </section>
 
@@ -466,9 +481,9 @@ INDEX_HTML = r"""<!doctype html>
             <img id="depthImage" alt="depth field" />
           </div>
           <div>
-            <h2>Exports</h2>
-            <div id="exportText" class="export-box">Run analysis to create local PLY and CSV outputs.</div>
-            <div class="note" style="margin-top:12px">The SAM-to-3D highlighted overlay has been removed for now. It should return only after calibrated reconstruction or a stronger multi-view geometry step makes the 3D evidence defensible.</div>
+            <h2>Depth Proxy Export</h2>
+            <p>The morphology depth proxy is an image-space relief estimate used for review. It is not calibrated metric depth.</p>
+            <a id="depthDownload" class="download-link" aria-disabled="true">Download depth proxy image</a>
           </div>
         </div>
       </section>
@@ -550,15 +565,16 @@ function renderResult(data) {
   const s = data.summary;
   document.getElementById("countMetric").textContent = s.adjusted_count;
   document.getElementById("rawMetric").textContent = s.raw_candidates;
-  document.getElementById("usableMetric").textContent = s.measurement_candidates;
   document.getElementById("diamMetric").textContent = `${s.median_length_cm_proxy} x ${s.median_width_cm_proxy}`;
   document.getElementById("volMetric").textContent = s.median_ellipsoid_volume_cm3_proxy;
   document.getElementById("inputImage").src = data.input_image;
   document.getElementById("overlayImage").src = data.annotated_image;
-  document.getElementById("extractionImage").src = data.extraction_overlay_image;
   document.getElementById("plotMapImage").src = data.plot_map_image;
   document.getElementById("depthImage").src = data.depth_image;
-  document.getElementById("exportText").innerHTML = `<strong>Scene PLY:</strong><br>${s.ply}<br><br><strong>CSV:</strong><br>${s.measurements_csv}<br><br><strong>Scene points:</strong> ${s.point_count}`;
+  const depthDownload = document.getElementById("depthDownload");
+  depthDownload.href = data.depth_image;
+  depthDownload.download = `morphology_depth_proxy_${s.phase || "cotton"}.png`;
+  depthDownload.setAttribute("aria-disabled", "false");
   renderCrops(data.boll_crops);
   renderTable(data.measurements);
   renderPlotCells(data.plot_cells);
