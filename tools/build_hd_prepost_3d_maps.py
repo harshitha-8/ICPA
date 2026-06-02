@@ -31,6 +31,15 @@ from build_uav_orthomap_3d_figure import (
 DEFAULT_OUT = Path("/Volumes/T9/ICPA/outputs/figures/hd_prepost_3d_maps")
 
 
+def configure_fonts() -> None:
+    plt.rcParams.update(
+        {
+            "font.family": "sans-serif",
+            "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+        }
+    )
+
+
 def save_panel(pre: OrthomapResult, post: OrthomapResult, out_dir: Path) -> Path:
     """Save a manuscript-style panel with RGB, proxy height, and 3D map."""
     fig = plt.figure(figsize=(18.0, 11.0), dpi=220)
@@ -58,23 +67,7 @@ def save_panel(pre: OrthomapResult, post: OrthomapResult, out_dir: Path) -> Path
         fontweight="bold",
         y=0.985,
     )
-    fig.text(
-        0.5,
-        0.948,
-        "Generated from real UAV RGB frames; the height field is a canopy/lint visibility proxy, not calibrated metric 3D.",
-        ha="center",
-        va="center",
-        fontsize=10,
-        color="#303a2f",
-    )
-    fig.text(
-        0.02,
-        0.018,
-        f"Pre source: {pre.source.name}   |   Post source: {post.source.name}",
-        fontsize=8.5,
-        color="#4e564b",
-    )
-    fig.tight_layout(rect=(0, 0.035, 1, 0.925), h_pad=1.35, w_pad=0.95)
+    fig.tight_layout(rect=(0, 0.020, 1, 0.930), h_pad=1.35, w_pad=0.95)
     out_path = out_dir / "pre_post_defoliation_hd_orthomap_panel.png"
     fig.savefig(out_path, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
@@ -134,6 +127,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    configure_fonts()
     args = parse_args()
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
