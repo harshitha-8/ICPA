@@ -215,6 +215,33 @@ def outside_tip_arrow(
     arrow(ax, (sx, sy), (ex, ey), dashed=dashed, color=color, lw=lw, zorder=6.0, mutation_scale=mutation_scale)
 
 
+def floating_arrow(
+    ax,
+    start: tuple[float, float],
+    end: tuple[float, float],
+    *,
+    dashed: bool = False,
+    color: str = LINE,
+    lw: float = 1.45,
+    mutation_scale: float = 9.0,
+    clearance: float = 0.006,
+) -> None:
+    """Keep the entire arrow, including the head, in the whitespace gap."""
+    sx, sy = start
+    ex, ey = end
+    dx = ex - sx
+    dy = ey - sy
+    if abs(dx) >= abs(dy):
+        direction = 1 if dx >= 0 else -1
+        sx += direction * clearance
+        ex -= direction * clearance
+    else:
+        direction = 1 if dy >= 0 else -1
+        sy += direction * clearance
+        ey -= direction * clearance
+    arrow(ax, (sx, sy), (ex, ey), dashed=dashed, color=color, lw=lw, zorder=6.0, mutation_scale=mutation_scale)
+
+
 def boundary_segment(
     ax,
     start: tuple[float, float],
@@ -330,7 +357,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
     for x, title, body, (edge, fill) in zip(xs, titles, bodies, colors):
         add_box(ax, (x, y_top), (bw, bh), title, body, edge, fill)
     for i in range(5):
-        outside_tip_arrow(ax, (xs[i] + bw, y_top + bh / 2), (xs[i + 1], y_top + bh / 2))
+        floating_arrow(ax, (xs[i] + bw, y_top + bh / 2), (xs[i + 1], y_top + bh / 2))
 
     # Two image arrows merge before entering the phase resolver.
     input_right = pre_xy[0] + image_size[0]
@@ -371,7 +398,7 @@ def build_diagram(args: argparse.Namespace) -> Path:
     outside_tip_arrow(ax, (post_map_center_x, split_y), (post_map_center_x, map_top_y), mutation_scale=10.5)
     record_center_x = record_x + record_w / 2
     trait_center_x = xs[5] + bw / 2
-    outside_tip_arrow(ax, (trait_center_x, y_top), (record_center_x, record_y + record_h), color=LINE, mutation_scale=10.5)
+    floating_arrow(ax, (trait_center_x, y_top), (trait_center_x, record_y + record_h), color=LINE)
 
     # Calibration branch.
     add_arrow_legend(ax, (0.782, 0.255))
